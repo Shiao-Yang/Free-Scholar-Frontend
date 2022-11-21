@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div>
-      <SideNavigation @getActive="getSideActive"></SideNavigation>
+      <SideNavigation @getActive="getSideActive" v-if="needSide"></SideNavigation>
       <div class="app-container" :class="{'active': sideActive}" :style="{width: containerWidth+'px'}">
         <router-view/>
       </div>
@@ -31,6 +31,7 @@ export default {
   },
   data() {
     return {
+      needSide: true,
       sideActive: false,
       margin: 120,
       screenWidth: null,
