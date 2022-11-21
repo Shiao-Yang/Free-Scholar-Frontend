@@ -407,7 +407,7 @@ export default {
 }
 .title{
   font-size: 25px;
-  margin-left: -800px;
+  margin-left: 100px;
   height: 100px;
 }
 .box{

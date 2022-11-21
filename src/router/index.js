@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Collection from "@/views/Collection";
 import CollectionCover from "@/views/CollectionCover";
+import Settings from "@/views/Settings";
 
 Vue.use(VueRouter)
 
@@ -10,7 +11,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Collection
+    component: Settings
   },
   {
     path: '/about',
@@ -35,6 +36,11 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/CollectionCover.vue')
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: () => import('../views/Settings.vue')
   }
 ]
 
