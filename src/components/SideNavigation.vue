@@ -1,6 +1,6 @@
 <template>
   <div class="side-navigation" :class="{'active': isActive}">
-    <div class="side-menu-top" v-on:click="isActive=!isActive">
+    <div class="side-menu-top" v-on:click="changeIsActive">
     </div>
     <ul class="side-navigation-list">
       <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': index === 1}">
@@ -80,7 +80,11 @@ export default {
   methods: {
     activeLink(index){
       this.index = index
-    }
+    },
+    changeIsActive() {
+      this.isActive = !this.isActive;
+      this.$emit('getActive', this.isActive);
+    },
   },
 }
 </script>
@@ -91,6 +95,7 @@ export default {
   padding: 0;
   box-sizing: border-box;
   text-align: left;
+  z-index: 20;
 }
 
 .side-navigation {

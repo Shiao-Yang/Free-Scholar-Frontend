@@ -1,9 +1,64 @@
 <template>
   <div id="app">
-    <router-view/>
+    <div>
+      <SideNavigation @getActive="getSideActive"></SideNavigation>
+      <div class="app-container" :class="{'active': sideActive}" :style="{width: containerWidth+'px'}">
+        <router-view/>
+      </div>
+    </div>
   </div>
 </template>
 
 <style>
+.app-container {
+  position: absolute;
+  top: 0;
+  left:120px;
+  transition: 0.5s;
+  margin-top: 10px;
+}
+
+.app-container.active {
+  left:220px;
+}
 
 </style>
+<script>
+import SideNavigation from "@/components/SideNavigation";
+export default {
+  components: {
+    SideNavigation,
+  },
+  data() {
+    return {
+      sideActive: false,
+      margin: 120,
+      screenWidth: null,
+    }
+  },
+
+  computed: {
+    containerWidth() {
+      let val = 120;
+      if(this.sideActive === true)
+        val = 220;
+      return this.screenWidth - val
+    }
+  },
+  methods: {
+    getSideActive(isActive) {
+      this.sideActive = isActive;
+    },
+  },
+
+  mounted() {
+    this.screenWidth = document.body.clientWidth
+    window.onresize = () => {
+      return (() => {
+        this.screenWidth = document.body.clientWidth
+      })()
+    }
+  },
+
+}
+</script>
