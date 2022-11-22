@@ -5,7 +5,7 @@
         <p id="welcome" class="header-text">开启你的学术之旅</p>
       </div>
       <div class="header-search-box">
-        <input type="text" autocomplete="off"
+        <input type="text" autocomplete="off"  
                id="input"
                class="search-input"
                v-model="input"
@@ -17,7 +17,7 @@
         <ul id="hot" class="hotWord-list">
           <li><span class="hotWord-text">热词推荐</span></li>
           <li id="hot1" class="hot-item"><span class="hotWord">AI</span></li>
-          <li id="hot2" class="hot-item"><span class="hotWord">计算机技术</span></li>
+          <li id="hot2" class="hot-item"><span class="hotWord">计算而非热热分人吧v非本人是个特别让他是通过机技术</span></li>
           <li id="hot3" class="hot-item"><span class="hotWord">核磁共振</span></li>
           <li id="hot4" class="hot-item"><span class="hotWord">无机化学</span></li>
         </ul>
