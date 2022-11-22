@@ -28,8 +28,8 @@
         </router-link>
       </li>
       <li class="side-navigation-item user-box">
-        <router-link to="#" style="--clr:#0fc70f;">
-          <i class='bx bxs-circle' style="position:absolute;top: 0; right:0;z-index:100;font-size:12px;color: #FF5733; transition: all 0.4s ease;"></i>
+        <router-link to="#" :style="{'--clr':userStateClr}">
+          <i class='bx bxs-circle user-info' style=""></i>
           <span class="icon avatar"><img alt="头像" src="../assets/logo.png"></span>
           <span class="text">用户名用户名用户名</span>
         </router-link>
@@ -47,7 +47,7 @@
           <li class="sub-item">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
-            <i class='bx bxs-circle' style="font-size:12px;color: #FF5733;"></i>
+            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
             <i class='bx bx-chevron-right right'></i>
           </li>
           <li class="sub-item">
@@ -75,6 +75,7 @@ export default {
     return {
       isActive: false,
       index: 0,
+      userStateClr: '#f44336',
     }
   },
   methods: {
@@ -361,6 +362,23 @@ export default {
   pointer-events: auto;
 }
 
+.user-box .user-info {
+  position:absolute;
+  top: 0;
+  right:0;
+  z-index:100;
+  font-size:12px;
+  color: #FF5733;
+  visibility: visible;
+  opacity: 1;
+  transition: all 0.5s ease;
+}
+
+.user-box:hover .user-info{
+  opacity: 0;
+  visibility: hidden;
+}
+
 .user-box .user-sub-menu li{
   display: flex;
   height: 30px;
@@ -378,6 +396,7 @@ export default {
 .user-box .user-sub-menu .right{
   margin-left: auto;
 }
+
 
 .user-box .user-sub-menu li i{
   font-size: 20px;

@@ -43,9 +43,16 @@ const routes = [
     component: () => import('../views/Settings.vue')
   },
   {
+
     path: '/ScholarsPortal',
     name: 'ScholarsPortal',
     component: () => import('../views/ScholarsPortal.vue')
+  },
+  {
+    path: '/searchList',
+    name: 'searchList',
+    component: () => import('../views/SearchList.vue')
+
   }
 ]
 
