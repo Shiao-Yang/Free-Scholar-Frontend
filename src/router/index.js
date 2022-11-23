@@ -5,6 +5,7 @@ import Collection from "@/views/Collection";
 import CollectionCover from "@/views/CollectionCover";
 import Settings from "@/views/Settings";
 import SearchDetails from "@/views/SearchDetails"
+import History from "@/views/History"
 Vue.use(VueRouter)
 
 const routes = [
@@ -51,6 +52,11 @@ const routes = [
     path: '/SearchDetails',
     name: 'SearchDetails',
     component: () => import('../views/SearchDetails.vue')
+  },
+  {
+    path: '/History',
+    name: 'History',
+    component: () => import('../views/History.vue')
   }
 ]
 
