@@ -316,7 +316,7 @@ td:hover {
 .content {
   position: relative;
   left: 440px;
-  width: 900px;
+  width: 750px;
   height: 750px;
   max-height: 750px;
   overflow: hidden;
