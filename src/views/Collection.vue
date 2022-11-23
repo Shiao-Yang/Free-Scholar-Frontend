@@ -420,5 +420,7 @@ export default {
   width: 1125px;
   background-color: white;
   margin: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
 }
 </style>

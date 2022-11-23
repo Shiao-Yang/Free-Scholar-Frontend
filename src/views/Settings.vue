@@ -5,7 +5,7 @@
         <p id="welcome" class="header-text">开启你的学术之旅</p>
       </div>
       <div class="header-search-box">
-        <input type="text" autocomplete="off"
+        <input type="text" autocomplete="off"  
                id="input"
                class="search-input"
                v-model="input"
