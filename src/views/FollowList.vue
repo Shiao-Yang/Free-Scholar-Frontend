@@ -88,7 +88,9 @@
             page-size="3"
             layout="prev, pager, next"
             :hide-on-single-page=true
-            :total="folloList.length">
+            :current-page="this.currentPage"
+            @current-change="changePage"
+            :total="followList.length">
         </el-pagination>
       </div>
     </div>
@@ -97,7 +99,7 @@
 
 <script>
 export default {
-  name: "Home",
+  name: "FollowList",
   data() {
     return {
       url: 'img/home/avatar1.jpg',
@@ -109,6 +111,7 @@ export default {
       FollowNumber: 32,
       LikeNumber: 20,
       FanNumber: 15,
+      currentPage: 1,
       showList: [
         {
           Avatar: 'img/home/avatar1.jpg',
@@ -132,45 +135,62 @@ export default {
           FollowTime: '2022-01-10 16:07',
         },
       ],
-      folloList:[
+      followList:[
         {
           Avatar: 'img/home/avatar1.jpg',
           Userame: '王婉',
           Institution: 'Beihang University',
           Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          FollowTime: '2022-01-10 16:01',
         },
         {
           Avatar: 'img/home/avatar1.jpg',
           Userame: '王婉',
           Institution: 'Beihang University',
           Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          FollowTime: '2022-01-10 16:02',
         },
         {
           Avatar: 'img/home/avatar1.jpg',
           Userame: '王婉',
           Institution: 'Beihang University',
           Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          FollowTime: '2022-01-10 16:03',
         },
         {
           Avatar: 'img/home/avatar1.jpg',
           Userame: '王婉',
           Institution: 'Beihang University',
           Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          FollowTime: '2022-01-10 16:04',
         },
         {
           Avatar: 'img/home/avatar1.jpg',
           Userame: '王婉',
           Institution: 'Beihang University',
           Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          FollowTime: '2022-01-10 16:05',
         },
       ]
     }
   },
+  methods: {
+    changePage(currentPage) {
+      this.showList = [];
+      for(let i = (currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
+        this.showList[j] = this.followList[i]
+      }
+    },
+    init() {
+      this.showList = [];
+      for(let i = (this.currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
+        this.showList[j] = this.followList[i]
+      }
+    }
+  },
+  created() {
+    this.init()
+  }
 }
 </script>
 
@@ -332,7 +352,7 @@ export default {
 .follow-list-item {
   position: relative;
   width: 1375px;
-  height: 100px;
+  height: 110px;
   margin: 0 0 15px 10px;
   background: rgb(255, 255, 255);
   display: flex;
@@ -344,8 +364,8 @@ export default {
   position: relative;
   top: -5px;
   left: -10px;
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   display: flex;
   align-content: center;
 }
@@ -356,14 +376,13 @@ export default {
   height: 170px;
   width: 160px;
   max-height: 100%;
-  max-height: 100%;
   border-radius: 5px;
   z-index: 1;
 }
 
 .follow-list-item .profile {
   position: relative;
-  top: -10px;
+  top: -5px;
   left: -10px;
   width: 200px;
   height: 100px;
@@ -446,8 +465,8 @@ export default {
 
 .content-list .pagination {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
+  top: 30px;
+  right: 20px;
 }
 
 </style>
