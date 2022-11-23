@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import Collection from "@/views/Collection";
 import CollectionCover from "@/views/CollectionCover";
 import Settings from "@/views/Settings";
-
+import SearchDetails from "@/views/SearchDetails"
 Vue.use(VueRouter)
 
 const routes = [
@@ -46,6 +46,11 @@ const routes = [
     path: '/ScholarsPortal',
     name: 'ScholarsPortal',
     component: () => import('../views/ScholarsPortal.vue')
+  },
+  {
+    path: '/SearchDetails',
+    name: 'SearchDetails',
+    component: () => import('../views/SearchDetails.vue')
   }
 ]
 
