@@ -22,15 +22,15 @@
       </div>
       <div class="social-info">
         <div class="social-info-item">
-          <span class="icon" :class="{'active': isLike}"><i class='bx bxs-home'></i></span>
+          <span class="icon" style="font-size: 28px; position: relative; top: -6px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
           <span class="text">关注</span>
         </div>
         <div class="social-info-item">
-          <span class="icon"><i class='bx bxs-home'></i></span>
+          <span class="icon"><i class='bx bxs-heart' ></i></span>
           <span class="text">粉丝</span>
         </div>
         <div class="social-info-item">
-          <span class="icon" :class="{'active': isLike}"><i class='bx bxs-home'></i></span>
+          <span class="icon" :class="{'active': isLike}"><i class='bx bxs-like' ></i></span>
           <span class="text">获赞</span>
         </div>
       </div>
@@ -42,7 +42,7 @@
     </div>
     <div class="content-list">
       <div class="title">
-        <i  class='bx bxs-heart' style="color: orangered;font-size: 45px; margin-right: 10px"></i>
+        <i class='bx bxs-heart' style="color: orangered;font-size: 40px; margin-right: 10px"></i>
         <span class="title-name">
           我的粉丝
         </span>
@@ -71,7 +71,7 @@
           </div>
           <div class="social-info">
             <div class="social-info-item">
-              <span class="icon" style="color: cornflowerblue;"><i class='bx bxs-message-rounded-dots' title="私信"></i></span>
+              <span class="icon" style="color: cornflowerblue; margin-right: 50px"><i class='bx bxs-message-rounded-dots' title="私信"></i></span>
             </div>
           </div>
           <div class="social-info-number">
@@ -87,7 +87,7 @@
             :hide-on-single-page=true
             :current-page="this.currentPage"
             @current-change="changePage"
-            :total="followerList.length">
+            :total="followList.length">
         </el-pagination>
       </div>
     </div>
@@ -96,7 +96,7 @@
 
 <script>
 export default {
-  name: "FollowerList",
+  name: "FollowList",
   data() {
     return {
       url: 'img/home/avatar1.jpg',
@@ -132,7 +132,7 @@ export default {
           FollowTime: '2022-01-10 16:07',
         },
       ],
-      followerList:[
+      followList:[
         {
           Avatar: 'img/home/avatar1.jpg',
           Userame: '王婉',
@@ -174,14 +174,14 @@ export default {
   methods: {
     changePage(currentPage) {
       this.showList = [];
-      for(let i = (currentPage-1)*3, j = 0; i < this.followerList.length && j < 3; i++,j++) {
-        this.showList[j] = this.followerList[i]
+      for(let i = (currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
+        this.showList[j] = this.followList[i]
       }
     },
     init() {
       this.showList = [];
-      for(let i = (this.currentPage-1)*3, j = 0; i < this.followerList.length && j < 3; i++,j++) {
-        this.showList[j] = this.followerList[i]
+      for(let i = (this.currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
+        this.showList[j] = this.followList[i]
       }
     }
   },
@@ -222,7 +222,6 @@ export default {
 .avatar img {
   height: 170px;
   width: 140px;
-  max-height: 100%;
   max-height: 100%;
   vertical-align: middle;
   border-radius: 5px;
@@ -269,12 +268,13 @@ export default {
 }
 
 .social-info .social-info-item {
-  display: inline;
+  display: flex;
 }
 
 .social-info .social-info-item .icon {
-  margin: 0 5px 0 40px;
+  margin: 0 5px 0 30px;
   font-size: 20px;
+  top: -10px;
 }
 
 .social-info .social-info-item .icon.active{
@@ -282,9 +282,7 @@ export default {
 }
 
 .social-info .social-info-item .text {
-  position: relative;
-  top: -2px;
-  margin: 0px 10px 0 0;
+  margin: 0px 20px 0 0;
 }
 
 .social-info-number {
@@ -298,7 +296,7 @@ export default {
 }
 
 .social-info-number .number {
-  margin: 0 25px 0 65px;
+  margin: 0 35px 0 55px;
 }
 
 .content-list {
@@ -425,7 +423,7 @@ export default {
 }
 
 .follow-list-item .social-info .social-info-item .icon {
-  margin: 0px 50px 0 40px;
+  margin: 0px 10px 0 40px;
   font-size: 45px;
   transition: all .5s ease;
   cursor: pointer;

@@ -22,15 +22,15 @@
       </div>
       <div class="social-info">
         <div class="social-info-item">
-          <span class="icon" :class="{'active': isLike}"><i class='bx bxs-home'></i></span>
+          <span class="icon" style="font-size: 28px; position: relative; top: -6px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
           <span class="text">关注</span>
         </div>
         <div class="social-info-item">
-          <span class="icon"><i class='bx bxs-home'></i></span>
+          <span class="icon"><i class='bx bxs-heart' ></i></span>
           <span class="text">粉丝</span>
         </div>
         <div class="social-info-item">
-          <span class="icon" :class="{'active': isLike}"><i class='bx bxs-home'></i></span>
+          <span class="icon" :class="{'active': isLike}"><i class='bx bxs-like' ></i></span>
           <span class="text">获赞</span>
         </div>
       </div>
@@ -226,7 +226,6 @@ export default {
   height: 170px;
   width: 140px;
   max-height: 100%;
-  max-height: 100%;
   vertical-align: middle;
   border-radius: 5px;
   z-index: 1;
@@ -272,12 +271,13 @@ export default {
 }
 
 .social-info .social-info-item {
-  display: inline;
+  display: flex;
 }
 
 .social-info .social-info-item .icon {
-  margin: 0 5px 0 40px;
+  margin: 0 5px 0 30px;
   font-size: 20px;
+  top: -10px;
 }
 
 .social-info .social-info-item .icon.active{
@@ -285,9 +285,7 @@ export default {
 }
 
 .social-info .social-info-item .text {
-  position: relative;
-  top: -2px;
-  margin: 0px 10px 0 0;
+  margin: 0px 20px 0 0;
 }
 
 .social-info-number {
@@ -301,7 +299,7 @@ export default {
 }
 
 .social-info-number .number {
-  margin: 0 25px 0 65px;
+  margin: 0 35px 0 55px;
 }
 
 .content-list {
