@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import Collection from "@/views/Collection";
 import CollectionCover from "@/views/CollectionCover";
 import Settings from "@/views/Settings";
+import Home from "@/views/Home"
 
 Vue.use(VueRouter)
 
@@ -46,6 +47,11 @@ const routes = [
     path: '/searchList',
     name: 'searchList',
     component: () => import('../views/SearchList.vue')
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('../views/Home.vue')
   }
 ]
 

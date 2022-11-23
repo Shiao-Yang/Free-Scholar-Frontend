@@ -13,9 +13,9 @@
 .app-container {
   position: absolute;
   top: 0;
-  left:120px;
+  left:100px;
   transition: 0.5s;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .app-container.active {
