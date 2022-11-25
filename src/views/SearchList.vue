@@ -64,7 +64,7 @@
     </div>
     <div class="block">
       <el-pagination
-          style="position: absolute;left: 600px;bottom: -20px"
+          style="position: absolute;left: 40%;bottom: -5%"
           layout="prev, pager, next"
           :page-size="5"
           :pager-count="10"
@@ -316,7 +316,7 @@ td:hover {
 .content {
   position: relative;
   left: 440px;
-  width: 750px;
+  width: 70%;
   height: 750px;
   max-height: 750px;
   overflow: hidden;
@@ -329,7 +329,7 @@ td:hover {
 .header-search-box .search-input{
   position: relative;
   font-size: 15px;
-  min-width: 500px;
+  min-width: 50%;
   height: 20px;
   padding: 10px 20px 10px 20px;
   border-radius: 10px;
@@ -370,7 +370,7 @@ td:hover {
 .authors-list {
   margin: 0;
   padding: 0;
-  width: 500px;
+  width: 70%;
   display: flex;
   list-style: none;
   height: 20px;
@@ -387,7 +387,7 @@ td:hover {
   margin: 4px 0 8px 0;
   font-size: 15px;
   line-height: 18px;
-  width: 700px;
+  width: 75%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
