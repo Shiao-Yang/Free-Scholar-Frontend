@@ -70,6 +70,11 @@ const routes = [
     path: '/followerList',
     name: 'followerList',
     component: () => import('../views/FollowerList.vue')
+  },
+  {
+    path: '/adminHome',
+    name: 'adminHome',
+    component: () => import('../views/AdminHome.vue')
   }
 ]
 
