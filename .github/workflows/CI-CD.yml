@@ -1,0 +1,55 @@
+name: CI/CD
+
+on:
+  push: # 设置触发条件为 tag v*，例如添加标签 v1.0.0
+    tags:
+    - v*
+
+jobs:
+  CI/CD:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Setup
+      uses: actions/setup-node@v2.4.0
+      with: # 使用 node v16 版本的环境
+        node-version: '16'
+    
+    - name: Checkout
+      uses: actions/checkout@master # 检出 master 分支的代码
+      
+    - name: Npm Run Build # 构建打包
+      run: |
+        cd ${{ github.workspace }}
+        rm -r .git
+        npm install
+        npm run build
+    
+    - name: Prepare Transfer # 将想传送到服务器上的打包源码放入 target 目录
+      run: |
+        mkdir target
+        cp -r dist target
+        cp nginx.conf target
+        cp Dockerfile target
+    
+    - name: Scp Transfer
+      uses: appleboy/scp-action@master # 使用 scp 插件将内容传送到服务器指定路径
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.SSH_PORT }}
+        source: "target/*"
+        target: "${{ secrets.SCP_TARGET }}"
+        strip_components: 1
+        rm: true
+    
+    - name: SSH Run
+      uses: appleboy/ssh-action@master # 使用 ssh 工具连接服务器运行部署脚本
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          sh ${{ secrets.RUN_SCRIPT }} -i ${{ secrets.DOCKER_NAMESPACE }}/${{ secrets.DOCKER_IMAGE }} -t ${{ github.ref_name }} -w ${{ secrets.SCP_TARGET }}
