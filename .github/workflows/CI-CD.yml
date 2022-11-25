@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI-CD
 
 on:
   push: # 设置触发条件为 tag v*，例如添加标签 v1.0.0
@@ -6,7 +6,7 @@ on:
     - v*
 
 jobs:
-  CI/CD:
+  cicd:
     runs-on: ubuntu-latest
     
     steps:
