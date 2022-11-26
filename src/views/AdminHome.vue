@@ -128,9 +128,10 @@ export default {
 <style scoped>
 .body {
   position: relative;
+  /*display: inline-block;*/
   float: left;
-  left: 300px;
-  width: 800px;
+  /*left: 300px;*/
+  width: 70%;
   height: 100%;
   margin: 0;
   border-right: 1px solid rgba(128, 128, 128, 0.4);
@@ -138,10 +139,12 @@ export default {
 .record {
   position: relative;
   float: left;
-  left: 320px;
-  width: 500px;
+  /*left: 320px;*/
+  width: 26%;
+  /*width: 100px;*/
+  /*width: 100%;*/
   height: 100%;
-  margin: 0;
+  margin-left: 20px;
 }
 .header-box {
   margin-top: 0;
@@ -166,7 +169,7 @@ export default {
   /*margin: 20px;*/
   border-radius: 30px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
-  margin-left: 60px;
+  margin-left: 10px;
 }
 .welcome {
   float: left;
@@ -266,32 +269,43 @@ export default {
 }
 
 .header-search-box {
+  display: inline-block;
   position: relative;
   height: 60px;
+  /*width: 100%;*/
 }
 
 .header-search-box .search-input{
   position: relative;
+  display: inline-block;
   font-size: 15px;
-  min-width: 80%;
+  width: 230px;
+  min-width: 220px;
   height: 20px;
   padding: 10px 20px 10px 20px;
   border-radius: 10px;
   border: 1px solid rgb(240,240,240);
-  border-bottom: 3px solid rgba(33,150,243,0.5);
+  margin: 0 auto;
+  /*border-bottom: 3px solid rgba(33,150,243,0.5);*/
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
   outline: none;
 }
 
 .header-search-box .search-icon i{
+  position: relative;
   text-align: center;
+  display: inline-block;
+
   color: #333333;
   margin-left: 5px;
-  margin-bottom: 40px;
+  /*margin-bottom: 40px;*/
   line-height: 50px;
   height: 50px;
+  right: 0px;
+  /*width: 50px;*/
   font-size: 15px;
   min-width: 50px;
+  /*min-width: 40%;*/
   background: white;
   border-radius: 50%;
   cursor: pointer;
