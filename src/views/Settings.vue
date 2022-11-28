@@ -76,6 +76,7 @@ export default {
 }
 
 .header-search-box {
+  /*margin: 0 auto;*/
   position: relative;
   text-align: center;
 }
