@@ -75,7 +75,17 @@ const routes = [
     path: '/adminHome',
     name: 'adminHome',
     component: () => import('../views/AdminHome.vue')
-  }
+  },
+  {
+    path: '/LiteratureManage',
+    name: 'LiteratureManage',
+    component: () => import('../views/LiteratureManage.vue')
+  },
+  {
+    path: '/Institutional',
+    name: 'Institutional',
+    component: () => import('../views/Institutional.vue')
+  },
 ]
 
 const router = new VueRouter({
