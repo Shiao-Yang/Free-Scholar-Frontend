@@ -8,7 +8,7 @@
           <p class="welcome-zh">欢迎回来！</p>
         </div>
       </div>
-      <hr style="height:3px;border:none;border-top:1px solid rgba(128, 128, 128, 0.4);margin-top: 30px" />
+<!--      <hr style="height:3px;border:none;border-top:1px solid rgba(128, 128, 128, 0.4);margin-top: 30px" />-->
       <div class="manage-box">
         <div class="todo">待处理<i class='bx bxs-circle'></i></div>
         <div class="user-manage manage">
@@ -43,8 +43,11 @@
           </table>
         </div>
       </div>
-      <p class="statistics">仪表盘</p>
-      <img src="../assets/img/adminHome/data.jpg">
+      <div class="chart">
+        <p class="statistics">仪表盘</p>
+        <img src="../assets/img/adminHome/data.jpg">
+      </div>
+
     </div>
     <div class="record">
       <div class="header-search-box">
@@ -59,7 +62,7 @@
       <p class="remind">提醒</p>
       <p style="text-align: center">暂无提醒</p>
       <table>
-        <tr v-for="(item, i) in records">
+        <tr v-for="(item, i) in records" class="history">
           <td><img :src="item.avatar" class="avatar"> </td>
           <td class="name-box"><span>{{item.name}}</span></td>
           <td class="action-box">
@@ -140,7 +143,7 @@ export default {
   position: relative;
   float: left;
   /*left: 320px;*/
-  width: 26%;
+  width: 28%;
   /*width: 100px;*/
   /*width: 100%;*/
   height: 100%;
@@ -151,6 +154,11 @@ export default {
   position: relative;
   height: 100px;
   width: 100%;
+}
+.history {
+  padding: 5px 60px 5px 10px;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
 }
 .avatar {
   position: relative;
@@ -184,15 +192,19 @@ export default {
 }
 .manage-box {
   position: relative;
-  width: 100%;
+  width: 98%;
   height: 250px;
+  padding-bottom: 50px;
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
 }
 .todo {
-  position: relative;
+  position: absolute;
   font-weight: bold;
   font-size: 30px;
-  line-height: 30px;
-  margin: 20px 40px 10px 40px;
+  line-height: 50px;
+  margin: 10px 0 0 40px;
 }
 .todo .bxs-circle {
   color: #C34A36;
@@ -202,7 +214,10 @@ export default {
 .manage {
   position: relative;
   float: left;
-  margin: 80px 60px 0 20px;
+  margin: 80px 40px 0 20px;
+  padding: 50px 40px 20px 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
 }
 .manage .bx {
   position: relative;
@@ -238,7 +253,13 @@ export default {
 }
 .total-manage {
   position: relative;
+  margin-top: 20px;
   float: left;
+  padding: 10px 10px 30px 20px;
+  margin-left: 20px;
+  border-radius: 10px;
+  background-color: #f4f4f4;
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);*/
 }
 .total-manage .title {
   margin-bottom: 10px;
@@ -260,32 +281,46 @@ export default {
   font-size: 20px;
   margin: 0 10px;
 }
+.chart {
+  position: relative;
+  padding-top: 1px;
+  margin-top: 20px;
+  width: 98%;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+}
 .statistics {
   position: relative;
   font-weight: bold;
   font-size: 30px;
+  margin-top: 10px;
+  /*line-height: 50px;*/
   margin-left: 40px;
   margin-bottom: 10px;
+
 }
 
 .header-search-box {
-  display: inline-block;
+  /*display: inline-block;*/
   position: relative;
   height: 60px;
-  /*width: 100%;*/
+  margin: 0 auto;
+  width: 350px;
+  /*left: 120px;*/
 }
 
 .header-search-box .search-input{
   position: relative;
   display: inline-block;
   font-size: 15px;
-  width: 230px;
+  width: 240px;
   min-width: 220px;
   height: 20px;
   padding: 10px 20px 10px 20px;
   border-radius: 10px;
   border: 1px solid rgb(240,240,240);
-  margin: 0 auto;
+  /*margin: 0 auto;*/
   /*border-bottom: 3px solid rgba(33,150,243,0.5);*/
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
   outline: none;
@@ -295,7 +330,7 @@ export default {
   position: relative;
   text-align: center;
   display: inline-block;
-
+  /*margin: 0 auto;*/
   color: #333333;
   margin-left: 5px;
   /*margin-bottom: 40px;*/
@@ -317,7 +352,7 @@ export default {
   background: #2196f3;
 }
 .remind {
-  margin: 20px 0 10px 0;
+  margin: 20px 0 10px 10px;
   font-size: 28px;
   font-weight: bold;
 }

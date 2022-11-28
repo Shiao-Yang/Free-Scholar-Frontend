@@ -86,6 +86,11 @@ const routes = [
     name: 'Institutional',
     component: () => import('../views/Institutional.vue')
   },
+  {
+    path: '/adminUser',
+    name: 'adminUser',
+    component: () => import('../views/AdminUser.vue')
+  }
 ]
 
 const router = new VueRouter({
