@@ -2,39 +2,93 @@
   <div class="searchList">
     <div id="filter">
       <p style="left: 5px;position:relative;">筛选</p>
-      <img src="../assets/img/searchList/searchData.jpg" style="width: 400px;height: 200px">
-      <table>
-        <tr>
-          <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">过去一年</span></td>
-          <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">过去五年</span></td>
-        </tr>
-      </table>
-      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px">出版物类型</p>
+      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="time_zone = !time_zone">
+        时间
+        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px;"></i>
+      </p>
       <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-      <div class="item" v-for="item in types">
+      <div class="time-range" v-if="time_zone">
+        <div class="block">
+          <el-date-picker
+              style="width: 95px;margin-right: 20px"
+              v-model="startTime"
+              type="year">
+          </el-date-picker>
+          <span>~</span>
+          <el-date-picker
+              style="width: 95px;margin-left: 20px"
+              v-model="endTime"
+              type="year">
+          </el-date-picker>
+          <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
+        </div>
+        <table>
+          <tr>
+            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近十年</span></td>
+            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近五年</span></td>
+            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近三年</span></td>
+          </tr>
+        </table>
+      </div>
+      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;width: 100%;cursor: pointer" @click="type_zone = !type_zone">出版物类型
+        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
+      </p>
+      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+      <div class="item" v-for="item in types" v-if="type_zone">
         <img v-if=!item.active :src="item.src" class="icon" :style="{width: item.size,height: item.size}">
         <img v-else :src="item.srcActive" class="icon" :style="{width: item.size,height: item.size}">
         <span v-if=item.active class="type" @click="item.active=false" style="color: #2196f3">{{item.type}}</span>
         <span v-else class="type" @click="item.active=true">{{item.type}}</span>
         <span class="num">{{item.num}}</span>
       </div>
-      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px">语言</p>
+      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="language_zone = !language_zone">语言
+        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
+      </p>
       <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-      <div class="item" v-for="item in languages">
+      <div class="item" v-for="item in languages" v-if="language_zone">
         <label v-if="item.active"><input type="checkbox" :checked="item.active" @click="item.active=false"/>{{item.language}} </label>
         <label v-else><input type="checkbox" :checked="item.active" @click="item.active=true"/>{{item.language}} </label>
         <span class="num">{{item.num}}</span>
       </div>
+      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="keyword_zone = !keyword_zone">关键词
+        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
+      </p>
+      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+      <div class="item-2" v-for="item in keywords" v-if="keyword_zone">
+        <p class="filter-item"><span style="cursor: pointer">{{item}}</span></p>
+      </div>
+      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="organization_zone = !organization_zone">机构
+        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
+      </p>
+      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+      <div class="item-2" v-for="item in organizations" v-if="organization_zone">
+        <p class="filter-item"><span style="cursor: pointer">{{item}}</span></p>
+      </div>
+      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="journal_zone = !journal_zone">期刊
+        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
+      </p>
+      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+      <div class="item-2" v-for="item in journals" v-if="journal_zone">
+        <p class="filter-item"><span style="cursor: pointer">{{item}}</span></p>
+      </div>
     </div>
     <div class="content">
+      <select id="select-type" style="outline: none">
+        <option value="0">标题</option>
+        <option value="1">关键词</option>
+        <option value="2">摘要</option>
+        <option value="3">作者</option>
+        <option value="4">组织</option>
+        <option value="5">期刊</option>
+      </select>
       <div class="header-search-box">
         <input type="text" autocomplete="off"
                id="input"
                class="search-input"
                v-model="input"
                placeholder="Search resources..."
-               @keyup.enter="">
-        <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
+               @keyup.enter="search()">
+        <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search()"></i></span>
       </div>
       <div class="result-box" v-for="(result, i) in displayResult">
         <p class="articleName">{{result.articleName}}</p>
@@ -88,30 +142,17 @@ export default {
   },
   data() {
     return {
+      time_zone: true,
+      type_zone: true,
+      language_zone: true,
+      keyword_zone: true,
+      organization_zone: true,
+      journal_zone: true,
       input: '',
-      types: [
-        {
-          active: false,
-          srcActive: require("../assets/img/searchList/allActive.png"),
-          src: require("../assets/img/searchList/all.png"),
-          size: "15px",
-          type: "全部",
-          num: "12345",
-        }, {
-          active: false,
-          srcActive: require("../assets/img/searchList/magazineActive.png"),
-          src: require("../assets/img/searchList/magazine.png"),
-          size: "14px",
-          type: "杂志文章",
-          num: "1234",
-        }, {
-          active: false,
-          srcActive: require("../assets/img/searchList/bookActive.png"),
-          src: require("../assets/img/searchList/book.png"),
-          size: "16px",
-          type: "书籍",
-          num: "12",
-        }, {
+      startTime: '',
+      endTime: '',
+      searchType: '',
+      types: [{
           active: false,
           srcActive: require("../assets/img/searchList/conferenceActive.png"),
           src: require("../assets/img/searchList/conference.png"),
@@ -120,19 +161,14 @@ export default {
           num: "345",
         }, {
           active: false,
-          srcActive: require("../assets/img/searchList/otherActive.png"),
-          src: require("../assets/img/searchList/other.png"),
-          size: "15px",
-          type: "其它",
-          num: "2377",
+          srcActive: require("../assets/img/searchList/magazineActive.png"),
+          src: require("../assets/img/searchList/magazine.png"),
+          size: "14px",
+          type: "期刊",
+          num: "1234",
         }
       ],
-      languages: [
-        {
-          language: "全部",
-          active: false,
-          num: "12345",
-        }, {
+      languages: [{
           language: "英文",
           active: false,
           num: "1234",
@@ -141,14 +177,19 @@ export default {
           active: false,
           num: "12",
         }, {
-          language: "法语",
-          active: false,
-          num: "345",
-        }, {
           language: "其它",
           active: false,
           num: "2377"
         }
+      ],
+      keywords: [
+        "1111","22222","33333","4444444","555","21323"
+      ],
+      organizations: [
+        "1111","22222","33333","4444444","555","21323"
+      ],
+      journals: [
+        "1111","22222","33333","4444444","555","21323"
       ],
       displayResult: [ // 只展示5个
         {
@@ -279,6 +320,15 @@ export default {
         this.displayResult.push(this.results[i]);
       }
     },
+    select(){
+      let sel_obj = document.getElementById("select-type");
+      let index = sel_obj.selectedIndex;
+      this.searchType = sel_obj.options[index].value;
+      // alert(sel_obj.options[index].value);
+    },
+    search() {
+      this.select()
+    }
   }
 }
 </script>
@@ -287,6 +337,30 @@ export default {
 #filter {
   position: absolute;
   left: 0px;
+  width: 27%;
+}
+.time-range {
+  margin: 10px 0 10px 5px;
+}
+.block {
+  margin-bottom: 10px;
+}
+.block .search-icon i {
+  text-align: center;
+  color: #333333;
+  margin-left: 5px;
+  line-height: 40px;
+  height: 40px;
+  font-size: 15px;
+  min-width: 40px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: .5s;
+}
+.block .search-icon i:hover {
+  color: white;
+  background: #2196f3;
 }
 table {
   border: 1px solid #2196f3;
@@ -312,13 +386,15 @@ td:hover {
   position: absolute;
   right: 10px;
 }
-
+.filter-item{
+  margin: 5px 5px;
+}
 .content {
   position: relative;
-  left: 440px;
+  left: 32%;
   width: 70%;
-  height: 750px;
-  max-height: 750px;
+  height: 760px;
+  max-height: 760px;
   overflow: hidden;
 }
 
