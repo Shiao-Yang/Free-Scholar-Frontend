@@ -7,6 +7,7 @@ import Settings from "@/views/Settings";
 import Home from "@/views/FollowList"
 import followerList from "@/views/Home";
 import followList from "@/views/FollowList";
+import messageManage from "@/views/MessageManage";
 
 Vue.use(VueRouter)
 
@@ -90,6 +91,11 @@ const routes = [
     path: '/adminUser',
     name: 'adminUser',
     component: () => import('../views/AdminUser.vue')
+  },
+  {
+    path: '/MessageManage',
+    name: 'MessageManage',
+    component: () => import('../views/MessageManage.vue')
   }
 ]
 
