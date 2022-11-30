@@ -76,10 +76,6 @@
                 <span class="text" style="font-size: 20px; font-weight: bold">{{item.Userame}}</span>
               </li>
               <li class="profile-list-item">
-                <span class="icon"><i class='bx bxs-home'></i></span>
-                <span class="text">{{item.Institution}}</span>
-              </li>
-              <li class="profile-list-item">
                 <span class="icon"><i class='bx bxs-bookmark'></i></span>
                 <span class="text">{{item.Profile}}</span>
               </li>
@@ -415,7 +411,7 @@ export default {
 .follow-list-item .profile .profile-list .profile-list-item {
   width: 600px;
   display: flex;
-  height: 3px;
+  height: 20px;
   line-height: 10px;
   align-items: center;
 }

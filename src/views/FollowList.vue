@@ -445,14 +445,12 @@ export default {
 }
 
 .follow-list-item .social-info .social-info-item {
-  border: solid red;
   position: relative;
   right: -5px;
   display: inline;
 }
 
 .follow-list-item .social-info .social-info-item .icon {
-  border: solid green;
   margin: 0px 10px 0 40px;
   font-size: 45px;
   transition: all .5s ease;
