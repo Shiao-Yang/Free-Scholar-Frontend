@@ -4,15 +4,15 @@
       <span class="image">
         <img src="../assets/img/MessageManage/user.png" style="height: 50px; width: 50px; margin: 10px 10px 10px 30px">
       </span>
-      <span class="text" style="font-size:30px; font-weight: 900; position: absolute; top: 32px">
+      <span class="text" style="font-size:30px; font-weight: 900; position: absolute; top: 25px">
         消息中心
       </span>
     </div>
     <div class="divider-x"></div>
     <div class="sender-box">
-      <div class="sender">
+      <div class="platform-msg">
         <span class="image">
-          <i class='bx bx-message-dots'></i>
+          <img src="../assets/img/MessageManage/notice.png">
         </span>
         <span class="name">
           系统通知
@@ -141,6 +141,61 @@ export default {
 .sender-box:hover {
   overflow: auto;
 }
+
+
+.sender-box .platform-msg {
+  background-color: white;
+  position: relative;
+  border-radius: 5px;
+  height: 60px;
+  width: 380px;
+  margin: 10px 10px 10px 10px;
+  vertical-align: middle;
+  box-shadow: 0px 0px 5px rgba(0,0,0, 0.3);
+  transition: all 0.6s;
+}
+
+.sender-box .platform-msg:hover {
+  background-color: #e7e5e5;
+  height: 70px;
+  width: 390px;
+  margin: 5px 5px 5px 5px;
+  box-shadow: 0px 0px 6px rgba(0,0,0, 0.6);
+}
+
+.sender-box .platform-msg .image img {
+  height: 40px;
+  width: 40px;
+  margin: 10px 25px 10px 30px;
+  transition: all 0.6s;
+}
+
+.sender-box .platform-msg:hover .image img{
+  height: 50px;
+  width: 50px;
+  margin: 10px 30px 10px 30px;
+}
+
+.sender-box .platform-msg .name {
+  font-size:20px;
+  font-weight: 900;
+  position: absolute;
+  top: 15px;
+  transition: all 0.6s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sender-box .platform-msg:hover .name {
+  font-size:25px;
+  font-weight: 900;
+  position: absolute;
+  top: 15px;
+  text-overflow: ellipsis;
+}
+
+
 
 .sender-box .sender {
   background-color: white;
