@@ -1,8 +1,5 @@
 <template>
   <div class="box">
-    <h3>
-      this is collection
-    </h3>
     <div class="myCollection">
       <div class="title">
         <div class="titleName">
@@ -15,8 +12,10 @@
       <div class="divider"></div>
       <div class="MyCreate">
         <div class="Mytitle">
-          <i class='bx bxs-folder' style="color: orange"></i>
-          我创建的
+          <div class="SubTitleText">
+            <i class='bx bxs-folder' style="color: orange"></i>
+            <span class="sub-title">我创建的</span>
+          </div>
         </div>
         <div class="item">
           <img src="../assets/Cover1.jpg" class="cover">
@@ -172,19 +171,23 @@ export default {
 }
 .Mytitle {
   position: relative;
+  height: 40px;
   margin-bottom: 20px;
-  left: 10px;
+  line-height: 30px;
+  margin-left: 20px;
   font-size: 24px;
 }
+
 .MyCreate {
   text-align: left;
-  position: relative;
-  left: 35px;
-  top: 20px;
   background-color: white;
-  width: 1050px;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
+  width: 95%;
+  min-width: 1050px;
   height: auto;
-  margin-bottom: 15px;
+  margin: 30px auto 30px;
+  padding: 20px 10px;
+  border-radius: 10px;
 }
 .titleName {
   position: relative;
@@ -193,8 +196,7 @@ export default {
 }
 .divider {
   position: relative;
-  margin: 0 auto;
-  width: 1100px;
+  width: 100%;
   height: 2px;
   background-color: #d4d4d4;
   text-align: center;
@@ -206,15 +208,13 @@ export default {
   margin-left: 100px;
   height: 80px;
 }
-.box{
-  background-color: gray;
-  height: 1000px;
-  margin: auto;
-}
+
 .myCollection {
-  height: 710px;
-  width: 1125px;
-  background-color: #F4F4F4;
-  margin: auto;
+  width: 80%;
+  min-width: 1125px;
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
+  padding-bottom: 30px;
+  margin: auto auto 30px;
 }
 </style>
