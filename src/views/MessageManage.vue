@@ -272,7 +272,6 @@ export default {
 }
 
 .sender-box {
-  border: solid red;
   display: inline-block;
   top: 5px;
   position: relative;
