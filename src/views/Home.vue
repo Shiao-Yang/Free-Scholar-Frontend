@@ -22,22 +22,38 @@
       </div>
       <div class="social-info">
         <div class="social-info-item">
-          <span class="icon" style="font-size: 28px; position: relative; top: -6px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
-          <span class="text">关注</span>
+          <div class="title">
+            <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
+            <span class="text" style="position: relative; top: -6px;">关注</span>
+          </div>
+          <div class="social-info-number">
+            <div class="number">
+              {{FollowNumber}}
+            </div>
+          </div>
+        </div>
+        <div class="social-info-item" v-if="isScholar===true">
+          <div class="title">
+            <span class="icon"><i class='bx bxs-heart' ></i></span>
+            <span class="text">粉丝</span>
+          </div>
+          <div class="social-info-number">
+            <div class="number">
+              {{FanNumber}}
+            </div>
+          </div>
         </div>
         <div class="social-info-item">
-          <span class="icon"><i class='bx bxs-heart' ></i></span>
-          <span class="text">粉丝</span>
+          <div class="title">
+            <span class="icon" :class="{'active': isLike}"><i class='bx bxs-like' ></i></span>
+            <span class="text">获赞</span>
+          </div>
+          <div class="social-info-number">
+            <div class="number">
+              {{LikeNumber}}
+            </div>
+          </div>
         </div>
-        <div class="social-info-item">
-          <span class="icon" :class="{'active': isLike}"><i class='bx bxs-like' ></i></span>
-          <span class="text">获赞</span>
-        </div>
-      </div>
-      <div class="social-info-number">
-        <span class="number">{{FollowNumber}}</span>
-        <span class="number">{{FanNumber}}</span>
-        <span class="number">{{LikeNumber}}</span>
       </div>
     </div>
     <div class="relation-net">
@@ -72,6 +88,7 @@ export default {
       profile: 'I am Peter',
       isFollow: false,
       isLike: false,
+      isScholar: false,
       FollowNumber: 32,
       LikeNumber: 20,
       FanNumber: 15,
@@ -231,42 +248,50 @@ export default {
   position: absolute;
   right: 0px;
   bottom: 0px;
-  width: 370px;
+  width: 360px;
   height: 80px;
   display: flex;
   justify-content: flex-end;
 }
 
 .social-info .social-info-item {
-  display: flex;
+  width: 120px;
+  height: 80px;
 }
 
-.social-info .social-info-item .icon {
+.social-info .social-info-item .title {
+  width: 120px;
+  height: 40px;
+}
+
+.social-info .social-info-item .title .icon {
+  position: relative;
   margin: 0 5px 0 30px;
   font-size: 20px;
-  top: -10px;
+  top: 5px;
 }
 
-.social-info .social-info-item .icon.active{
+.social-info .social-info-item .title .icon.active{
   color: pink;
 }
 
-.social-info .social-info-item .text {
+.social-info .social-info-item .title .text {
+  position: relative;
+  top: 2px;
   margin: 0px 20px 0 0;
 }
 
 .social-info-number {
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  width: 370px;
+  width: 120px;
   height: 40px;
   display: flex;
   justify-content: flex-end;
 }
 
 .social-info-number .number {
-  margin: 0 35px 0 55px;
+  position: relative;
+  top: 5px;
+  margin: 0 auto;
 }
 
 .relation-net {
