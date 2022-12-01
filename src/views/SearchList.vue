@@ -532,8 +532,8 @@ td:hover {
   padding: 0;
   width: 70%;
   display: flex;
+  flex-wrap: wrap;
   list-style: none;
-  height: 20px;
   line-height: 15px;
   align-items: center;
 }
