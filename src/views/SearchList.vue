@@ -2,7 +2,7 @@
   <div class="searchList">
     <div class="search-box">
       <div class="first-search">
-        <select id="select-type" style="outline: none" v-model="value">
+        <select id="select-type" style="outline: none" v-model="field">
           <option value="title">标题</option>
           <option value="keywords">关键词</option>
           <option value="abstract">摘要</option>
@@ -20,7 +20,12 @@
       </span>
       </div>
       <div class="more-search" v-for="(item, i) in inputs">
-        <select style="outline: none" v-model="values[i]">
+        <select style="outline: none" v-model="conditions[i]">
+          <option value="AND">且</option>
+          <option value="OR">或</option>
+          <option value="NOR">非</option>
+        </select>
+        <select style="outline: none" v-model="fields[i]">
           <option value="title">标题</option>
           <option value="keywords">关键词</option>
           <option value="abstract">摘要</option>
@@ -120,9 +125,9 @@
     </div>
     <div class="content">
       <div class="result-box" v-for="(result, i) in displayResult">
-        <p class="articleName">{{result.articleName}}</p>
+        <p class="articleName"><span style="cursor: pointer" @click="">{{result.articleName}}</span></p>
         <ul class="authors-list">
-          <li class="author" v-for="author in result.author">{{author}}</li>
+          <li class="author" v-for="author in result.author">{{author.name}}</li>
         </ul>
         <p class="abstract">{{result.abstract}}</p>
         <ul class="info-list">
@@ -142,16 +147,21 @@
             <span>被引用次数:&nbsp</span>
             <span class="nums">{{result.quotes}}</span>
           </li>
+          <li class="info">
+            <span>年份:&nbsp</span>
+            <span class="nums">{{result.year}}</span>
+          </li>
         </ul>
       </div>
     </div>
     <div class="block">
       <el-pagination
-          style="position: absolute;left: 40%;"
-          layout="prev, pager, next"
+          style="position: absolute;left: 35%;"
+          layout="prev, pager, next, jumper"
           :page-size="20"
-          :pager-count="10"
-          :total="results.length"
+          :current-page.sync="currentPage"
+          :pager-count="11"
+          :total="total"
           @current-change="changePage"
       >
       </el-pagination>
@@ -160,6 +170,8 @@
 </template>
 
 <script>
+
+import qs from "qs";
 
 export default {
   name: 'SearchList',
@@ -180,11 +192,17 @@ export default {
       startTime: '',
       endTime: '',
       searchType: '',
-      value: 'title',
+      field: 'title',
       input: '',
-      values: [],
+      conditions: [],
+      fields: [],
       inputs: [],
+      oldConditions: [],
+      oldFields: [],
+      oldInputs: [],
       searches: 0,
+      total: 0,
+      currentPage: 1,
       types: [{
           active: false,
           srcActive: require("../assets/img/searchList/conferenceActive.png"),
@@ -225,17 +243,6 @@ export default {
         "1111","22222","33333","4444444","555","21323"
       ],
       displayResult: [ // 只展示20个
-        {
-          articleName: '改进的二分法查找1',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }
       ],
       results: [
 
@@ -245,31 +252,136 @@ export default {
   methods: {
     del(index) {
       this.searches -= 1;
-      this.values.splice(index,1);
+      this.conditions.splice(index,1);
+      this.fields.splice(index,1);
       this.inputs.splice(index,1);
     },
     addCondition(){
       this.searches += 1;
-      this.values.push('title');
+      this.conditions.push('AND');
+      this.fields.push('title');
       this.inputs.push('');
     },
     clearCondition(){
       this.searches = 0;
-      this.values = [];
+      this.conditions = [];
+      this.fields = [];
       this.inputs = [];
     },
-    search(){
-
+    search() {
+      let params = {
+        page: 1,
+        condition: [
+            {
+              type: "OR",
+              input: this.input,
+              field: this.field
+            }
+        ]
+      }
+      let i;
+      for (i = 0; i < this.inputs.length; i++) {
+        params.condition.push({type: this.conditions[i],input: this.inputs[i],field: this.fields[i]})
+      }
+      this.oldConditions = this.conditions;
+      this.oldInputs = this.inputs;
+      this.oldFields = this.fields;
+      console.log(params)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/search/',
+        data: params
+      })
+          .then(res => {
+            console.log(res.data)
+            this.total = res.data.total.value
+            this.displayResult = [];
+            let i = 0;
+            for (i = 0; i < res.data.hits.length; i++) {
+              let Abstract,quotes;
+              if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
+                Abstract = res.data.hits[i]._source.abstract
+              } else {
+                Abstract = '';
+              }
+              if (res.data.hits[i]._source.hasOwnProperty('n_citation')) {
+                quotes = res.data.hits[i]._source.n_citation
+              } else {
+                quotes = 0;
+              }
+              this.displayResult.push(
+                  {
+                    articleName: res.data.hits[i]._source.title,
+                    author: res.data.hits[i]._source.authors,
+                    abstract: Abstract,
+                    liked: false,
+                    likes: '54',
+                    collected: false,
+                    collections: '27',
+                    comments: '10',
+                    quotes:  quotes,
+                    year: res.data.hits[i]._source.year,
+                  }
+              )
+            }
+            this.currentPage = 1;
+          })
     },
     changePage(val){
-      let i;
-      let length = this.results.length
-      console.log("val:"+val)
-      console.log("length:"+length)
-      this.displayResult = [];
-      for (i = (val-1) * 5; i < length && i < val * 5; i++) {
-        this.displayResult.push(this.results[i]);
+      console.log('page:'+val)
+      let params = {
+        page: val,
+        condition: [
+          {
+            type: "OR",
+            input: this.input,
+            field: this.field
+          }
+        ]
       }
+      let i;
+      for (i = 0; i < this.oldInputs.length; i++) {
+        params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+      }
+      console.log(params)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/search/',
+        data: params
+      })
+          .then(res => {
+            console.log(res.data)
+            this.total = res.data.total.value
+            this.displayResult = [];
+            let i = 0;
+            for (i = 0; i < res.data.hits.length; i++) {
+              let Abstract,quotes;
+              if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
+                Abstract = res.data.hits[i]._source.abstract
+              } else {
+                Abstract = '';
+              }
+              if (res.data.hits[i]._source.hasOwnProperty('n_citation')) {
+                quotes = res.data.hits[i]._source.n_citation
+              } else {
+                quotes = 0;
+              }
+              this.displayResult.push(
+                  {
+                    articleName: res.data.hits[i]._source.title,
+                    author: res.data.hits[i]._source.authors,
+                    abstract: Abstract,
+                    liked: false,
+                    likes: '54',
+                    collected: false,
+                    collections: '27',
+                    comments: '10',
+                    quotes:  quotes,
+                    year: res.data.hits[i]._source.year,
+                  }
+              )
+            }
+          })
     },
   }
 }
@@ -305,7 +417,9 @@ export default {
   box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.1);
   outline: none;
 }
-
+.more-search .header-search-box .search-input {
+  min-width: 67%;
+}
 .header-search-box .search-icon i{
   text-align: center;
   color: #333333;
@@ -402,17 +516,16 @@ td:hover {
   left: 32%;
   width: 70%;
   min-height: 550px;
-  max-height: 3040px;
 }
 
 .result-box {
   margin: 0 0 20px 0;
+  width: 80%;
 }
 .articleName {
   color: #2196f3;
   font-size: 19px;
   margin: 0;
-  cursor: pointer;
 }
 .authors-list {
   margin: 0;
@@ -434,10 +547,10 @@ td:hover {
   margin: 4px 0 8px 0;
   font-size: 15px;
   line-height: 18px;
-  width: 75%;
+  width: 90%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   overflow: hidden;
   cursor: pointer;
 }
