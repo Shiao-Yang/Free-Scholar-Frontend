@@ -1,5 +1,56 @@
 <template>
   <div class="searchList">
+    <div class="search-box">
+      <div class="first-search">
+        <select id="select-type" style="outline: none" v-model="field">
+          <option value="title">标题</option>
+          <option value="keywords">关键词</option>
+          <option value="abstract">摘要</option>
+          <option value="author">作者</option>
+          <option value="venue">期刊</option>
+        </select>
+        <span class="header-search-box">
+      <input type="text" autocomplete="off"
+             id="input"
+             class="search-input"
+             v-model="input"
+             placeholder="Search resources..."
+             @keyup.enter="search()">
+      <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search()"></i></span>
+      </span>
+      </div>
+      <div class="more-search" v-for="(item, i) in inputs">
+        <select style="outline: none" v-model="conditions[i]">
+          <option value="AND">且</option>
+          <option value="OR">或</option>
+          <option value="NOR">非</option>
+        </select>
+        <select style="outline: none" v-model="fields[i]">
+          <option value="title">标题</option>
+          <option value="keywords">关键词</option>
+          <option value="abstract">摘要</option>
+          <option value="author">作者</option>
+          <option value="venue">期刊</option>
+        </select>
+        <span class="header-search-box">
+        <input type="text" autocomplete="off"
+             id="input"
+             class="search-input"
+             v-model="inputs[i]"
+             placeholder="Search resources..."
+             @keyup.enter="search()">
+        <span class="search-icon" title="删除"><i class='bx bx-minus-circle' @click="del(i)"></i></span>
+        </span>
+      </div>
+      <div class="condition-box">
+        <span class="add-condition" @click="addCondition">
+          添加条件
+        </span>
+        <span class="clear-condition" @click="clearCondition">
+          清空条件
+        </span>
+      </div>
+    </div>
     <div id="filter">
       <p style="left: 5px;position:relative;">筛选</p>
       <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="time_zone = !time_zone">
@@ -73,27 +124,10 @@
       </div>
     </div>
     <div class="content">
-      <select id="select-type" style="outline: none">
-        <option value="0">标题</option>
-        <option value="1">关键词</option>
-        <option value="2">摘要</option>
-        <option value="3">作者</option>
-        <option value="4">组织</option>
-        <option value="5">期刊</option>
-      </select>
-      <div class="header-search-box">
-        <input type="text" autocomplete="off"
-               id="input"
-               class="search-input"
-               v-model="input"
-               placeholder="Search resources..."
-               @keyup.enter="search()">
-        <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search()"></i></span>
-      </div>
       <div class="result-box" v-for="(result, i) in displayResult">
-        <p class="articleName">{{result.articleName}}</p>
+        <p class="articleName"><span style="cursor: pointer" @click="">{{result.articleName}}</span></p>
         <ul class="authors-list">
-          <li class="author" v-for="author in result.author">{{author}}</li>
+          <li class="author" v-for="author in result.author">{{author.name}}</li>
         </ul>
         <p class="abstract">{{result.abstract}}</p>
         <ul class="info-list">
@@ -113,16 +147,21 @@
             <span>被引用次数:&nbsp</span>
             <span class="nums">{{result.quotes}}</span>
           </li>
+          <li class="info">
+            <span>年份:&nbsp</span>
+            <span class="nums">{{result.year}}</span>
+          </li>
         </ul>
       </div>
     </div>
     <div class="block">
       <el-pagination
-          style="position: absolute;left: 40%;bottom: -5%"
-          layout="prev, pager, next"
-          :page-size="5"
-          :pager-count="10"
-          :total="results.length"
+          style="position: absolute;left: 35%;"
+          layout="prev, pager, next, jumper"
+          :page-size="20"
+          :current-page.sync="currentPage"
+          :pager-count="11"
+          :total="total"
           @current-change="changePage"
       >
       </el-pagination>
@@ -131,6 +170,8 @@
 </template>
 
 <script>
+
+import qs from "qs";
 
 export default {
   name: 'SearchList',
@@ -148,10 +189,20 @@ export default {
       keyword_zone: true,
       organization_zone: true,
       journal_zone: true,
-      input: '',
       startTime: '',
       endTime: '',
       searchType: '',
+      field: 'title',
+      input: '',
+      conditions: [],
+      fields: [],
+      inputs: [],
+      oldConditions: [],
+      oldFields: [],
+      oldInputs: [],
+      searches: 0,
+      total: 0,
+      currentPage: 1,
       types: [{
           active: false,
           srcActive: require("../assets/img/searchList/conferenceActive.png"),
@@ -191,149 +242,219 @@ export default {
       journals: [
         "1111","22222","33333","4444444","555","21323"
       ],
-      displayResult: [ // 只展示5个
-        {
-          articleName: '改进的二分法查找1',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找2',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找3',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找4',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找5',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }
+      displayResult: [ // 只展示20个
       ],
       results: [
-        {
-          articleName: '改进的二分法查找1',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找2',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找3',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找4',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找5',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }, {
-          articleName: '改进的二分法查找6',
-          author: ['小红','小明'],
-          abstract: '确定该区间的中间位置K（2）将查找的值T与array[k]比较。若相等，查找成功返回此位置；否则确定新的查找区域，继续二分查找。区域确定如下：a.array[k]>T 由数组的有序性可知array[k,k+1,……,high]>T;故新的区间为array[low,……，K-1]b.array[k]<T 类似上面查找区间为array[k+1,……，high]。每一次查找与中间值比较，可以确定是否查找成功，不成功当前查找区间将缩小一半，递归查找即可。时间复杂度为:O(log2n)。',
-          liked: false,
-          likes: '54',
-          collected: false,
-          collections: '27',
-          comments: '10',
-          quotes: '11',
-        }
+
       ]
     }
   },
   methods: {
-    changePage(val){
-      let i;
-      let length = this.results.length
-      console.log("val:"+val)
-      console.log("length:"+length)
-      this.displayResult = [];
-      for (i = (val-1) * 5; i < length && i < val * 5; i++) {
-        this.displayResult.push(this.results[i]);
-      }
+    del(index) {
+      this.searches -= 1;
+      this.conditions.splice(index,1);
+      this.fields.splice(index,1);
+      this.inputs.splice(index,1);
     },
-    select(){
-      let sel_obj = document.getElementById("select-type");
-      let index = sel_obj.selectedIndex;
-      this.searchType = sel_obj.options[index].value;
-      // alert(sel_obj.options[index].value);
+    addCondition(){
+      this.searches += 1;
+      this.conditions.push('AND');
+      this.fields.push('title');
+      this.inputs.push('');
+    },
+    clearCondition(){
+      this.searches = 0;
+      this.conditions = [];
+      this.fields = [];
+      this.inputs = [];
     },
     search() {
-      this.select()
-    }
+      let params = {
+        page: 1,
+        condition: [
+            {
+              type: "OR",
+              input: this.input,
+              field: this.field
+            }
+        ]
+      }
+      let i;
+      for (i = 0; i < this.inputs.length; i++) {
+        params.condition.push({type: this.conditions[i],input: this.inputs[i],field: this.fields[i]})
+      }
+      this.oldConditions = this.conditions;
+      this.oldInputs = this.inputs;
+      this.oldFields = this.fields;
+      console.log(params)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/search/',
+        data: params
+      })
+          .then(res => {
+            console.log(res.data)
+            this.total = res.data.total.value
+            this.displayResult = [];
+            let i = 0;
+            for (i = 0; i < res.data.hits.length; i++) {
+              let Abstract,quotes;
+              if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
+                Abstract = res.data.hits[i]._source.abstract
+              } else {
+                Abstract = '';
+              }
+              if (res.data.hits[i]._source.hasOwnProperty('n_citation')) {
+                quotes = res.data.hits[i]._source.n_citation
+              } else {
+                quotes = 0;
+              }
+              this.displayResult.push(
+                  {
+                    articleName: res.data.hits[i]._source.title,
+                    author: res.data.hits[i]._source.authors,
+                    abstract: Abstract,
+                    liked: false,
+                    likes: '54',
+                    collected: false,
+                    collections: '27',
+                    comments: '10',
+                    quotes:  quotes,
+                    year: res.data.hits[i]._source.year,
+                  }
+              )
+            }
+            this.currentPage = 1;
+          })
+    },
+    changePage(val){
+      console.log('page:'+val)
+      let params = {
+        page: val,
+        condition: [
+          {
+            type: "OR",
+            input: this.input,
+            field: this.field
+          }
+        ]
+      }
+      let i;
+      for (i = 0; i < this.oldInputs.length; i++) {
+        params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+      }
+      console.log(params)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/search/',
+        data: params
+      })
+          .then(res => {
+            console.log(res.data)
+            this.total = res.data.total.value
+            this.displayResult = [];
+            let i = 0;
+            for (i = 0; i < res.data.hits.length; i++) {
+              let Abstract,quotes;
+              if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
+                Abstract = res.data.hits[i]._source.abstract
+              } else {
+                Abstract = '';
+              }
+              if (res.data.hits[i]._source.hasOwnProperty('n_citation')) {
+                quotes = res.data.hits[i]._source.n_citation
+              } else {
+                quotes = 0;
+              }
+              this.displayResult.push(
+                  {
+                    articleName: res.data.hits[i]._source.title,
+                    author: res.data.hits[i]._source.authors,
+                    abstract: Abstract,
+                    liked: false,
+                    likes: '54',
+                    collected: false,
+                    collections: '27',
+                    comments: '10',
+                    quotes:  quotes,
+                    year: res.data.hits[i]._source.year,
+                  }
+              )
+            }
+          })
+    },
   }
 }
 </script>
 
 <style scoped>
+.search-box {
+  position: relative;
+  margin: 0 auto 20px;
+  width: 50%;
+  min-height: 100px;
+  border-radius: 3px;
+  border: 1px solid rgb(240,240,240);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+}
+.first-search {
+  height: 50px;
+  margin-bottom: 20px;
+}
+.header-search-box {
+  position: relative;
+}
+
+.header-search-box .search-input{
+  position: relative;
+  font-size: 15px;
+  min-width: 72%;
+  height: 20px;
+  padding: 10px 20px 10px 20px;
+  border-radius: 3px;
+  border: 2px solid rgb(240,240,240);
+  border-bottom: 3px solid rgba(33,150,243,0.5);
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+.more-search .header-search-box .search-input {
+  min-width: 67%;
+}
+.header-search-box .search-icon i{
+  text-align: center;
+  color: #333333;
+  margin-left: 5px;
+  margin-bottom: 40px;
+  line-height: 50px;
+  height: 50px;
+  font-size: 15px;
+  min-width: 50px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: .5s;
+}
+
+.header-search-box .search-icon .bx-search:hover {
+  color: white;
+  background: #2196f3;
+}
+.header-search-box .search-icon .bx-minus-circle:hover {
+  color: white;
+  background: #C34A36;
+}
+.more-search {
+  height: 50px;
+  margin-bottom: 5px;
+}
+.add-condition {
+
+  cursor: pointer;
+}
+.clear-condition {
+  margin-left: 75%;
+  cursor: pointer;
+}
 #filter {
   position: absolute;
   left: 0px;
@@ -391,65 +512,28 @@ td:hover {
 }
 .content {
   position: relative;
+  margin-top: 50px;
   left: 32%;
   width: 70%;
-  height: 760px;
-  max-height: 760px;
-  overflow: hidden;
+  min-height: 550px;
 }
 
-.header-search-box {
-  position: relative;
-}
-
-.header-search-box .search-input{
-  position: relative;
-  font-size: 15px;
-  min-width: 50%;
-  height: 20px;
-  padding: 10px 20px 10px 20px;
-  border-radius: 10px;
-  border: 1px solid rgb(240,240,240);
-  border-bottom: 3px solid rgba(33,150,243,0.5);
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
-  outline: none;
-}
-
-.header-search-box .search-icon i{
-  text-align: center;
-  color: #333333;
-  margin-left: 5px;
-  margin-bottom: 40px;
-  line-height: 50px;
-  height: 50px;
-  font-size: 15px;
-  min-width: 50px;
-  background: white;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: .5s;
-}
-
-.header-search-box .search-icon i:hover {
-  color: white;
-  background: #2196f3;
-}
 .result-box {
   margin: 0 0 20px 0;
+  width: 80%;
 }
 .articleName {
   color: #2196f3;
   font-size: 19px;
   margin: 0;
-  cursor: pointer;
 }
 .authors-list {
   margin: 0;
   padding: 0;
   width: 70%;
   display: flex;
+  flex-wrap: wrap;
   list-style: none;
-  height: 20px;
   line-height: 15px;
   align-items: center;
 }
@@ -463,10 +547,10 @@ td:hover {
   margin: 4px 0 8px 0;
   font-size: 15px;
   line-height: 18px;
-  width: 75%;
+  width: 90%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   overflow: hidden;
   cursor: pointer;
 }
