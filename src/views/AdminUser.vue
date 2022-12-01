@@ -50,9 +50,9 @@
           </tr>
         </table>
         <div class="op-box">
-          <img src="../assets/img/adminUser/eyedropper.png" class="op">
-          <img src="../assets/img/adminUser/comment-slash.png" class="op">
-          <img src="../assets/img/adminUser/ban.png" class="op">
+          <img src="../assets/img/adminUser/eyedropper.png" class="op" title="恢复正常">
+          <img src="../assets/img/adminUser/comment-slash.png" class="op" title="禁言">
+          <img src="../assets/img/adminUser/ban.png" class="op" title="封禁">
         </div>
       </div>
     </div>
@@ -347,11 +347,11 @@ export default {
 }
 .result-box .op-box {
   float: left;
-  margin: 45px 0 0 38%;
+  margin: 45px 0 0 35%;
 }
 .result-box .op {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   margin-left: 40px;
   cursor: pointer;
 }
