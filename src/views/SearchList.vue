@@ -556,7 +556,7 @@ td:hover {
 .info-list {
   margin: 0;
   padding: 0;
-  width: 500px;
+  width: 100%;
   display: flex;
   list-style: none;
   height: 20px;
