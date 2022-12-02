@@ -34,7 +34,6 @@
         </select>
         <span class="header-search-box">
         <input type="text" autocomplete="off"
-             id="input"
              class="search-input"
              v-model="inputs[i]"
              placeholder="Search resources..."
