@@ -53,6 +53,11 @@ const routes = [
     component: () => import('../views/ScholarsPortal.vue')
   },
   {
+    path: '/NS',
+    name: 'NS',
+    component: () => import('../views/NS')
+  },
+  {
     path: '/searchList',
     name: 'searchList',
     component: () => import('../views/SearchList.vue')

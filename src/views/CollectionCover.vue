@@ -154,6 +154,7 @@ export default {
   margin-bottom: 10px;
 }
 .name {
+
   width: 200px;
   margin-left: 3px;
   font-size: 21px;
