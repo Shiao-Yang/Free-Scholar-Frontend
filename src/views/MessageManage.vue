@@ -10,7 +10,10 @@
     </div>
     <div class="divider-x"></div>
     <div class="source-box">
-      <div class="platform-msg">
+      <div class="platform-msg" :class="{'active' : isActive1}" @click="changeActive1">
+        <div class="red-point" v-if="msg_plm_has_new > 0">
+          <img src="../assets/img/MessageManage/red-point.png">
+        </div>
         <span class="image">
           <img src="../assets/img/MessageManage/notice.png">
         </span>
@@ -18,7 +21,10 @@
           系统通知
         </span>
       </div>
-      <div class="platform-msg">
+      <div class="platform-msg" :class="{'active' : isActive2}" @click="changeActive2">
+        <div class="red-point" v-if="msg_rec_has_new > 0">
+          <img src="../assets/img/MessageManage/red-point.png">
+        </div>
         <span class="image">
           <img src="../assets/img/MessageManage/message-received.png">
         </span>
@@ -26,7 +32,7 @@
           收到的私信
         </span>
       </div>
-      <div class="platform-msg">
+      <div class="platform-msg" :class="{'active' : isActive3}" @click="changeActive3">
         <span class="image">
           <img src="../assets/img/MessageManage/message-sent.png">
         </span>
@@ -68,10 +74,23 @@ export default {
   name: "MessageManage",
   data() {
     return {
-      msg_plm_has_new: false, //是否有新的系统消息
-      msg_rec_has_new: false, //是否有新的私信
-      msg_plm_list: [
+      isActive1: true, //true 则展示系统消息
+      isActive2: false, //true 则展示收到的私信
+      isActive3: false, //true 则展示发送的私信
+      showContent: false, //true则展示消息具体内容
+      msg_plm_has_new: 0, //新的系统消息的数量
+      msg_rec_has_new: 0, //新的私信的数量
+      cur_msg: { //当前显示的消息
+        mid: 1,
+        avatar: 'user.png',
+        username: 'Peter杨',
+        content: '你好吗你好吗你好吗',
+        time: '2022-10-16 16:01',
+        isRead: true,
+      },
+      dis_msg: [ //展示在右侧的消息列表
         {
+          mid: 1,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
@@ -79,6 +98,25 @@ export default {
           isRead: true,
         },
         {
+          mid: 1,
+          avatar: 'user.png',
+          username: 'Peter杨',
+          content: '你好吗你好吗你好吗',
+          time: '2022-10-16 16:02',
+          isRead: false,
+        },
+      ],
+      msg_plm_list: [
+        {
+          mid: 1,
+          avatar: 'user.png',
+          username: 'Peter杨',
+          content: '你好吗你好吗你好吗',
+          time: '2022-10-16 16:01',
+          isRead: true,
+        },
+        {
+          mid: 1,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
@@ -88,6 +126,7 @@ export default {
       ],
       msg_rec_list: [
         {
+          mid: 1,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
@@ -95,6 +134,7 @@ export default {
           isRead: true,
         },
         {
+          mid: 1,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
@@ -102,6 +142,7 @@ export default {
           isRead: false,
         },
         {
+          mid: 1,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
@@ -109,6 +150,7 @@ export default {
           isRead: false,
         },
         {
+          mid: 1,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
@@ -116,6 +158,7 @@ export default {
           isRead: true,
         },
         {
+          mid: 1,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
@@ -123,6 +166,58 @@ export default {
           isRead: true,
         },
         {
+          mid: 1,
+          avatar: 'user.png',
+          username: 'Peter杨',
+          content: '你好吗你好吗你好吗',
+          time: '2022-10-16 16:06',
+          isRead: false,
+        },
+
+      ],
+      msg_send_list: [
+        {
+          mid: 1,
+          avatar: 'user.png',
+          username: 'Peter杨',
+          content: '你好吗你好吗你好吗',
+          time: '2022-10-16 16:01',
+          isRead: true,
+        },
+        {
+          mid: 1,
+          avatar: 'user.png',
+          username: 'Peter杨',
+          content: '你好吗你好吗你好吗',
+          time: '2022-10-16 16:02',
+          isRead: false,
+        },
+        {
+          mid: 1,
+          avatar: 'user.png',
+          username: 'Peter杨',
+          content: '你好吗你好吗你好吗',
+          time: '2022-10-16 16:03',
+          isRead: false,
+        },
+        {
+          mid: 1,
+          avatar: 'user.png',
+          username: 'Peter杨',
+          content: '你好吗你好吗你好吗',
+          time: '2022-10-16 16:04',
+          isRead: true,
+        },
+        {
+          mid: 1,
+          avatar: 'user.png',
+          username: 'Peter杨',
+          content: '你好吗你好吗你好吗',
+          time: '2022-10-16 16:05',
+          isRead: true,
+        },
+        {
+          mid: 1,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
@@ -135,26 +230,93 @@ export default {
   },
 
   methods: {
-    cal_msg_rec(msg_list) {
-      let has_new = false;
+    changeActive1() {
+      this.isActive1 = true;
+      this.isActive2 = false;
+      this.isActive3 = false;
+    },
+    changeActive2() {
+      this.isActive2 = true;
+      this.isActive1 = false;
+      this.isActive3 = false;
+    },
+    changeActive3() {
+      this.isActive3 = true;
+      this.isActive1 = false;
+      this.isActive2 = false;
+    },
+    cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
+      let has_new = 0;
       for(let i = 0; i < msg_list.length; i++) {
-        if(msg_list[i].isRead === false) {
-          has_new = true;
-          break;
+        if(!msg_list[i].isRead) { //有未读消息就+1
+          has_new++;
         }
       }
       return has_new;
     },
-    cal_msg_plm(msg_list) {
-      let has_new = false;
+    cal_msg_plm(msg_list) { //计算系统消息是否有未读消息
+      let has_new = 0;
       for(let i = 0; i < msg_list.length; i++) {
-        if(msg_list[i].isRead === false) {
-          has_new = true;
-          break;
+        if(!msg_list[i].isRead) { //有未读消息就+1
+          has_new++;
         }
       }
       return has_new;
     },
+
+    //获取用户收到的私信
+    getMsgRec(uid) {
+      let params = {
+        
+      }
+    },
+
+    readMsg(mid) {
+      let param = {
+        mid: mid,
+      }
+      this.axios({
+        method: 'post',
+        url: '',
+        data: param,
+      })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
+
+    openMessage(mid, index) { //查看一条消息的具体内容
+      //系统消息
+      if(this.isActive1) {
+        this.readMsg(mid); //改变消息状态为已读
+        if(!this.msg_plm_list[index].isRead) { //未读, 则改为已读, 新消息数量-1
+          this.cal_msg_plm[index].isRead = true;
+          this.msg_plm_has_new--;
+        }
+        this.cur_msg = this.msg_plm_list[index];
+      }
+      //已收到私信
+      if(this.isActive2) {
+        this.readMsg(mid); //改变消息状态为已读
+        if(!this.msg_rec_list[index].isRead) { //未读, 则改为已读, 新消息数量-1
+          this.msg_rec_list[index].isRead = true;
+          this.msg_rec_has_new--;
+        }
+        this.cur_msg = this.msg_rec_list[index];
+      }
+      //已发送私信
+      if(this.isActive3) {
+        this.cur_msg = this.msg_send_list[index];
+      }
+
+      this.showContent = true;
+
+
+    }
   },
   computed: {
   },
@@ -232,11 +394,41 @@ export default {
   transition: all 0.6s;
 }
 
-.source-box .platform-msg:hover {
+.source-box .platform-msg.active {
   background-color: #e7e5e5;
   height: 70px;
   width: 310px;
   margin: 5px 25px 5px 15px;
+}
+
+.source-box .platform-msg .red-point {
+  display: inline-block;
+  position: absolute;
+  top: 17px;
+  left: 25px;
+  height: 30px;
+  width: 30px;
+  overflow: hidden;
+  transition: all 0.6s;
+}
+
+.source-box .platform-msg.active .red-point {
+  display: inline-block;
+  position: absolute;
+  top: 21px;
+  left: 15px;
+  height: 30px;
+  width: 30px;
+  overflow: hidden;
+}
+
+.source-box .platform-msg .red-point img{
+  margin: 3px 3px;
+  height: 20px;
+  width: 20px;
+  position: relative;
+  left: -50px;
+  filter: drop-shadow(50px 0px red);
 }
 
 .source-box .platform-msg .image img {
@@ -246,7 +438,7 @@ export default {
   transition: all 0.6s;
 }
 
-.source-box .platform-msg:hover .image img{
+.source-box .platform-msg.active .image img{
   height: 50px;
   width: 50px;
   margin: 10px 25px 10px 55px;
@@ -263,7 +455,7 @@ export default {
   white-space: nowrap;
 }
 
-.source-box .platform-msg:hover .name {
+.source-box .platform-msg.active .name {
   font-size:25px;
   font-weight: 900;
   position: absolute;
@@ -362,8 +554,8 @@ export default {
 
 .sender-box .sender .red-point img{
   margin: 3px 3px;
-  height: 30px;
-  width: 30px;
+  height: 20px;
+  width: 20px;
   position: relative;
   left: -50px;
   filter: drop-shadow(50px 0px red);
