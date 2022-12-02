@@ -2,21 +2,21 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="require('../assets/' + url)">
+        <img :src="require('../assets/' + baseInfo.avatar)">
       </div>
       <div class="profile">
         <ul class="profile-list">
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-user'></i></span>
-            <span class="text" style="font-size: 25px; font-weight: bold">{{username}}</span>
+            <span class="text" style="font-size: 25px; font-weight: bold">{{baseInfo.username}}</span>
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-home'></i></span>
-            <span class="text">{{institution}}</span>
+            <span class="text">{{baseInfo.institution.name}}</span>
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-bookmark'></i></span>
-            <span class="text">{{profile}}</span>
+            <span class="text">{{baseInfo.bio}}</span>
           </li>
         </ul>
       </div>
@@ -28,7 +28,7 @@
           </div>
           <div class="social-info-number">
             <div class="number">
-              {{FollowNumber}}
+              {{baseInfo.follows}}
             </div>
           </div>
         </div>
@@ -39,7 +39,7 @@
           </div>
           <div class="social-info-number">
             <div class="number">
-              {{FanNumber}}
+              {{baseInfo.followers}}
             </div>
           </div>
         </div>
@@ -50,7 +50,7 @@
           </div>
           <div class="social-info-number">
             <div class="number">
-              {{LikeNumber}}
+              {{baseInfo.likes}}
             </div>
           </div>
         </div>
@@ -67,17 +67,17 @@
       <div class="follow-list">
         <div class="follow-list-item" v-for="(item,index) in showList" :key="index">
           <div class="avatar">
-            <img :src="require('../assets/' + item.Avatar)" style="max-width: 100%">
+            <img :src="require('../assets/' + item.avatar)" style="max-width: 100%">
           </div>
           <div class="profile">
             <ul class="profile-list">
               <li class="profile-list-item">
                 <span class="icon"><i class='bx bxs-user'></i></span>
-                <span class="text" style="font-size: 20px; font-weight: bold">{{item.Userame}}</span>
+                <span class="text" style="font-size: 20px; font-weight: bold">{{item.username}}</span>
               </li>
               <li class="profile-list-item">
                 <span class="icon"><i class='bx bxs-bookmark'></i></span>
-                <span class="text">{{item.Profile}}</span>
+                <span class="text">{{item.bio}}</span>
               </li>
             </ul>
           </div>
@@ -87,14 +87,14 @@
             </div>
           </div>
           <div class="social-info-number">
-            <span class="number">关注于 : {{item.FollowTime}}</span>
+            <span class="number">关注于 : {{item.time}}</span>
           </div>
         </div>
       </div>
       <div class="pagination">
         <el-pagination
             background
-            page-size="3"
+            :page-size="3"
             layout="prev, pager, next"
             :hide-on-single-page=true
             :current-page="this.currentPage"
@@ -111,75 +111,87 @@ export default {
   name: "FollowList",
   data() {
     return {
-      url: 'img/home/avatar1.jpg',
+      avatar: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
-      profile: 'I am Peter',
+      bio: 'I am Peter',
       isFollow: false,
       isLike: false,
       isScholar: false,
-      FollowNumber: 32,
-      LikeNumber: 20,
-      FanNumber: 15,
+      follows: 32,
+      likes: 20,
+      followers: 15,
       currentPage: 1,
+      pageSize: 3,
+      baseInfo: {
+        username:"lisi",
+        avatar: 'img/home/avatar1.jpg',
+        institution:{
+          name:"UBAA",
+        },
+        bio:"2234",
+        follows:1,
+        followers:1,
+        likes:0,
+      },
       showList: [
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:07',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:07',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:07',
         },
       ],
       followList:[
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:01',
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:01',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:02',
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:02',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:03',
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:03',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:04',
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:04',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:05',
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:05',
         },
       ]
     }
@@ -187,19 +199,68 @@ export default {
   methods: {
     changePage(currentPage) {
       this.showList = [];
-      for(let i = (currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
+      for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
         this.showList[j] = this.followList[i]
+        this.showList[j].avatar = 'img/home/avatar1.jpg'
+        this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
       }
     },
     init() {
       this.showList = [];
-      for(let i = (this.currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
+      for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
         this.showList[j] = this.followList[i]
       }
-    }
+    },
+    getFollowers(uid) {
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getFollowers?user_id=' + uid,
+      })
+      .then(res => {
+        console.log(res.data)
+        this.followList = [];
+        this.followList = res.data;
+        this.showList = [];
+
+        console.log(this.followList[0]);
+        console.log(typeof this.followList[0].time)
+
+        for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
+          this.showList[j] = this.followList[i]
+          this.showList[j].avatar = 'img/home/avatar1.jpg'
+          this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+        }
+
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
+
+    getBaseInfo(uid) {
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+      })
+      .then(res => {
+        console.log(res.data)
+
+        this.baseInfo = res.data
+        this.baseInfo.avatar = 'img/home/avatar1.jpg'
+        console.log(this.baseInfo)
+
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
   },
+
   created() {
-    this.init()
+    this.getBaseInfo(1);
+    this.getFollowers(1);
   }
 }
 </script>
@@ -411,8 +472,10 @@ export default {
 .follow-list-item .profile .profile-list .profile-list-item {
   width: 600px;
   display: flex;
-  height: 20px;
-  line-height: 10px;
+  position: relative;
+  top: -7px;
+  height: 30px;
+  line-height: 30px;
   align-items: center;
 }
 
@@ -424,7 +487,12 @@ export default {
 .follow-list-item .profile .profile-list .profile-list-item .text {
   font-size: 10px;
   position: relative;
-  top: 2px;
+  top: 0px;
+  width: 400px;
+  max-width: 400px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .follow-list-item .social-info {
@@ -442,7 +510,7 @@ export default {
   height: 100px;
   position: relative;
   top: 25px;
-  right: 40px;
+  right: 20px;
   display: inline;
 }
 
