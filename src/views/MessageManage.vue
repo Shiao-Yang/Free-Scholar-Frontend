@@ -43,7 +43,7 @@
     </div>
     <div class="divider-y"></div>
     <div class="sender-box">
-      <div class="sender" v-for="(item, index) in msg_rec_list" :key="index">
+      <div class="sender" v-for="(item, index) in msg_rec_list" :key="index" v-if="!showContent" @click="openMessage(item.mid, index)">
         <span class="image">
         <img :src="require('../assets/img/MessageManage/' + item.avatar)">
         </span>
@@ -63,6 +63,27 @@
           <div class="text">
             {{item.time}}
           </div>
+        </div>
+      </div>
+      <div class="sender-baseInfo" v-if="showContent" @click="changeShowContent">
+        <span class="image">
+        <img :src="require('../assets/img/MessageManage/' + cur_msg.avatar)">
+        </span>
+        <span class="name">
+          {{ cur_msg.username }}
+        </span>
+        <div class="operation">
+          <img src="../assets/img/MessageManage/delete.png" title="删除">
+        </div>
+        <div class="send-time">
+          <div class="text">
+            {{cur_msg.time}}
+          </div>
+        </div>
+      </div>
+      <div class="content-box" v-if="showContent">
+        <div class="text-area">
+          {{cur_msg.content}}
         </div>
       </div>
     </div>
@@ -245,6 +266,9 @@ export default {
       this.isActive1 = false;
       this.isActive2 = false;
     },
+    changeShowContent() {
+      this.showContent = !this.showContent;
+    },
     cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
       let has_new = 0;
       for(let i = 0; i < msg_list.length; i++) {
@@ -267,7 +291,7 @@ export default {
     //获取用户收到的私信
     getMsgRec(uid) {
       let params = {
-        
+
       }
     },
 
@@ -292,28 +316,31 @@ export default {
     openMessage(mid, index) { //查看一条消息的具体内容
       //系统消息
       if(this.isActive1) {
-        this.readMsg(mid); //改变消息状态为已读
+        console.log(this.msg_plm_list[index]);
         if(!this.msg_plm_list[index].isRead) { //未读, 则改为已读, 新消息数量-1
-          this.cal_msg_plm[index].isRead = true;
+          this.msg_plm_list[index].isRead = true;
           this.msg_plm_has_new--;
+          this.readMsg(mid); //改变消息状态为已读
         }
         this.cur_msg = this.msg_plm_list[index];
       }
       //已收到私信
       if(this.isActive2) {
-        this.readMsg(mid); //改变消息状态为已读
+        console.log(this.msg_rec_list[index]);
         if(!this.msg_rec_list[index].isRead) { //未读, 则改为已读, 新消息数量-1
           this.msg_rec_list[index].isRead = true;
           this.msg_rec_has_new--;
+          this.readMsg(mid); //改变消息状态为已读
         }
         this.cur_msg = this.msg_rec_list[index];
       }
       //已发送私信
       if(this.isActive3) {
+        console.log(this.msg_send_list[index])
         this.cur_msg = this.msg_send_list[index];
       }
 
-      this.showContent = true;
+      this.changeShowContent(); //改变展示状态，这里其实就是打开消息
 
 
     }
@@ -477,7 +504,6 @@ export default {
 
 .sender-box:hover {
   overflow-y: auto;
-  cursor: pointer;
 }
 
 .sender-box .sender {
@@ -495,6 +521,7 @@ export default {
 .sender-box .sender:hover {
   background-color: #e7e5e5;
   box-shadow: 0px 0px 6px rgba(0,0,0, 0.6);
+  cursor: pointer;
 }
 
 .sender-box .sender .image img {
@@ -611,6 +638,120 @@ export default {
   font-size: 16px;
   color: green;
   z-index: 2;
+}
+
+.sender-box .sender-baseInfo {
+  background-color: white;
+  position: relative;
+  border-radius: 5px;
+  height: 60px;
+  width: 950px;
+  margin: 20px 35px 20px 35px;
+  vertical-align: middle;
+  box-shadow: 0px 0px 5px rgba(0,0,0, 0.3);
+  transition: all 0.6s;
+}
+
+.sender-box .sender-baseInfo:hover {
+  background-color: #e7e5e5;
+  box-shadow: 0px 0px 6px rgba(0,0,0, 0.6);
+  cursor: pointer;
+}
+
+.sender-box .sender-baseInfo .image img {
+  height: 40px;
+  width: 40px;
+  margin: 10px 20px 10px 25px;
+  transition: all 0.6s;
+}
+
+.sender-box .sender-baseInfo:hover .image img{
+
+}
+
+.sender-box .sender-baseInfo .name {
+  font-size: 17px;
+  font-weight: 900;
+  position: absolute;
+  top: 20px;
+  transition: all 0.6s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sender-box .sender-baseInfo:hover .name {
+  font-weight: 900;
+  position: absolute;
+  text-overflow: ellipsis;
+}
+
+.sender-box .sender-baseInfo .operation {
+  display: inline-block;
+  position: absolute;
+  top: 0px;
+  right: 15px;
+  height: 60px;
+  width: 100px;
+}
+
+.sender-box .sender-baseInfo .operation img{
+  margin: 15px 35px 15px 35px;
+  height: 30px;
+  width: 30px;
+  transition: all ease 0.6s;
+}
+
+.sender-box .sender-baseInfo .operation img:hover{
+  margin: 10px 30px 10px 30px;
+  height: 40px;
+  width: 40px;
+  transition: all ease 0.6s;
+  cursor: pointer;
+}
+
+.sender-box .sender-baseInfo .send-time{
+  display: inline-block;
+  position: absolute;
+  bottom: 15px;
+  right: 100px;
+  height: 25px;
+  width: 200px;
+}
+
+.sender-box .sender-baseInfo .send-time .text{
+  position: absolute;
+  top: 0px;
+  left: 30px;
+  width: 150px;
+}
+
+.content-box {
+  display: inline-block;
+  position: relative;
+  top: 5px;
+  left: 35px;
+  height: 420px;
+  width: 950px;
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 1;
+  overflow-x: hidden;
+  box-shadow: 0px 0px 5px rgba(0,0,0, 0.3);
+}
+
+.content-box:hover {
+  overflow-y: auto;
+}
+
+.content-box .text-area {
+  width: 850px;
+  position: relative;
+  margin: 20px 50px 20px 50px;
+  line-height: 25px;
+  text-indent: 32px;
+  word-spacing: 10px;
+  letter-spacing: 0px;
 }
 
 
