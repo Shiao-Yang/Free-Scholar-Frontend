@@ -302,11 +302,11 @@ export default {
 
 .intro {
   position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 1400px;
+  width: 100%;
+  min-width: 700px;
   height: 200px;
-  background: rgb(244,244,244);
+  border-radius: 10px;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: flex-start;
   border-radius: 5px;
@@ -371,11 +371,18 @@ export default {
 .social-info .social-info-item {
   width: 120px;
   height: 80px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .social-info .social-info-item .title {
   width: 120px;
   height: 40px;
+
+}
+
+.social-info .social-info-item:hover {
+  color: #2196f3;
 }
 
 .social-info .social-info-item .title .icon {
@@ -412,10 +419,12 @@ export default {
   position: absolute;
   top: 220px;
   left: 0px;
-  width: 1400px;
+  width: 100%;
+  min-width: 700px;
   height: 470px;
-  background: rgb(244,244,244);
-  border-radius: 5px;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  align-items: center;
 }
 
 .content-list .title {
@@ -436,9 +445,8 @@ export default {
 .divider {
   position: absolute;
   margin: 0 auto;
-  width: 1350px;
+  width: 100%;
   height: 2px;
-  left: 25px;
   top: 75px;
   background-color: #d4d4d4;
   text-align: center;
@@ -449,15 +457,17 @@ export default {
 .follow-list {
   position: absolute;
   top: 90px;
-  width: 1400px;
+  width: 100%;
+  min-width: 665px;
   height: 370px;
 }
 
 .follow-list-item {
   position: relative;
-  width: 1375px;
+  width: 100%;
+  min-width: 700px;
   height: 110px;
-  margin: 0 0 15px 10px;
+  margin-bottom: 20px;
   background: rgb(255, 255, 255);
   display: flex;
   justify-content: flex-start;
@@ -550,8 +560,7 @@ export default {
 }
 
 .follow-list-item .social-info .social-info-item .icon:hover {
-  font-size: 60px;
-  margin: 10px;
+  font-size: 35px;
 }
 
 .follow-list-item .social-info .social-info-item .icon.active{
