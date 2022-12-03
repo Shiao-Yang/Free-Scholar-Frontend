@@ -525,7 +525,7 @@ export default {
 }
 
 .myCollection {
-  width: 80%;
+  width: 100%;
   min-width: 1125px;
   height: auto;
   background-color: white;

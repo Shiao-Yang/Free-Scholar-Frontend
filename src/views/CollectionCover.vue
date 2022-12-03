@@ -211,7 +211,7 @@ export default {
 }
 
 .myCollection {
-  width: 80%;
+  width: 100%;
   min-width: 1125px;
   background-color: #FFFFFF;
   box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
