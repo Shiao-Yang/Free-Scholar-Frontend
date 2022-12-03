@@ -43,7 +43,7 @@
     </div>
     <div class="divider-y"></div>
     <div class="sender-box">
-      <div class="sender" v-for="(item, index) in msg_rec_list" :key="index" v-if="!showContent" @click="openMessage(item.mid, index)">
+      <div class="sender" v-for="(item, index) in dis_msg_list" :key="index" v-if="!showContent" @click="openMessage(item.mid, index)">
         <span class="image">
         <img :src="require('../assets/img/MessageManage/' + item.avatar)">
         </span>
@@ -53,11 +53,11 @@
         <span class="content">
           {{ item.content }}
         </span>
-        <div class="red-point" v-if="!item.isRead">
+        <div class="red-point" v-if="!item.isRead && !isActive3">
           <img src="../assets/img/MessageManage/red-point.png">
         </div>
         <div class="operation">
-          <img src="../assets/img/MessageManage/delete.png" title="删除">
+          <img src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
         </div>
         <div class="send-time">
           <div class="text">
@@ -73,7 +73,7 @@
           {{ cur_msg.username }}
         </span>
         <div class="operation">
-          <img src="../assets/img/MessageManage/delete.png" title="删除">
+          <img src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(cur_msg.mid)">
         </div>
         <div class="send-time">
           <div class="text">
@@ -95,6 +95,7 @@ export default {
   name: "MessageManage",
   data() {
     return {
+      uid: 1,
       isActive1: true, //true 则展示系统消息
       isActive2: false, //true 则展示收到的私信
       isActive3: false, //true 则展示发送的私信
@@ -109,7 +110,7 @@ export default {
         time: '2022-10-16 16:01',
         isRead: true,
       },
-      dis_msg: [ //展示在右侧的消息列表
+      dis_msg_list: [ //展示在右侧的消息列表
         {
           mid: 1,
           avatar: 'user.png',
@@ -200,7 +201,7 @@ export default {
         {
           mid: 1,
           avatar: 'user.png',
-          username: 'Peter杨',
+          username: 'Pete杨',
           content: '你好吗你好吗你好吗',
           time: '2022-10-16 16:01',
           isRead: true,
@@ -208,7 +209,7 @@ export default {
         {
           mid: 1,
           avatar: 'user.png',
-          username: 'Peter杨',
+          username: 'Petr杨',
           content: '你好吗你好吗你好吗',
           time: '2022-10-16 16:02',
           isRead: false,
@@ -216,7 +217,7 @@ export default {
         {
           mid: 1,
           avatar: 'user.png',
-          username: 'Peter杨',
+          username: 'Peer杨',
           content: '你好吗你好吗你好吗',
           time: '2022-10-16 16:03',
           isRead: false,
@@ -224,7 +225,7 @@ export default {
         {
           mid: 1,
           avatar: 'user.png',
-          username: 'Peter杨',
+          username: 'Pter杨',
           content: '你好吗你好吗你好吗',
           time: '2022-10-16 16:04',
           isRead: true,
@@ -232,7 +233,7 @@ export default {
         {
           mid: 1,
           avatar: 'user.png',
-          username: 'Peter杨',
+          username: 'eter杨',
           content: '你好吗你好吗你好吗',
           time: '2022-10-16 16:05',
           isRead: true,
@@ -240,7 +241,7 @@ export default {
         {
           mid: 1,
           avatar: 'user.png',
-          username: 'Peter杨',
+          username: 'Peter',
           content: '你好吗你好吗你好吗',
           time: '2022-10-16 16:06',
           isRead: false,
@@ -252,19 +253,40 @@ export default {
 
   methods: {
     changeActive1() {
-      this.isActive1 = true;
-      this.isActive2 = false;
-      this.isActive3 = false;
+      if(!this.isActive1) {
+        if(this.showContent) { //如果当前正在展示页面,应当关闭
+          this.changeShowContent()
+        }
+        // this.getMsgPlm(this.uid) //重新获取数据，信任数据库
+        this.dis_msg_list = this.msg_plm_list; //getMsgPlm里有这句话, 但此时接口尚未实现, 暂时保留
+        this.isActive1 = true;
+        this.isActive2 = false;
+        this.isActive3 = false;
+      }
     },
     changeActive2() {
-      this.isActive2 = true;
-      this.isActive1 = false;
-      this.isActive3 = false;
+      if(!this.isActive2) {
+        if(this.showContent) { //如果当前正在展示页面,应当关闭
+          this.changeShowContent()
+        }
+        // this.getMsgRec(this.uid) //重新获取数据，信任数据库
+        this.dis_msg_list = this.msg_rec_list; //getMsgRec里有这句话, 但此时接口尚未实现, 暂时保留
+        this.isActive2 = true;
+        this.isActive1 = false;
+        this.isActive3 = false;
+      }
     },
     changeActive3() {
-      this.isActive3 = true;
-      this.isActive1 = false;
-      this.isActive2 = false;
+      if(!this.isActive3) {
+        if(this.showContent) { //如果当前正在展示页面,应当关闭
+          this.changeShowContent()
+        }
+        // this.getMsgSend(this.uid) //重新获取数据，信任数据库
+        this.dis_msg_list = this.msg_send_list; //getMsgSend里有这句话, 但此时接口尚未实现, 暂时保留
+        this.isActive3 = true;
+        this.isActive1 = false;
+        this.isActive2 = false;
+      }
     },
     changeShowContent() {
       this.showContent = !this.showContent;
@@ -288,11 +310,80 @@ export default {
       return has_new;
     },
 
+    //删除消息
+    deleteMsg(mid) {
+      let params = {
+        mid : mid,
+      }
+
+      this.axios({
+        method: 'post',
+        url: '',
+        data: params,
+      })
+      .then(res => {
+        console.log(res.data);
+        if(this.isActive1) { //当前处于系统消息列表
+          this.getMsgPlm(this.uid);
+        }
+        else if(this.isActive2) { //当前处于收到的私信列表
+          this.getMsgPlm(this.uid);
+        }
+        else if(this.isActive3) { //当前处于发送的私信列表
+          this.getMsgSend(this.uid);
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
+
+    //获取系统通知
+    getMsgPlm(uid) {
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
+      })
+      .then(res => {
+        console.log(res.data)
+        this.msg_plm_list = res.data;
+        this.dis_msg_list = this.msg_plm_list;
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+
     //获取用户收到的私信
     getMsgRec(uid) {
-      let params = {
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
+      })
+      .then(res => {
+        console.log(res.data)
+        this.msg_rec_list = res.data;
+        this.dis_msg_list = this.msg_rec_list;
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
 
-      }
+    //获取用户发送的私信
+    getMsgSend(uid) {
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
+      })
+      .then(res => {
+        console.log(res.data)
+        this.msg_send_list = res.data;
+        this.dis_msg_list = this.msg_send_list;
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
 
     readMsg(mid) {
@@ -314,15 +405,21 @@ export default {
     },
 
     openMessage(mid, index) { //查看一条消息的具体内容
+      // let uid = this.$store.state.userInfo.uid;
+      let uid = 1;
       //系统消息
       if(this.isActive1) {
-        console.log(this.msg_plm_list[index]);
-        if(!this.msg_plm_list[index].isRead) { //未读, 则改为已读, 新消息数量-1
+        console.log(this.dis_msg_list[index]);
+        if(!this.dis_msg_list[index].isRead) { //未读, 则改为已读, 新消息数量-1
+          this.dis_msg_list[index].isRead = true;
           this.msg_plm_list[index].isRead = true;
           this.msg_plm_has_new--;
+          console.log(this.msg_plm_has_new);
           this.readMsg(mid); //改变消息状态为已读
         }
-        this.cur_msg = this.msg_plm_list[index];
+        this.cur_msg = this.dis_msg_list[index];
+        this.changeShowContent(); //改变展示状态，这里其实就是打开消息
+        // this.getMsgPlm(uid); //重新获取数据
       }
       //已收到私信
       if(this.isActive2) {
@@ -332,24 +429,27 @@ export default {
           this.msg_rec_has_new--;
           this.readMsg(mid); //改变消息状态为已读
         }
-        this.cur_msg = this.msg_rec_list[index];
+        this.cur_msg = this.dis_msg_list[index];
+        this.changeShowContent(); //改变展示状态，这里其实就是打开消息
+        // this.getMsgRec(uid); //重新获取数据
       }
       //已发送私信
       if(this.isActive3) {
-        console.log(this.msg_send_list[index])
-        this.cur_msg = this.msg_send_list[index];
+        console.log(this.dis_msg_list[index])
+        this.cur_msg = this.dis_msg_list[index];
+        this.changeShowContent(); //改变展示状态，这里其实就是打开消息
+        // this.getMsgSend(uid); //重新获取数据
       }
-
-      this.changeShowContent(); //改变展示状态，这里其实就是打开消息
-
-
     }
   },
   computed: {
   },
   created() {
+    // this.getMsgPlm(this.uid);
+    // this.getMsgRec(this.uid);
     this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
-    this.msg_plm_has_new = this.cal_msg_plm(this.msg_rec_list);
+    this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+    this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
   }
 }
 </script>

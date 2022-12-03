@@ -111,6 +111,7 @@ export default {
   name: "FollowList",
   data() {
     return {
+      uid: 1,
       avatar: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
@@ -136,6 +137,7 @@ export default {
       },
       showList: [
         {
+          id: 1,
           avatar: 'img/home/avatar1.jpg',
           username: '王婉',
           institution: 'Beihang University',
@@ -143,6 +145,7 @@ export default {
           time: '2022-01-10 16:07',
         },
         {
+          id: 1,
           avatar: 'img/home/avatar1.jpg',
           username: '王婉',
           institution: 'Beihang University',
@@ -150,6 +153,7 @@ export default {
           time: '2022-01-10 16:07',
         },
         {
+          id: 1,
           avatar: 'img/home/avatar1.jpg',
           username: '王婉',
           institution: 'Beihang University',
@@ -159,6 +163,7 @@ export default {
       ],
       followList:[
         {
+          id: 1,
           avatar: 'img/home/avatar1.jpg',
           username: '王婉',
           institution: 'Beihang University',
@@ -166,6 +171,7 @@ export default {
           time: '2022-01-10 16:01',
         },
         {
+          id: 1,
           avatar: 'img/home/avatar1.jpg',
           username: '王婉',
           institution: 'Beihang University',
@@ -173,6 +179,7 @@ export default {
           time: '2022-01-10 16:02',
         },
         {
+          id: 1,
           avatar: 'img/home/avatar1.jpg',
           username: '王婉',
           institution: 'Beihang University',
@@ -180,6 +187,7 @@ export default {
           time: '2022-01-10 16:03',
         },
         {
+          id: 1,
           avatar: 'img/home/avatar1.jpg',
           username: '王婉',
           institution: 'Beihang University',
@@ -187,6 +195,7 @@ export default {
           time: '2022-01-10 16:04',
         },
         {
+          id: 1,
           avatar: 'img/home/avatar1.jpg',
           username: '王婉',
           institution: 'Beihang University',
@@ -205,12 +214,27 @@ export default {
         this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
       }
     },
-    init() {
-      this.showList = [];
-      for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
-        this.showList[j] = this.followList[i]
+    unFocus(uid, aid) { //uid: 当前用户, aid: 被关注的用户
+      let params = {
+        user_id: uid,
+        aim_id: aid,
       }
+
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/unFocus',
+        data: params,
+      })
+      .then(res => {
+        console.log(res.data);
+        this.getFollowers(uid); //重新获取数据
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
     },
+
     getFollowers(uid) {
       this.axios({
         method: 'get',
