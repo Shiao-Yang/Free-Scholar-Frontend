@@ -131,11 +131,8 @@
         <p class="abstract">{{result.abstract}}</p>
         <ul class="info-list">
           <li class="info">
-            <i class='bx bxs-like' :class="{'icon-active':result.liked,'icon':!result.liked}"></i>
-            <span class="nums">{{result.likes}}</span>
-          </li>
-          <li class="info">
-            <i class='bx bxs-star'  :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
+            <i v-if="!result.user_collected" class='bx bxs-star'  :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
+            <i v-else class='bx bxs-star' style="color: #2196f3" :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
             <span class="nums">{{result.collections}}</span>
           </li>
           <li class="info">
@@ -188,6 +185,7 @@ export default {
       keyword_zone: true,
       organization_zone: true,
       journal_zone: true,
+      show_card: false,
       startTime: '',
       endTime: '',
       searchType: '',
@@ -202,6 +200,9 @@ export default {
       searches: 0,
       total: 0,
       currentPage: 1,
+      user_collected: false,
+      collection_num: 0,
+      comment_num: 0,
       types: [{
           active: false,
           srcActive: require("../assets/img/searchList/conferenceActive.png"),
@@ -268,6 +269,7 @@ export default {
       this.inputs = [];
     },
     search() {
+      this.show_card = false;
       let params = {
         page: 1,
         condition: [
@@ -288,16 +290,16 @@ export default {
       console.log(params)
       this.axios({
         method: 'post',
-        url: 'http://139.9.134.209:8000/api/publication/search/',
+        url: this.$store.state.address+'api/publication/search/',
         data: params
       })
-          .then(res => {
+          .then(async res => {
             console.log(res.data)
             this.total = res.data.total.value
             this.displayResult = [];
             let i = 0;
             for (i = 0; i < res.data.hits.length; i++) {
-              let Abstract,quotes;
+              let Abstract, quotes;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
               } else {
@@ -310,23 +312,27 @@ export default {
               }
               this.displayResult.push(
                   {
+                    id: res.data.hits[i]._source.id,
                     articleName: res.data.hits[i]._source.title,
                     author: res.data.hits[i]._source.authors,
                     abstract: Abstract,
                     liked: false,
                     likes: '54',
-                    collected: false,
-                    collections: '27',
-                    comments: '10',
-                    quotes:  quotes,
+                    collected: this.user_collected,
+                    collections: this.collection_num,
+                    comments: this.comment_num,
+                    quotes: quotes,
                     year: res.data.hits[i]._source.year,
                   }
               )
+              this.getPaperData(res.data.hits[i]._source.id, i)
             }
+            this.show_card = true;
             this.currentPage = 1;
           })
     },
     changePage(val){
+      this.show_card = false;
       console.log('page:'+val)
       let params = {
         page: val,
@@ -345,16 +351,16 @@ export default {
       console.log(params)
       this.axios({
         method: 'post',
-        url: 'http://139.9.134.209:8000/api/publication/search/',
+        url: this.$store.state.address+'api/publication/search/',
         data: params
       })
-          .then(res => {
+          .then(async res => {
             console.log(res.data)
             this.total = res.data.total.value
             this.displayResult = [];
             let i = 0;
             for (i = 0; i < res.data.hits.length; i++) {
-              let Abstract,quotes;
+              let Abstract, quotes;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
               } else {
@@ -367,21 +373,41 @@ export default {
               }
               this.displayResult.push(
                   {
+                    id: res.data.hits[i]._source.id,
                     articleName: res.data.hits[i]._source.title,
                     author: res.data.hits[i]._source.authors,
                     abstract: Abstract,
                     liked: false,
                     likes: '54',
-                    collected: false,
-                    collections: '27',
-                    comments: '10',
-                    quotes:  quotes,
+                    collected: this.user_collected,
+                    collections: this.collection_num,
+                    comments: this.comment_num,
+                    quotes: quotes,
                     year: res.data.hits[i]._source.year,
                   }
               )
+              this.getPaperData(res.data.hits[i]._source.id, i)
             }
+            this.show_card = true;
           })
     },
+    async getPaperData(id,index) { // 获得文献收藏数、评论数、是否收藏
+      let params = {
+        p_id: id,
+        u_id: 1, // 暂时为1
+      }
+      await this.axios( {
+        method: "post",
+        url: this.$store.state.address+'api/searchList/PaperData/',
+        data: params
+      })
+          .then(res => {
+            //console.log(res.data)
+            this.displayResult[index].collected = res.data.user_collected;
+            this.displayResult[index].collections = res.data.collection_num;
+            this.displayResult[index].comments = res.data.comment_num;
+          })
+    }
   }
 }
 </script>
