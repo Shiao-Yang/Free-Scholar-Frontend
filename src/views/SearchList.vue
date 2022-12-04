@@ -2,52 +2,120 @@
   <div class="searchList">
     <div class="search-box">
       <div class="first-search">
-        <select id="select-type" style="outline: none" v-model="field">
-          <option value="title">标题</option>
-          <option value="keywords">关键词</option>
-          <option value="abstract">摘要</option>
-          <option value="author">作者</option>
-          <option value="venue">期刊</option>
-        </select>
-        <span class="header-search-box">
-      <input type="text" autocomplete="off"
-             id="input"
-             class="search-input"
-             v-model="input"
-             placeholder="Search resources..."
-             @keyup.enter="search()">
-      <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search()"></i></span>
-      </span>
+        <div class="first-selects">
+          <div class="mainSelect" id="select-type" style="outline: none" v-model="field">
+            <div class="main-selected">
+              <span class="main-selected-text">{{translateField(field)}}</span>
+            </div>
+            <div class="main-icon" :class="{'active': firstFieldSelect}" @click="firstFieldSelect=!firstFieldSelect">
+              <i class='bx bx-chevron-left'></i>
+            </div>
+            <div class="sub-menu" :class="{'active': firstFieldSelect}">
+              <div class="sub-menu-item" :class="{'selected': field === 'title'}" @click="field='title';firstFieldSelect=false">
+                <span class="text">标题</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': field === 'keywords'}" @click="field='keywords';firstFieldSelect=false">
+                <span class="text">关键词</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': field === 'abstract'}" @click="field='abstract';firstFieldSelect=false">
+                <span class="text">摘要</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': field === 'author'}" @click="field='author';firstFieldSelect=false">
+                <span class="text">作者</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': field === 'venue'}" @click="field='venue';firstFieldSelect=false">
+                <span class="text">期刊</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="header-search-box">
+          <input type="text" autocomplete="off"
+                 id="input"
+                 class="search-input"
+                 v-model="input"
+                 placeholder="Search resources..."
+                 @keyup.enter="search()">
+        </div>
+        <div class="advance-search-option" @click="isAdvanceSearch=!isAdvanceSearch">
+          <span class="advance-search-text">高级检索</span>
+          <span class="advance-search-icon" :class="{'active':isAdvanceSearch}"><i class='bx bx-chevron-left' ></i></span>
+        </div>
+        <div class="search-icon-box">
+          <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search()"></i></span>
+        </div>
       </div>
-      <div class="more-search" v-for="(item, i) in inputs">
-        <select style="outline: none" v-model="conditions[i]">
-          <option value="AND">且</option>
-          <option value="OR">或</option>
-          <option value="NOR">非</option>
-        </select>
-        <select style="outline: none" v-model="fields[i]">
-          <option value="title">标题</option>
-          <option value="keywords">关键词</option>
-          <option value="abstract">摘要</option>
-          <option value="author">作者</option>
-          <option value="venue">期刊</option>
-        </select>
-        <span class="header-search-box">
-        <input type="text" autocomplete="off"
-             class="search-input"
-             v-model="inputs[i]"
-             placeholder="Search resources..."
-             @keyup.enter="search()">
-        <span class="search-icon" title="删除"><i class='bx bx-minus-circle' @click="del(i)"></i></span>
-        </span>
-      </div>
-      <div class="condition-box">
-        <span class="add-condition" @click="addCondition">
-          添加条件
-        </span>
-        <span class="clear-condition" @click="clearCondition">
-          清空条件
-        </span>
+      <div class="advance-search" v-if="isAdvanceSearch === true">
+        <div class="more-search" v-for="(item, i) in inputs">
+          <div class="mainSelect condition" id="select-type" style="outline: none" v-model="fields[i]">
+            <div class="main-selected">
+              <span class="main-selected-text">{{translateCondition(conditions[i])}}</span>
+            </div>
+            <div class="main-icon" :class="{'active': conditionSelect[i]}" @click="changeConditionSelect(i)">
+              <i class='bx bx-chevron-left'></i>
+            </div>
+            <div class="sub-menu" :class="{'active': conditionSelect[i]}">
+              <div class="sub-menu-item" :class="{'selected': conditions[i] === 'AND'}" @click="changeConditions(i, 'AND')">
+                <span class="text">且</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': conditions[i] === 'OR'}" @click="changeConditions(i, 'OR')">
+                <span class="text">或</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': conditions[i] === 'NOR'}" @click="changeConditions(i, 'NOR')">
+                <span class="text">非</span>
+              </div>
+            </div>
+          </div>
+          <div class="mainSelect" id="select-type" style="outline: none" v-model="fields[i]">
+            <div class="main-selected">
+              <span class="main-selected-text">{{translateField(fields[i])}}</span>
+            </div>
+            <div class="main-icon" :class="{'active': fieldSelect[i]}" @click="changeFieldSelect(i)">
+              <i class='bx bx-chevron-left'></i>
+            </div>
+            <div class="sub-menu" :class="{'active': fieldSelect[i]}">
+              <div class="sub-menu-item" :class="{'selected': fields[i] === 'title'}" @click="changeFields(i, 'title')">
+                <span class="text">标题</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': fields[i] === 'keywords'}" @click="changeFields(i, 'keywords')">
+                <span class="text">关键词</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': fields[i] === 'abstract'}" @click="changeFields(i, 'abstract')">
+                <span class="text">摘要</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': fields[i] === 'author'}" @click="changeFields(i, 'author')">
+                <span class="text">作者</span>
+              </div>
+              <div class="sub-menu-item" :class="{'selected': fields[i] === 'venue'}" @click="changeFields(i, 'venue')">
+                <span class="text">期刊</span>
+              </div>
+            </div>
+          </div>
+          <div class="header-search-box">
+            <input type="text" autocomplete="off"
+                   class="search-input"
+                   v-model="inputs[i]"
+                   placeholder="Search resources..."
+                   @keyup.enter="search()">
+          </div>
+          <div class="search-icon-box">
+            <span class="search-icon" title="删除"><i class='bx bx-minus-circle' @click="del(i)"></i></span>
+          </div>
+        </div>
+        <div class="condition-box">
+          <div class="add-condition" >
+            <div class="add-condition-btn" @click="addCondition">
+              <span class="btn-icon"><i class='bx bx-plus-circle'></i></span>
+              <span class="btn-text">添加条件</span>
+            </div>
+          </div>
+            <div class="clear-condition" >
+            <div class="clear-condition-btn"@click="clearCondition">
+              <span class="btn-icon"><i class='bx bx-wind'></i></span>
+              <span class="btn-text">清空条件</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div id="filter">
@@ -182,6 +250,8 @@ export default {
   },
   data() {
     return {
+      firstFieldSelect: false,
+      isAdvanceSearch: false,
       time_zone: true,
       type_zone: true,
       language_zone: true,
@@ -194,6 +264,8 @@ export default {
       field: 'title',
       input: '',
       conditions: [],
+      fieldSelect: [],
+      conditionSelect:[],
       fields: [],
       inputs: [],
       oldConditions: [],
@@ -249,23 +321,75 @@ export default {
     }
   },
   methods: {
+    changeFieldSelect(index) {
+      this.$set(this.fieldSelect, index, !this.fieldSelect[index])
+    },
+    changeConditionSelect(index) {
+      this.$set(this.conditionSelect, index, !this.conditionSelect[index])
+    },
+    changeConditions(index, content){
+      this.$set(this.conditions, index, content);
+      this.$set(this.conditionSelect, index, false);
+    },
+    changeFields(index, content) {
+      this.$set(this.fields, index, content);
+      this.$set(this.fieldSelect, index, false);
+    },
     del(index) {
       this.searches -= 1;
       this.conditions.splice(index,1);
       this.fields.splice(index,1);
       this.inputs.splice(index,1);
+      this.conditionSelect.splice(index, 1);
+      this.fieldSelect.splice(index, 1);
     },
     addCondition(){
       this.searches += 1;
       this.conditions.push('AND');
       this.fields.push('title');
       this.inputs.push('');
+      this.fieldSelect.push(false);
+      this.conditionSelect.push(false);
     },
     clearCondition(){
       this.searches = 0;
       this.conditions = [];
       this.fields = [];
       this.inputs = [];
+      this.fieldSelect = [];
+      this.conditionSelect = [];
+    },
+    translateCondition(condition) {
+      if(condition === 'AND') {
+        return '且';
+      }
+      else if(condition === 'OR') {
+        return '或';
+      }
+      else if(condition === 'NOR') {
+        return '非';
+      }
+      else
+        return "";
+    },
+    translateField(field) {
+      if(field === 'title') {
+        return "标题";
+      }
+      else if(field === 'keywords') {
+        return "关键词";
+      }
+      else if(field === 'abstract') {
+        return "摘要";
+      }
+      else if(field === 'author') {
+        return "作者";
+      }
+      else if(field === 'venue') {
+        return "期刊";
+      }
+      else
+        return "";
     },
     search() {
       let params = {
@@ -390,74 +514,277 @@ export default {
 .search-box {
   position: relative;
   margin: 0 auto 20px;
+  width: 100%;
+  min-width: 1000px;
+  /*min-height: 100px;*/
+  /*border: 1px solid rgb(240,240,240);*/
+  /*box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);*/
+}
+
+.first-search {
+  position: relative;
+  display: flex;
+  height: 50px;
   width: 50%;
-  min-height: 100px;
-  border-radius: 3px;
+  min-width: 1000px;
+  margin: 0 auto 0px;
   border: 1px solid rgb(240,240,240);
+  border-radius: 10px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
-.first-search {
+
+.search-box .mainSelect {
+  display: flex;
   height: 50px;
-  margin-bottom: 20px;
+  width: 120px;
+  font-size: 18px;
+  text-align: center;
+  border: none;
+  border-right: 2px solid #f4f4f4;
+  transition: 0.5s;
+  cursor: pointer;
+  background-color: #f4f4f4;
 }
+
+.search-box .mainSelect.condition {
+  width: 80px;
+}
+
+.search-box .mainSelect .main-icon{
+  margin-left: auto;
+  min-width: 30px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  font-size: 30px;
+  transition: .5s;
+}
+
+.search-box .mainSelect.condition .sub-menu {
+  bottom: -100px;
+  width: 80px;
+}
+.search-box .mainSelect.condition .sub-menu.active{
+  bottom: -110px;
+}
+
+.search-box .mainSelect .sub-menu{
+  position: absolute;
+  width: 120px;
+  bottom: -160px;
+  z-index: 1000;
+  background-color: #ffffff;
+  border: 2px solid rgb(240,240,240);
+  border-radius: 10px;
+  transition: 0.3s;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.search-box .mainSelect .sub-menu.active{
+  bottom: -180px;
+  visibility: visible;
+  opacity: 1;
+}
+
+.search-box .mainSelect .sub-menu .sub-menu-item{
+  transition: 0.3s;
+  padding: 5px 0;
+  border-radius: 5px;
+}
+
+.search-box .mainSelect .sub-menu .sub-menu-item:hover{
+  background-color: #1890ff;
+  color: #ffffff;
+}
+
+.search-box .mainSelect .sub-menu .sub-menu-item.selected{
+  font-weight: bold;
+  background-color: #f4f4f4;
+}
+
+.search-box .mainSelect .sub-menu .sub-menu-item.selected:hover{
+  background-color: #1890ff;
+}
+
+.search-box .mainSelect .main-icon.active {
+  transform: rotate(-90deg);
+}
+
+.search-box .mainSelect .main-selected{
+  width: 90px;
+  text-align: center;
+  height: 50px;
+  line-height: 50px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.search-box .mainSelect:hover {
+  border-right: 2px solid #2196f3;
+}
+
+.advance-search {
+  width: 50%;
+  min-width: 1000px;
+  margin: 2px auto;
+  border: 2px solid rgb(240,240,240);
+}
+
+
 .header-search-box {
+  width: 68%;
+  min-width: 490px;
   position: relative;
 }
 
 .header-search-box .search-input{
   position: relative;
-  font-size: 15px;
-  min-width: 72%;
-  height: 20px;
-  padding: 10px 20px 10px 20px;
-  border-radius: 3px;
-  border: 2px solid rgb(240,240,240);
-  border-bottom: 3px solid rgba(33,150,243,0.5);
-  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  width: 100%;
+  height: 30px;
+  padding: 10px 20px 10px 10px;
+  /*border-radius: 3px;*/
+  border: none;
+  /*border: 2px solid rgb(240,240,240);*/
+  /*border-bottom: 3px solid rgba(33,150,243,0.5);*/
+  /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.1);*/
   outline: none;
 }
 .more-search .header-search-box .search-input {
-  min-width: 67%;
-}
-.header-search-box .search-icon i{
-  text-align: center;
-  color: #333333;
-  margin-left: 5px;
-  margin-bottom: 40px;
-  line-height: 50px;
-  height: 50px;
-  font-size: 15px;
-  min-width: 50px;
-  background: white;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: .5s;
+  min-width: 50%;
 }
 
-.header-search-box .search-icon .bx-search:hover {
-  color: white;
-  background: #2196f3;
+.more-search .search-icon-box{
+  text-align: center;
+  margin-left: auto;
+  cursor: pointer;
+  line-height: 50px;
+  height: 50px;
+  min-width: 50px;
+  font-size: 28px;
 }
+
+.more-search .search-icon-box:hover{
+  color: #f44336;
+}
+
+.first-search .advance-search-option {
+  margin-left: auto;
+  height: 50px;
+  margin-right: 10px;
+  line-height: 50px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #2196f3;
+}
+
+.first-search .advance-search-option .advance-search-icon i{
+  transition: 0.5s;
+}
+
+.first-search .advance-search-option .advance-search-icon.active i{
+  transform: rotate(-90deg);
+}
+
+
+.first-search .search-icon i{
+  text-align: center;
+  color: #333333;
+  line-height: 50px;
+  height: 45px;
+  font-size: 28px;
+  min-width: 45px;
+  background: white;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.first-search .search-icon i:hover {
+  font-weight: bold;
+}
+
 .header-search-box .search-icon .bx-minus-circle:hover {
   color: white;
   background: #C34A36;
 }
 .more-search {
+  position: relative;
+  display: flex;
+  margin: auto;
   height: 50px;
-  margin-bottom: 5px;
+}
+.condition-box {
+  width: 50%;
+  height: 50px;
+  min-width: 1000px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  /*border: 2px solid rgb(240,240,240);*/
+  /*box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);*/
+  /*border-top: 2px solid #f4f4f4;*/
+  /*background: #f44336;*/
 }
 .add-condition {
+  margin-right: 40px;
+}
 
+.add-condition .add-condition-btn{
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
   cursor: pointer;
+  border-radius: 10px;
+  background-color: #2196f3;
+  color: #f4f4f4;
+  font-size: 18px;
+  padding: 5px 10px;
+  transition: 0.3s;
 }
+
+.add-condition .add-condition-btn:hover {
+  padding: 8px 12px;
+}
+
+.add-condition .add-condition-btn .btn-icon{
+  min-width: 30px;
+}
+
 .clear-condition {
-  margin-left: 75%;
   cursor: pointer;
+  margin-right: 40px;
 }
+
+.clear-condition .clear-condition-btn{
+  height: 30px;
+  line-height: 30px;
+  background-color: #f44336;
+  color: #f4f4f4;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px 10px;
+  transition: 0.2s;
+}
+.clear-condition .clear-condition-btn:hover{
+  padding: 8px 12px;
+}
+
+.clear-condition .clear-condition-btn .btn-icon {
+  margin:auto;
+}
+
 #filter {
   position: absolute;
   left: 0px;
   width: 27%;
+  min-width: 330px;
+  margin-bottom: 40px;
+  padding: 10px;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.1);
 }
 .time-range {
   margin: 10px 0 10px 5px;
