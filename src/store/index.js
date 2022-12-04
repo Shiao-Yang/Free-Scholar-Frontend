@@ -11,6 +11,7 @@ export default new Vuex.Store({
       email: "",
       profile: "I'm Peter",
     },
+    address: 'http://139.9.134.209:8000/'
   },
   getters: {
   },

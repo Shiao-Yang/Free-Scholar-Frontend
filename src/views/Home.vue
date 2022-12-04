@@ -69,7 +69,7 @@
       <div class="source-box">
         <div class="source-item" :class="{'active' : isActive1}" @click="changeActive1">
           <span class="image">
-            <img src="../assets/img/MessageManage/notice.png">
+            <img src="../assets/img/home/information.png">
           </span>
           <span class="name">
             个人信息
@@ -77,7 +77,7 @@
         </div>
         <div class="source-item" :class="{'active' : isActive2}" @click="changeActive2">
           <span class="image">
-            <img src="../assets/img/MessageManage/message-received.png">
+            <img src="../assets/img/home/password.png">
           </span>
           <span class="name">
             修改密码
@@ -85,7 +85,7 @@
         </div>
         <div class="source-item" :class="{'active' : isActive3}" @click="changeActive3">
           <span class="image">
-            <img src="../assets/img/MessageManage/message-sent.png">
+            <img src="../assets/img/home/avatar.png">
           </span>
             <span class="name">
             个人头像
@@ -93,7 +93,40 @@
         </div>
       </div>
       <div class="divider-y"></div>
-      <div class="content-box"></div>
+      <div class="content-box">
+        <div class="show-box">
+          <div class="content-item">
+            <div class="item-name">
+              用户名
+            </div>
+            <div class="item-content">
+              {{baseInfo.username}}
+            </div>
+          </div>
+          <div class="content-item">
+            <div class="item-name">
+              邮箱
+            </div>
+            <div class="item-content">
+              {{baseInfo.email}}
+            </div>
+          </div>
+          <div class="content-item">
+            <div class="item-name">
+              身份
+            </div>
+            <div class="item-content" v-if="baseInfo.identity === 0">
+              普通用户
+            </div>
+            <div class="item-content" v-if="baseInfo.identity === 1">
+              学者
+            </div>
+            <div class="item-content" v-if="baseInfo.identity === 2">
+              管理员
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -120,6 +153,8 @@ export default {
       baseInfo: {
         username:"lisi",
         avatar: 'img/home/avatar1.jpg',
+        email: '123@qq.com',
+        identity: 0,
         institution:{
           name:"UBAA",
         },
@@ -523,6 +558,58 @@ export default {
   width: 1050px;
   height: 450px;
 }
+
+.info-box .content-box .show-box {
+  border: solid red;
+  width: 900px;
+  height: 400px;
+  position: relative;
+  top: 25px;
+  left: 25px;
+}
+
+.info-box .content-box .show-box .content-item {
+  display: flex;
+  flex-direction: row;
+  border: solid red;
+  width: 850px;
+  height: 50px;
+  margin: 10px 0px 10px 5px;
+}
+
+.info-box .content-box .show-box .content-item .item-name {
+  border: solid red;
+  display: flex;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  height: 50px;
+  width: 120px;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: right;
+  line-height: 50px;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.info-box .content-box .show-box .content-item .item-content {
+  border: solid red;
+  display: flex;
+  position: relative;
+  left: 50px;
+  height: 50px;
+  width: 650px;
+  font-size: 20px;
+  font-weight: normal;
+  flex-direction: row;
+  line-height: 50px;
+  align-items: center;
+}
+
+
+
+
 
 
 
