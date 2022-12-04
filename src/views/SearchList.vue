@@ -515,6 +515,7 @@ td:hover {
   left: 32%;
   width: 70%;
   min-height: 550px;
+  /*overflow: auto;*/
 }
 
 .result-box {

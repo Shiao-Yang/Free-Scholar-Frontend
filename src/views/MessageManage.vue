@@ -2,9 +2,9 @@
   <div class="message-center">
     <div class="title">
       <span class="image">
-        <img src="../assets/img/MessageManage/user.png" style="height: 50px; width: 50px; margin: 10px 10px 10px 30px">
+        <i class='bx bxs-user-rectangle' style="font-size: 50px; margin: 10px 10px 10px 30px; color: #fbbd08"></i>
       </span>
-      <span class="text" style="font-size:30px; font-weight: 900; position: absolute; top: 25px">
+      <span class="text" style="font-size:30px; font-weight: 900; position: absolute; top: 35px">
         消息中心
       </span>
     </div>
@@ -478,16 +478,18 @@ export default {
 }
 
 .message-center {
-  margin: 10px 0 0 0;
-  height: 670px;
-  width: 1410px;
+
+  margin: 20px auto;
+  height: 730px;
+  width: 90%;
+  border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 
 .divider-x {
   position: relative;
   margin: 0 auto;
-  width: 1330px;
+  width: 100%;
   height: 1px;
   background-color: #d4d4d4;
   text-align: center;
@@ -497,11 +499,12 @@ export default {
 
 .source-box {
   display: inline-block;
-  top: 10px;
+  /*background-color: #0fc70f;*/
+  top: -50px;
   left: 5px;
   position: relative;
   height: 580px;
-  width: 350px;
+  width: 20%;
   overflow: hidden;
   z-index: 1;
 }
@@ -514,36 +517,39 @@ export default {
   background-color: white;
   position: relative;
   height: 60px;
-  width: 300px;
+  width: 100%;
   border-radius: 5px;
-  margin: 10px 25px 10px 25px;
+  margin: 0px 20px 10px 25px;
   vertical-align: middle;
   transition: all 0.6s;
 }
 
 .source-box .platform-msg.active {
+
   background-color: #e7e5e5;
+  /*background-color: #0fc70f;*/
   height: 70px;
-  width: 310px;
-  margin: 5px 25px 5px 15px;
+  width: 100%;
+  margin: 5px 25px 5px 0px;
 }
 
 .source-box .platform-msg .red-point {
   display: inline-block;
   position: absolute;
   top: 17px;
-  left: 25px;
+  left: -15px;
   height: 30px;
   width: 30px;
   overflow: hidden;
   transition: all 0.6s;
+  z-index: 6;
 }
 
 .source-box .platform-msg.active .red-point {
   display: inline-block;
   position: absolute;
   top: 21px;
-  left: 15px;
+  left: 0;
   height: 30px;
   width: 30px;
   overflow: hidden;
@@ -561,14 +567,14 @@ export default {
 .source-box .platform-msg .image img {
   height: 40px;
   width: 40px;
-  margin: 10px 30px 10px 60px;
+  margin: 10px 25px;
   transition: all 0.6s;
 }
 
 .source-box .platform-msg.active .image img{
   height: 50px;
   width: 50px;
-  margin: 10px 25px 10px 55px;
+  margin: 10px 10px 10px 40px;
 }
 
 .source-box .platform-msg .name {
@@ -595,8 +601,8 @@ export default {
   top: 5px;
   position: relative;
   left: 20px;
-  height: 580px;
-  width: 1020px;
+  height: 640px;
+  width: 77%;
   overflow: hidden;
   z-index: 1;
   overflow-x: hidden;
@@ -611,7 +617,7 @@ export default {
   position: relative;
   border-radius: 5px;
   height: 100px;
-  width: 950px;
+  width: 90%;
   margin: 20px 35px 20px 35px;
   vertical-align: middle;
   box-shadow: 0px 0px 5px rgba(0,0,0, 0.3);
@@ -731,9 +737,9 @@ export default {
   display: inline-block;
   position: absolute;
   margin: 2px 0 0 0;
-  left: 360px;
+  left: 320px;
   width: 2px;
-  height: 590px;
+  height: 640px;
   background-color: #d4d4d4;
   font-size: 16px;
   color: green;

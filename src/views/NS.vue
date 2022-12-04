@@ -3,10 +3,10 @@
         <div class="left">
             <div class="name">
                 <div class="blackBox">
-                    <img src="../assets/YAN.jpg" class="image">
+                    <img :src="require('../assets/'+baseInfo.avatar)" class="image">
                     <div class="userName" style="position: absolute; text-align: center;
                      font-size: 30px; display: inline-block; left: 85px; right: 0;
-                     top: 30px; color: white; font-weight: bold">王海涛</div>
+                     top: 30px; color: white; font-weight: bold">{{baseInfo.userName}}</div>
                 </div>
                 <i class="bx bxs-user-plus"></i>
                 <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
@@ -20,21 +20,21 @@
                 <i class="bx bxs-user-pin"></i>
                 <div class="intro">个人简介</div>
                 <div class="line"></div>
-                <div class="detail">这个人很懒，什么都没有写……</div>
+                <div class="detail">{{introduction}}</div>
             </div>
             <div class="name">
                 <i class='bx bxs-thermometer'></i>
                 <div class="heat">热度</div>
                 <div class="line"></div>
                 <div style="position: absolute; text-align: center; width: 100%; top: 70px;
-                 font-size: 30px; color: #C34A36">38</div>
+                 font-size: 30px; color: #C34A36">{{heat}}</div>
             </div>
             <div class="name">
                 <i class='bx bx-globe'></i>
                 <div class="heat">门户访问量</div>
                 <div class="line2"></div>
                 <div style="position: absolute; text-align: center; width: 100%; top: 70px;
-                 font-size: 30px; color: #ffc75f">38</div>
+                 font-size: 30px; color: #ffc75f">{{visitors}}</div>
             </div>
         </div>
         <div class="middle">
@@ -48,62 +48,17 @@
                 <button class="sort" @click="">按发表时间排序</button>
                 <button class="sort" style="left: 220px" @click="">按引用量排序</button>
             </div>
-            <div class="contents">
-                <i class='bx bxs-bookmark-alt'></i>
-                <div class="title">改进的二分法查找</div>
-                <div class="author">王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com</div>
-                <i class='bx bx-link'></i>
-                <div class="citation">被引用次数: 27</div>
+            <div style="overflow: auto; position: absolute; width: 100%; height: 660px">
+                <div class="contents" v-for="(item) in paperList">
+                    <i class='bx bxs-bookmark-alt'></i>
+                    <div class="title">{{item.title}}</div>
+                    <div class="author">{{item.detail}}</div>
+                    <i class='bx bx-link'></i>
+                    <div class="citation">被引用次数: {{item.citation}}</div>
+                </div>
             </div>
-            <div class="contents">
-                <i class='bx bxs-bookmark-alt'></i>
-                <div class="title">改进的二分法查找</div>
-                <div class="author">王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com</div>
-                <i class='bx bx-link'></i>
-                <div class="citation">被引用次数: 27</div>
-            </div>
-            <div class="contents">
-                <i class='bx bxs-bookmark-alt'></i>
-                <div class="title">改进的二分法查找</div>
-                <div class="author">王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com</div>
-                <i class='bx bx-link'></i>
-                <div class="citation">被引用次数: 27</div>
-            </div>
-            <div class="contents">
-                <i class='bx bxs-bookmark-alt'></i>
-                <div class="title">改进的二分法查找</div>
-                <div class="author">王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com</div>
-                <i class='bx bx-link'></i>
-                <div class="citation">被引用次数: 27</div>
-            </div>
-            <div class="contents">
-                <i class='bx bxs-bookmark-alt'></i>
-                <div class="title">改进的二分法查找</div>
-                <div class="author">王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com</div>
-                <i class='bx bx-link'></i>
-                <div class="citation">被引用次数: 27</div>
-            </div>
-            <div class="contents">
-                <i class='bx bxs-bookmark-alt'></i>
-                <div class="title">改进的二分法查找</div>
-                <div class="author">王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com</div>
-                <i class='bx bx-link'></i>
-                <div class="citation">被引用次数: 27</div>
-            </div>
-            <div class="contents">
-                <i class='bx bxs-bookmark-alt'></i>
-                <div class="title">改进的二分法查找</div>
-                <div class="author">王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com</div>
-                <i class='bx bx-link'></i>
-                <div class="citation">被引用次数: 27</div>
-            </div>
-            <div class="contents">
-                <i class='bx bxs-bookmark-alt'></i>
-                <div class="title">改进的二分法查找</div>
-                <div class="author">王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com</div>
-                <i class='bx bx-link'></i>
-                <div class="citation">被引用次数: 27</div>
-            </div>
+
+
         </div>
         <div class="right">
             <div class="top" style="position: relative; height: 60px">
@@ -111,42 +66,17 @@
                 <div style="position: absolute; left: 75px; font-size: 25px; font-weight: bold; top: 5px">学者关系网</div>
                 <div class="line" style="margin-top: 10px"></div>
             </div>
-            <div class="scholar">
-                <img src="../assets/YAN.jpg" class="image"
-                     style="height: 60px; width: 60px; margin: 5px;
+            <div style="position: absolute; overflow: auto; width: 100%; height: 690px">
+                <div class="scholar" v-for="(item) in scholarList">
+                    <img :src="require('../assets/'+item.avatar)" class="image"
+                         style="height: 60px; width: 60px; margin: 5px;
                 padding: 0; border-radius: 8px">
-                <div style="position: absolute; left: 70px;
-                margin-top: 10px; font-weight: bold">YAN</div>
-                <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：26</div>
-
+                    <div style="position: absolute; left: 70px;
+                margin-top: 10px; font-weight: bold">{{item.userName}}</div>
+                    <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：{{item.papers}}</div>
+                </div>
             </div>
-            <div class="scholar">
-                <img src="../assets/YAN.jpg" class="image"
-                     style="height: 60px; width: 60px; margin: 5px;
-                padding: 0; border-radius: 8px">
-                <div style="position: absolute; left: 70px;
-                margin-top: 10px; font-weight: bold">YAN</div>
-                <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：26</div>
 
-            </div>
-            <div class="scholar">
-                <img src="../assets/YAN.jpg" class="image"
-                     style="height: 60px; width: 60px; margin: 5px;
-                padding: 0; border-radius: 8px">
-                <div style="position: absolute; left: 70px;
-                margin-top: 10px; font-weight: bold">YAN</div>
-                <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：26</div>
-
-            </div>
-            <div class="scholar">
-                <img src="../assets/YAN.jpg" class="image"
-                style="height: 60px; width: 60px; margin: 5px;
-                padding: 0; border-radius: 8px">
-                <div style="position: absolute; left: 70px;
-                margin-top: 10px; font-weight: bold">YAN</div>
-                <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：26</div>
-
-            </div>
         </div>
 
     </div>
@@ -155,7 +85,75 @@
 
 <script>
     export default {
-        name: "NS"
+        name: "NS",
+        data() {
+            return {
+                baseInfo: {
+                    userName: '王海涛',
+                    avatar: 'YAN.jpg',
+                },
+                introduction:'这个人很懒，什么都没有写……',
+                heat: 38,
+                visitors: 23,
+                paperList: [
+                    {
+                        title: '改进的二分法查找',
+                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
+                        citation: 27
+                    },
+                    {
+                        title: '改进的二分法查找',
+                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
+                        citation: 27
+                    },
+                    {
+                        title: '改进的二分法查找',
+                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
+                        citation: 27
+                    },
+                    {
+                        title: '改进的二分法查找',
+                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
+                        citation: 27
+                    },
+                    {
+                        title: '改进的二分法查找',
+                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
+                        citation: 27
+                    },
+
+                ],
+                scholarList: [
+                    {
+                        userName: 'YAN',
+                        avatar: 'YAN.jpg',
+                        papers: 26,
+                    },
+                    {
+                        userName: 'YAN',
+                        avatar: 'YAN.jpg',
+                        papers: 26,
+                    },
+
+                    {
+                        userName: 'YAN',
+                        avatar: 'YAN.jpg',
+                        papers: 26,
+                    },
+                    {
+                        userName: 'YAN',
+                        avatar: 'YAN.jpg',
+                        papers: 26,
+                    },
+                    {
+                        userName: 'YAN',
+                        avatar: 'YAN.jpg',
+                        papers: 26,
+                    },
+
+                ]
+            }
+        }
     }
 </script>
 
@@ -165,16 +163,26 @@
         display: inline-block;
         width: 23%;
         margin: 10px;
-        height: 750px;
+        height: 760px;
         /*background-color: #4DA5FF;*/
     }
     .middle {
         position: relative;
         display: inline-block;
         width: 48%;
-        height: 750px;
+        height: 760px;
         margin: 10px;
         /*background-color: #00CA97;*/
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+    }
+    .right {
+        position: relative;
+        display: inline-block;
+        width: 24%;
+        height: 760px;
+        margin: 10px;
+        /*margin-top: 0;*/
         border-radius: 5px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
     }
@@ -194,10 +202,12 @@
     .right .scholar {
         position: relative;
         border-radius: 5px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
         height: 70px;
-        width: 95%;
-        margin: 5px auto;
+        width: 93%;
+        margin: 10px auto;
+        /*overflow: auto;*/
+        /*overflow: hidden;*/
     }
     .bxs-graduation {
         position: absolute;
@@ -245,19 +255,10 @@
     .middle .contents {
         position: relative;
         height: 70px;
-        width: 97%;
-        margin: 5px auto;
+        width: 95%;
+        margin: 10px auto;
         border-radius: 10px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
-    }
-    .right {
-        position: relative;
-        display: inline-block;
-        width: 24%;
-        height: 750px;
-        margin: 10px;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
     }
     .left .name {
         position: relative;
