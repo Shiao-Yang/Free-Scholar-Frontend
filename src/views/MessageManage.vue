@@ -10,7 +10,7 @@
     </div>
     <div class="divider-x"></div>
     <div class="source-box">
-      <div class="platform-msg" :class="{'active' : isActive1}" @click="changeActive1">
+      <div class="platform-msg" :class="{'active' : isActive1}" @click="changeActive1(event)">
         <div class="red-point" v-if="msg_plm_has_new > 0">
           <img src="../assets/img/MessageManage/red-point.png">
         </div>
@@ -21,7 +21,7 @@
           系统通知
         </span>
       </div>
-      <div class="platform-msg" :class="{'active' : isActive2}" @click="changeActive2">
+      <div class="platform-msg" :class="{'active' : isActive2}" @click="changeActive2(event)">
         <div class="red-point" v-if="msg_rec_has_new > 0">
           <img src="../assets/img/MessageManage/red-point.png">
         </div>
@@ -32,7 +32,7 @@
           收到的私信
         </span>
       </div>
-      <div class="platform-msg" :class="{'active' : isActive3}" @click="changeActive3">
+      <div class="platform-msg" :class="{'active' : isActive3}" @click="changeActive3(event)">
         <span class="image">
           <img src="../assets/img/MessageManage/message-sent.png">
         </span>
@@ -53,19 +53,19 @@
         <span class="content">
           {{ item.content }}
         </span>
-        <div class="red-point" v-if="!item.isRead && !isActive3">
+        <div class="red-point" v-if="!item.is_read && !isActive3">
           <img src="../assets/img/MessageManage/red-point.png">
         </div>
         <div class="operation">
-          <img src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
+          <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
         </div>
         <div class="send-time">
           <div class="text">
-            {{item.time}}
+            {{item.create_time}}
           </div>
         </div>
       </div>
-      <div class="sender-baseInfo" v-if="showContent" @click="changeShowContent">
+      <div class="sender-baseInfo" v-if="showContent" @click="changeShowContent(event, true)">
         <span class="image">
         <img :src="require('../assets/img/MessageManage/' + cur_msg.avatar)">
         </span>
@@ -73,11 +73,11 @@
           {{ cur_msg.username }}
         </span>
         <div class="operation">
-          <img src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(cur_msg.mid)">
+          <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(cur_msg.mid)">
         </div>
         <div class="send-time">
           <div class="text">
-            {{cur_msg.time}}
+            {{cur_msg.create_time}}
           </div>
         </div>
       </div>
@@ -103,148 +103,198 @@ export default {
       msg_plm_has_new: 0, //新的系统消息的数量
       msg_rec_has_new: 0, //新的私信的数量
       cur_msg: { //当前显示的消息
+
+      },
+      cur_msg_1: { //当前显示的消息
         mid: 1,
+        owner_id: 1,
+        sender_id: 2,
         avatar: 'user.png',
         username: 'Peter杨',
         content: '你好吗你好吗你好吗',
-        time: '2022-10-16 16:01',
-        isRead: true,
+        create_time: '2022-10-16 16:01',
+        is_read: true,
       },
-      dis_msg_list: [ //展示在右侧的消息列表
+      dis_msg_list: [
+
+      ],
+      dis_msg_list_1: [ //展示在右侧的消息列表
         {
           mid: 1,
-          avatar: 'user.png',
+          owner_id: 1,
+          sender_id: 2,
           username: 'Peter杨',
+          avatar: 'user.png',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:01',
-          isRead: true,
+          creat_time: '2022-10-16 16:01',
+          is_read: true,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:02',
-          isRead: false,
+          create_time: '2022-10-16 16:02',
+          is_read: false,
         },
       ],
       msg_plm_list: [
+
+      ],
+      msg_plm_list_1: [
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:01',
-          isRead: true,
+          create_time: '2022-10-16 16:01',
+          is_read: true,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:02',
-          isRead: false,
+          create_time: '2022-10-16 16:02',
+          is_read: false,
         },
       ],
       msg_rec_list: [
+
+      ],
+      msg_rec_list_1: [
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:01',
-          isRead: true,
+          create_time: '2022-10-16 16:01',
+          is_read: true,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:02',
-          isRead: false,
+          create_time: '2022-10-16 16:02',
+          is_read: false,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:03',
-          isRead: false,
+          create_time: '2022-10-16 16:03',
+          is_read: false,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:04',
-          isRead: true,
+          create_time: '2022-10-16 16:04',
+          is_read: true,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:05',
-          isRead: true,
+          create_time: '2022-10-16 16:05',
+          is_read: true,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:06',
-          isRead: false,
+          create_time: '2022-10-16 16:06',
+          is_read: false,
         },
 
       ],
+
       msg_send_list: [
+
+      ],
+      msg_send_list_1: [
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Pete杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:01',
-          isRead: true,
+          create_time: '2022-10-16 16:01',
+          is_read: true,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Petr杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:02',
-          isRead: false,
+          create_time: '2022-10-16 16:02',
+          is_read: false,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peer杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:03',
-          isRead: false,
+          create_time: '2022-10-16 16:03',
+          is_read: false,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Pter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:04',
-          isRead: true,
+          create_time: '2022-10-16 16:04',
+          is_read: true,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'eter杨',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:05',
-          isRead: true,
+          create_time: '2022-10-16 16:05',
+          is_read: true,
         },
         {
           mid: 1,
+          owner_id: 1,
+          sender_id: 2,
           avatar: 'user.png',
           username: 'Peter',
           content: '你好吗你好吗你好吗',
-          time: '2022-10-16 16:06',
-          isRead: false,
+          create_time: '2022-10-16 16:06',
+          is_read: false,
         },
 
       ],
@@ -252,86 +302,126 @@ export default {
   },
 
   methods: {
-    changeActive1() {
+    changeActive1(e) {
       if(!this.isActive1) {
         if(this.showContent) { //如果当前正在展示页面,应当关闭
-          this.changeShowContent()
+          this.changeShowContent(e, true)
         }
-        // this.getMsgPlm(this.uid) //重新获取数据，信任数据库
-        this.dis_msg_list = this.msg_plm_list; //getMsgPlm里有这句话, 但此时接口尚未实现, 暂时保留
+        this.dis_msg_list = []
+        this.getMsgPlm(this.uid) //重新获取数据，信任数据库
+        // this.dis_msg_list = this.msg_plm_list; //getMsgPlm里有这句话, 但此时接口尚未实现, 暂时保留
         this.isActive1 = true;
         this.isActive2 = false;
         this.isActive3 = false;
       }
     },
-    changeActive2() {
+    changeActive2(e) {
       if(!this.isActive2) {
         if(this.showContent) { //如果当前正在展示页面,应当关闭
-          this.changeShowContent()
+          this.changeShowContent(e, true)
         }
-        // this.getMsgRec(this.uid) //重新获取数据，信任数据库
-        this.dis_msg_list = this.msg_rec_list; //getMsgRec里有这句话, 但此时接口尚未实现, 暂时保留
+        this.dis_msg_list = []
         this.isActive2 = true;
         this.isActive1 = false;
         this.isActive3 = false;
+        this.getMsgRec(this.uid) //重新获取数据，信任数据库
+        // this.dis_msg_list = this.msg_rec_list; //getMsgRec里有这句话, 但此时接口尚未实现, 暂时保留
       }
     },
-    changeActive3() {
+    changeActive3(e) {
       if(!this.isActive3) {
         if(this.showContent) { //如果当前正在展示页面,应当关闭
-          this.changeShowContent()
+          this.changeShowContent(e, true)
         }
-        // this.getMsgSend(this.uid) //重新获取数据，信任数据库
-        this.dis_msg_list = this.msg_send_list; //getMsgSend里有这句话, 但此时接口尚未实现, 暂时保留
+        this.dis_msg_list = []
+        this.getMsgSend(this.uid) //重新获取数据，信任数据库
+        // this.dis_msg_list = this.msg_send_list; //getMsgSend里有这句话, 但此时接口尚未实现, 暂时保留
         this.isActive3 = true;
         this.isActive1 = false;
         this.isActive2 = false;
       }
     },
-    changeShowContent() {
-      this.showContent = !this.showContent;
+    isClickDelete(event) {
+      if(!e) {
+        var e = window.event;
+      }
+      var targ = e.target;
+      var tname= targ.className;
+      if(tname === 'delete-img') {
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
+    changeShowContent(event, ignore) { //event: 点击事件, ignore: 是否忽略点击区域的区别
+      if(ignore)
+        this.showContent = !this.showContent;
+      else {
+        let isDelete = this.isClickDelete(event);
+        if(isDelete) { //点了删除图标
+          if(this.showContent) { //显示具体内容时
+            this.showContent = !this.showContent;
+          }
+        }
+        else { //没点删除图标
+          this.showContent = !this.showContent;
+        }
+      }
     },
     cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
       let has_new = 0;
       for(let i = 0; i < msg_list.length; i++) {
-        if(!msg_list[i].isRead) { //有未读消息就+1
+        if(!msg_list[i].is_read) { //有未读消息就+1
           has_new++;
         }
       }
+      console.log(has_new);
       return has_new;
     },
     cal_msg_plm(msg_list) { //计算系统消息是否有未读消息
       let has_new = 0;
+      console.log("in cal_msg_plm")
       for(let i = 0; i < msg_list.length; i++) {
-        if(!msg_list[i].isRead) { //有未读消息就+1
+        console.log(msg_list[i].is_read)
+        if(!msg_list[i].is_read) { //有未读消息就+1
           has_new++;
         }
       }
+      console.log(has_new)
       return has_new;
     },
 
     //删除消息
     deleteMsg(mid) {
-      let params = {
-        mid : mid,
-      }
+      let params = new FormData();
+      params.append("mid", mid);
 
       this.axios({
         method: 'post',
-        url: '',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/deleteMessage/',
         data: params,
       })
       .then(res => {
-        console.log(res.data);
+        this.dis_msg_list = [];
         if(this.isActive1) { //当前处于系统消息列表
           this.getMsgPlm(this.uid);
         }
         else if(this.isActive2) { //当前处于收到的私信列表
-          this.getMsgPlm(this.uid);
+          this.getMsgRec(this.uid);
         }
         else if(this.isActive3) { //当前处于发送的私信列表
           this.getMsgSend(this.uid);
         }
+
+        if(res.data.errno === 0) {
+          this.$message({
+            type: 'success',
+            showClose: true,
+            message: '删除成功'
+          })
+        }
+
       })
       .catch(err => {
         console.log(err)
@@ -342,12 +432,20 @@ export default {
     getMsgPlm(uid) {
       this.axios({
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getPlatMsg?owner_id=' + uid,
       })
       .then(res => {
         console.log(res.data)
         this.msg_plm_list = res.data;
+        for(let i = 0; i < this.msg_plm_list.length; i++) {
+          this.msg_plm_list[i].avatar = 'user.png';
+          this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
+        }
         this.dis_msg_list = this.msg_plm_list;
+        this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+        // if(this.showContent) {
+        //   this.changeShowContent();
+        // }
       })
       .catch(err => {
         console.log(err);
@@ -358,12 +456,23 @@ export default {
     getMsgRec(uid) {
       this.axios({
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec?owner_id=' + uid,
       })
       .then(res => {
         console.log(res.data)
         this.msg_rec_list = res.data;
+        for(let i = 0; i < this.msg_rec_list.length; i++) {
+          this.msg_rec_list[i].avatar = 'user.png';
+          this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
+        }
+        this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
         this.dis_msg_list = this.msg_rec_list;
+
+        console.log(this.dis_msg_list)
+        // if(this.showContent) {
+        //   this.changeShowContent();
+        // }
+        console.log(this.showContent)
       })
       .catch(err => {
         console.log(err);
@@ -374,12 +483,20 @@ export default {
     getMsgSend(uid) {
       this.axios({
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgSend?sender_id=' + uid,
       })
       .then(res => {
         console.log(res.data)
         this.msg_send_list = res.data;
+        for(let i = 0; i < this.msg_send_list.length; i++) {
+          this.msg_send_list[i].avatar = 'user.png';
+          this.msg_send_list[i].create_time = new Date(this.msg_send_list[i].create_time).toLocaleString('zh', {hour12: false})
+        }
         this.dis_msg_list = this.msg_send_list;
+
+        // if(this.showContent) {
+        //   this.changeShowContent();
+        // }
       })
       .catch(err => {
         console.log(err);
@@ -387,12 +504,12 @@ export default {
     },
 
     readMsg(mid) {
-      let param = {
-        mid: mid,
-      }
+      let param = new FormData();
+      param.append("mid", mid);
+
       this.axios({
         method: 'post',
-        url: '',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/readMessage/',
         data: param,
       })
       .then(res => {
@@ -404,51 +521,58 @@ export default {
 
     },
 
-    openMessage(mid, index) { //查看一条消息的具体内容
+    openMessage(mid, index, event) { //查看一条消息的具体内容
       // let uid = this.$store.state.userInfo.uid;
+
       let uid = 1;
       //系统消息
       if(this.isActive1) {
         console.log(this.dis_msg_list[index]);
-        if(!this.dis_msg_list[index].isRead) { //未读, 则改为已读, 新消息数量-1
-          this.dis_msg_list[index].isRead = true;
-          this.msg_plm_list[index].isRead = true;
+        if(!this.dis_msg_list[index].is_read) { //未读, 则改为已读, 新消息数量-1
+          this.dis_msg_list[index].is_read = true;
+          this.msg_plm_list[index].is_read = true;
           this.msg_plm_has_new--;
           console.log(this.msg_plm_has_new);
           this.readMsg(mid); //改变消息状态为已读
         }
         this.cur_msg = this.dis_msg_list[index];
-        this.changeShowContent(); //改变展示状态，这里其实就是打开消息
-        // this.getMsgPlm(uid); //重新获取数据
+        this.changeShowContent(event, false); //改变展示状态，这里其实就是打开消息
+        //this.getMsgPlm(uid); //重新获取数据
       }
       //已收到私信
       if(this.isActive2) {
         console.log(this.msg_rec_list[index]);
-        if(!this.msg_rec_list[index].isRead) { //未读, 则改为已读, 新消息数量-1
-          this.msg_rec_list[index].isRead = true;
+        if(!this.msg_rec_list[index].is_read) { //未读, 则改为已读, 新消息数量-1
+          this.msg_rec_list[index].is_read = true;
           this.msg_rec_has_new--;
           this.readMsg(mid); //改变消息状态为已读
         }
         this.cur_msg = this.dis_msg_list[index];
-        this.changeShowContent(); //改变展示状态，这里其实就是打开消息
-        // this.getMsgRec(uid); //重新获取数据
+        this.changeShowContent(event, false); //改变展示状态，这里其实就是打开消息
+        //this.getMsgRec(uid); //重新获取数据
       }
       //已发送私信
       if(this.isActive3) {
         console.log(this.dis_msg_list[index])
         this.cur_msg = this.dis_msg_list[index];
-        this.changeShowContent(); //改变展示状态，这里其实就是打开消息
-        // this.getMsgSend(uid); //重新获取数据
+        this.changeShowContent(event, false); //改变展示状态，这里其实就是打开消息
+        //this.getMsgSend(uid); //重新获取数据
       }
     }
   },
   computed: {
   },
+  beforeCreate() {
+
+  },
   created() {
-    // this.getMsgPlm(this.uid);
-    // this.getMsgRec(this.uid);
-    this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
-    this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+
+  },
+  mounted() {
+    this.getMsgRec(this.uid);
+    this.getMsgPlm(this.uid);
+    console.log(this.msg_plm_has_new)
+    console.log(this.msg_rec_has_new)
     this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
   }
 }
@@ -695,6 +819,7 @@ export default {
   right: 50px;
   height: 100px;
   width: 100px;
+  z-index: 5;
 }
 
 .sender-box .sender .operation img{
