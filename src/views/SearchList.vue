@@ -1,5 +1,5 @@
 <template>
-  <div class="searchList">
+  <div class="searchList" ref="box">
     <div class="search-box">
       <div class="search-head-box">
         <span>Free Scholar</span>
@@ -38,14 +38,14 @@
                  class="search-input"
                  v-model="input"
                  placeholder="Search resources..."
-                 @keyup.enter="search()">
+                 @keyup.enter="search(0)">
         </div>
         <div class="advance-search-option" @click="isAdvanceSearch=!isAdvanceSearch">
           <span class="advance-search-text">高级检索</span>
           <span class="advance-search-icon" :class="{'active':isAdvanceSearch}"><i class='bx bx-chevron-left' ></i></span>
         </div>
         <div class="search-icon-box">
-          <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search()"></i></span>
+          <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search(0)"></i></span>
         </div>
       </div>
       <div class="advance-search" v-if="isAdvanceSearch === true">
@@ -99,7 +99,7 @@
                    class="search-input"
                    v-model="inputs[i]"
                    placeholder="Search resources..."
-                   @keyup.enter="search()">
+                   @keyup.enter="search(0)">
           </div>
           <div class="search-icon-box">
             <span class="search-icon" title="删除"><i class='bx bx-minus-circle' @click="del(i)"></i></span>
@@ -141,7 +141,7 @@
               v-model="endTime"
               type="year">
           </el-date-picker>
-          <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
+          <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search(4)"></i></span>
         </div>
         <table>
           <tr>
@@ -176,21 +176,30 @@
       </p>
       <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
       <div class="item-2" v-for="item in keywords" v-if="keyword_zone">
-        <p class="filter-item"><span style="cursor: pointer">{{item}}</span></p>
+        <p class="filter-item">
+          <span v-if="item !== keyword" style="cursor: pointer" @click="search(1,item)">{{item}}</span>
+          <span v-else style="cursor: pointer;color: #2196f3" @click="search(5)">{{item}}</span>
+        </p>
       </div>
       <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="organization_zone = !organization_zone">机构
         <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
       </p>
       <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
       <div class="item-2" v-for="item in organizations" v-if="organization_zone">
-        <p class="filter-item"><span style="cursor: pointer">{{item}}</span></p>
+        <p class="filter-item">
+          <span v-if="item !== org" style="cursor: pointer" @click="search(2,item)">{{item}}</span>
+          <span v-else style="cursor: pointer;color: #2196f3" @click="search(6)">{{item}}</span>
+        </p>
       </div>
       <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="journal_zone = !journal_zone">期刊
         <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
       </p>
       <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
       <div class="item-2" v-for="item in journals" v-if="journal_zone">
-        <p class="filter-item"><span style="cursor: pointer">{{item}}</span></p>
+        <p class="filter-item">
+          <span v-if="item !== venue" style="cursor: pointer" @click="search(3,item)">{{item}}</span>
+          <span v-else style="cursor: pointer;color: #2196f3" @click="search(7)">{{item}}</span>
+        </p>
       </div>
     </div>
     <div class="content">
@@ -278,6 +287,9 @@ export default {
       user_collected: false,
       collection_num: 0,
       comment_num: 0,
+      keyword: '',
+      org: '',
+      venue: '',
       types: [{
           active: false,
           srcActive: require("../assets/img/searchList/conferenceActive.png"),
@@ -309,13 +321,10 @@ export default {
         }
       ],
       keywords: [
-        "1111","22222","33333","4444444","555","21323"
       ],
       organizations: [
-        "1111","22222","33333","4444444","555","21323"
       ],
       journals: [
-        "1111","22222","33333","4444444","555","21323"
       ],
       displayResult: [ // 只展示20个
       ],
@@ -395,7 +404,7 @@ export default {
       else
         return "";
     },
-    search() {
+    search(flag,val) { // flag = 0:普通搜索,1:筛选关键词搜索,2:筛选机构搜索,3:筛选期刊搜索，4:筛选时间搜索,5:取消关键词搜索,6:取消机构搜索,7:取消期刊搜索
       this.show_card = false;
       let params = {
         page: 1,
@@ -405,15 +414,144 @@ export default {
               input: this.input,
               field: this.field
             }
-        ]
+        ],
+        filter: [],
       }
-      let i;
-      for (i = 0; i < this.inputs.length; i++) {
-        params.condition.push({type: this.conditions[i],input: this.inputs[i],field: this.fields[i]})
+      if (this.input === '') {
+        this.$message('请输入首项搜索值')
+        return;
       }
-      this.oldConditions = this.conditions;
-      this.oldInputs = this.inputs;
-      this.oldFields = this.fields;
+      if (flag === 0) {
+        let i;
+        for (i = 0; i < this.inputs.length; i++) {
+          params.condition.push({type: this.conditions[i],input: this.inputs[i],field: this.fields[i]})
+        }
+        this.oldConditions = this.conditions;
+        this.oldInputs = this.inputs;
+        this.oldFields = this.fields;
+      } else if (flag === 1) {
+        this.keyword = val
+        params.filter.push({field: 'keyword',value: val})
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 2) {
+        this.org = val
+        params.filter.push({field: 'org',value: val})
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 3) {
+        this.venue = val
+        params.filter.push({field: 'venue',value: val})
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 4) {
+        if (this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) {
+          this.$message('请选择时间')
+          return;
+        } else if (this.startTime > this.endTime) {
+          this.$message('请选择正确的时间顺序')
+          return;
+        }
+        params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 5) {
+        this.keyword = '';
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 6) {
+        this.org = '';
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 7) {
+        this.venue = '';
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      }
       console.log(params)
       this.axios({
         method: 'post',
@@ -452,7 +590,17 @@ export default {
                     year: res.data.hits[i]._source.year,
                   }
               )
+              if (flag === 0) {
+                this.startTime = ''
+                this.endTime = ''
+                this.keyword = ''
+                this.org = ''
+                this.venue = ''
+              }
               this.getPaperData(res.data.hits[i]._source.id, i)
+              this.getOrgList()
+              this.getKeyList()
+              this.getVenueList()
             }
             this.show_card = true;
             this.currentPage = 1;
@@ -469,11 +617,24 @@ export default {
             input: this.input,
             field: this.field
           }
-        ]
+        ],
+        filter: [],
       }
       let i;
       for (i = 0; i < this.oldInputs.length; i++) {
         params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+      }
+      if (this.keyword !== '') {
+        params.filter.push({field: 'keyword',value: this.keyword})
+      }
+      if (this.org !== '') {
+        params.filter.push({field: 'org',value: this.org})
+      }
+      if (this.venue !== '') {
+        params.filter.push({field: 'venue',value: this.venue})
+      }
+      if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+        params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
       }
       console.log(params)
       this.axios({
@@ -514,6 +675,9 @@ export default {
                   }
               )
               this.getPaperData(res.data.hits[i]._source.id, i)
+              this.getOrgList()
+              this.getKeyList()
+              this.getVenueList()
             }
             this.show_card = true;
           })
@@ -533,6 +697,66 @@ export default {
             this.displayResult[index].collected = res.data.user_collected;
             this.displayResult[index].collections = res.data.collection_num;
             this.displayResult[index].comments = res.data.comment_num;
+          })
+    },
+    getOrgList() {
+      let params = {
+        idList: [
+
+        ]
+      }
+      let i = 0, len = this.displayResult.length;
+      for (; i < len; i++) {
+        params.idList.push(this.displayResult[i].id);
+      }
+      this.axios( {
+        method: "post",
+        url: this.$store.state.address+'api/publication/getOrgListByIdList/',
+        data: params
+      })
+          .then(res => {
+            console.log(res.data)
+            this.organizations = res.data.data
+          })
+    },
+    getKeyList() {
+      let params = {
+        idList: [
+
+        ]
+      }
+      let i = 0, len = this.displayResult.length;
+      for (; i < len; i++) {
+        params.idList.push(this.displayResult[i].id);
+      }
+      this.axios( {
+        method: "post",
+        url: this.$store.state.address+'api/publication/getKeyListByIdList/',
+        data: params
+      })
+          .then(res => {
+            console.log(res.data)
+            this.keywords = res.data.data
+          })
+    },
+    getVenueList() {
+      let params = {
+        idList: [
+
+        ]
+      }
+      let i = 0, len = this.displayResult.length;
+      for (; i < len; i++) {
+        params.idList.push(this.displayResult[i].id);
+      }
+      this.axios( {
+        method: "post",
+        url: this.$store.state.address+'api/publication/getVenueListByIdList/',
+        data: params
+      })
+          .then(res => {
+            console.log(res.data)
+            this.journals = res.data.data
           })
     }
   }
@@ -876,7 +1100,7 @@ td:hover {
 }
 .type {
   position: absolute;
-  left: 20px;
+  left: 30px;
   cursor: pointer;
 }
 .num {
