@@ -11,6 +11,7 @@ import messageManage from "@/views/MessageManage";
 import SearchDetails from "@/views/SearchDetails"
 import History from "@/views/History"
 import TransactionCenter from "@/views/TransactionCenter"
+import LoginSignUp from "@/views/Login&SignUp";
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,14 @@ const routes = [
     path: '/',
     name: 'home',
     component: Settings
+  },
+  {
+    path: '/login&signup',
+    name: 'login&register',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/Login&SignUp.vue')
   },
   {
     path: '/about',
