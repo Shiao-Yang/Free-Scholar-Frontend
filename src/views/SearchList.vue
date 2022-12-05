@@ -1,6 +1,9 @@
 <template>
   <div class="searchList">
     <div class="search-box">
+      <div class="search-head-box">
+        <span>Free Scholar</span>
+      </div>
       <div class="first-search">
         <div class="first-selects">
           <div class="mainSelect" id="select-type" style="outline: none" v-model="field">
@@ -537,14 +540,29 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Nerko+One&display=swap');
 .search-box {
   position: relative;
   margin: 0 auto 20px;
   width: 100%;
-  min-width: 1000px;
+  min-width: 1300px;
+  max-width: 1300px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  background: url("../assets/img/settings/searchImg.jpg") no-repeat;
+  background-size: 100% 100%;
+  padding: 30px 0 40px 0;
+  transition: 0.3s;
+  text-align: center;
   /*min-height: 100px;*/
   /*border: 1px solid rgb(240,240,240);*/
   /*box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);*/
+}
+
+.search-head-box {
+  font-size: 60px;
+  color: white;
+  font-family: 'Nerko One', cursive;
 }
 
 .first-search {
@@ -553,9 +571,8 @@ export default {
   height: 50px;
   width: 50%;
   min-width: 1000px;
-  margin: 0 auto 0px;
-  border: 1px solid rgb(240,240,240);
-  border-radius: 10px;
+  margin: auto;
+  background-color: white;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -605,12 +622,14 @@ export default {
   transition: 0.3s;
   visibility: hidden;
   opacity: 0;
+  pointer-events: none;
 }
 
 .search-box .mainSelect .sub-menu.active{
   bottom: -180px;
   visibility: visible;
   opacity: 1;
+  pointer-events: auto;
 }
 
 .search-box .mainSelect .sub-menu .sub-menu-item{
@@ -654,7 +673,7 @@ export default {
   width: 50%;
   min-width: 1000px;
   margin: 2px auto;
-  border: 2px solid rgb(240,240,240);
+  background-color: white;
 }
 
 
@@ -682,13 +701,15 @@ export default {
 }
 
 .more-search .search-icon-box{
-  text-align: center;
   margin-left: auto;
+  text-align: center;
+  margin-right: 10px;
   cursor: pointer;
   line-height: 50px;
   height: 50px;
   min-width: 50px;
   font-size: 28px;
+  border-radius: 10px;
 }
 
 .more-search .search-icon-box:hover{
@@ -696,6 +717,7 @@ export default {
 }
 
 .first-search .advance-search-option {
+  background-color: white;
   margin-left: auto;
   height: 50px;
   margin-right: 10px;
@@ -724,6 +746,7 @@ export default {
   background: white;
   cursor: pointer;
   transition: .2s;
+  border-radius: 10px;
 }
 
 .first-search .search-icon i:hover {
@@ -739,6 +762,7 @@ export default {
   display: flex;
   margin: auto;
   height: 50px;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
 }
 .condition-box {
   width: 50%;
