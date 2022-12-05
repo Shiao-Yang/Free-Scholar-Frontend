@@ -119,7 +119,12 @@ const routes = [
     path: '/TransactionCenter',
     name: 'TransactionCenter',
     component: () => import('../views/TransactionCenter.vue')
-  }
+  },
+  {
+    path: '/login&signup',
+    name: 'login&signup',
+    component: () => import('../views/Login&SignUp'),
+  },
 ]
 
 const router = new VueRouter({
