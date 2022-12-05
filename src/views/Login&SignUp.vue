@@ -71,13 +71,10 @@ export default {
     }
   },
   mounted() {
-    let script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = '../assets/login.js';
-    document.body.appendChild(script);
   }
 }
 </script>
+
 <style scoped>
 @import url('../assets/loginStyle.css');
 </style>
