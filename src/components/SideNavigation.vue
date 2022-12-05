@@ -3,26 +3,26 @@
     <div class="side-menu-top" v-on:click="changeIsActive">
     </div>
     <ul class="side-navigation-list">
-      <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': index === 1}">
-        <router-link to="#" style="--clr:#f44336;" title="主页">
+      <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': activeIndex === 1}">
+        <router-link :to="{path: '/'}" style="--clr:#f44336;" title="主页">
           <span class="icon"><i class='bx bxs-home'></i></span>
           <span class="text">主页</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(2)" :class="{'active': index === 2}">
-        <router-link to="#" style="--clr:#ffa117;" title="搜索">
+      <li class="side-navigation-item" v-on:click="activeLink(2)" :class="{'active': activeIndex === 2}">
+        <router-link :to="{path: '/'}" style="--clr:#ffa117;" title="搜索">
           <span class="icon"><i class='bx bx-search' ></i></span>
           <span class="text">高级检索</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(3)" :class="{'active': index === 3}">
-        <router-link to="#" style="--clr:#0fc70f;" title="主页">
+      <li class="side-navigation-item" v-on:click="activeLink(3)" :class="{'active': activeIndex === 3}">
+        <router-link :to="{path: '/'}" style="--clr:#0fc70f;" title="主页">
           <span class="icon"><i class='bx bxs-home'></i></span>
           <span class="text">主页</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(4)" :class="{'active': index === 4}">
-        <router-link to="#" style="--clr:#2196f3;" title="主页">
+      <li class="side-navigation-item" v-on:click="activeLink(4)" :class="{'active': activeIndex === 4}">
+        <router-link :to="{path: '/'}" style="--clr:#2196f3;" title="主页">
           <span class="icon"><i class='bx bxs-home'></i></span>
           <span class="text">主页</span>
         </router-link>
@@ -78,9 +78,14 @@ export default {
       userStateClr: '#f44336',
     }
   },
+  computed :{
+    activeIndex() {
+      if(this.$route.path === '' || this.$route.path === '/' || this.$route.path === '/settings')
+        return 1;
+    },
+  },
   methods: {
     activeLink(index){
-      this.index = index
     },
     changeIsActive() {
       this.isActive = !this.isActive;
