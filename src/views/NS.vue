@@ -190,6 +190,7 @@
         position: absolute;
         margin: 10px;
         left: 25px;
+        font-size: 18px;
         color: #4DA5FF;
     }
     .right .bxs-contact {
@@ -377,7 +378,7 @@
     .image {
         position: absolute;
         padding: 15px;
-        width: 70px; height: 70px;
+        width: 100px; height: 100px;
         border-radius: 20px;
         display: inline-block
     }

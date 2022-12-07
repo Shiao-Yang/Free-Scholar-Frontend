@@ -796,10 +796,40 @@ export default {
   width: 50%;
   min-width: 1000px;
   margin: auto;
+  border-radius: 10px;
+  /*border-top-left-radius: 10px;*/
+  /*border-top-right-radius: 10px;*/
+  background-color: white;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+}
+.first-search :focus{
+  position: relative;
+  display: flex;
+  height: 50px;
+  width: 50%;
+  min-width: 1000px;
+  margin: auto;
+  /*border-radius: 10px;*/
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   background-color: white;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
 
+.search-box .first-selects .mainSelect {
+  display: flex;
+  height: 50px;
+  width: 120px;
+  font-size: 18px;
+  text-align: center;
+  border: none;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+  border-right: 2px solid #f4f4f4;
+  transition: 0.5s;
+  cursor: pointer;
+  background-color: #f4f4f4;
+}
 .search-box .mainSelect {
   display: flex;
   height: 50px;
@@ -812,9 +842,9 @@ export default {
   cursor: pointer;
   background-color: #f4f4f4;
 }
-
 .search-box .mainSelect.condition {
   width: 80px;
+
 }
 
 .search-box .mainSelect .main-icon{
@@ -848,6 +878,7 @@ export default {
   opacity: 0;
   pointer-events: none;
 }
+
 
 .search-box .mainSelect .sub-menu.active{
   bottom: -180px;
@@ -897,6 +928,8 @@ export default {
   width: 50%;
   min-width: 1000px;
   margin: 2px auto;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   background-color: white;
 }
 
@@ -904,6 +937,7 @@ export default {
 .header-search-box {
   width: 68%;
   min-width: 490px;
+  border-radius: 10px;
   position: relative;
 }
 
@@ -911,9 +945,9 @@ export default {
   position: relative;
   font-size: 18px;
   width: 100%;
-  height: 30px;
+  height: 50px;
   padding: 10px 20px 10px 10px;
-  /*border-radius: 3px;*/
+  /*border-radius: 10px;*/
   border: none;
   /*border: 2px solid rgb(240,240,240);*/
   /*border-bottom: 3px solid rgba(33,150,243,0.5);*/
@@ -989,6 +1023,7 @@ export default {
   border-bottom: 2px solid rgba(0,0,0,0.1);
 }
 .condition-box {
+  top: 10px;
   width: 50%;
   height: 50px;
   min-width: 1000px;
@@ -996,6 +1031,8 @@ export default {
   text-align: center;
   align-items: center;
   justify-content: center;
+  /*border-bottom-left-radius: 10px;*/
+  /*border-bottom-right-radius: 10px;*/
   /*border: 2px solid rgb(240,240,240);*/
   /*box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);*/
   /*border-top: 2px solid #f4f4f4;*/
@@ -1007,7 +1044,7 @@ export default {
 
 .add-condition .add-condition-btn{
   height: 30px;
-  line-height: 30px;
+  line-height: 10px;
   text-align: center;
   cursor: pointer;
   border-radius: 10px;
@@ -1033,7 +1070,7 @@ export default {
 
 .clear-condition .clear-condition-btn{
   height: 30px;
-  line-height: 30px;
+  line-height: 10px;
   background-color: #f44336;
   color: #f4f4f4;
   border-radius: 10px;
