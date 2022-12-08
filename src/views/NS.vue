@@ -51,7 +51,8 @@
             <div style="overflow: auto; position: absolute; width: 100%; height: 660px">
                 <div class="contents" v-for="(item) in paperList">
                     <i class='bx bxs-bookmark-alt'></i>
-                    <div class="title">{{item.title}}</div>
+<!--                    <div class="title">{{item.title}}</div>-->
+                    <a :href="item.url" class="title">{{item.title}}</a>
                     <div class="author" v-for="(tItem) in item.authors">{{tItem.name}}</div>
                     <i class='bx bx-link'></i>
                     <div class="citation">被引用次数: {{item.n_citation}}</div>
@@ -180,6 +181,16 @@
     }
     .middle .title {
         position: absolute;
+        text-decoration: none;
+        margin-left: 10px;
+        margin-top: 5px;
+        left: 25px;
+        font-size: 15px;
+        color: #4DA5FF;
+    }
+    .middle .title:hover {
+        position: absolute;
+        text-decoration: underline;
         margin-left: 10px;
         margin-top: 5px;
         left: 25px;
