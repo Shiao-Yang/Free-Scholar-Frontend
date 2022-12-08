@@ -6,7 +6,7 @@
                     <img :src="require('../assets/'+baseInfo.avatar)" class="image">
                     <div class="userName" style="position: absolute; text-align: center;
                      font-size: 30px; display: inline-block; left: 85px; right: 0;
-                     top: 30px; color: white; font-weight: bold">{{baseInfo.userName}}</div>
+                     top: 30px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
                 <i class="bx bxs-user-plus"></i>
                 <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
@@ -52,9 +52,9 @@
                 <div class="contents" v-for="(item) in paperList">
                     <i class='bx bxs-bookmark-alt'></i>
                     <div class="title">{{item.title}}</div>
-                    <div class="author">{{item.detail}}</div>
+                    <div class="author" v-for="(tItem) in item.authors">{{tItem.name}}</div>
                     <i class='bx bx-link'></i>
-                    <div class="citation">被引用次数: {{item.citation}}</div>
+                    <div class="citation">被引用次数: {{item.n_citation}}</div>
                 </div>
             </div>
 
@@ -68,12 +68,12 @@
             </div>
             <div style="position: absolute; overflow: auto; width: 100%; height: 690px">
                 <div class="scholar" v-for="(item) in scholarList">
-                    <img :src="require('../assets/'+item.avatar)" class="image"
+                    <img :src="require('../assets/'+'YAN.jpg')" class="image"
                          style="height: 60px; width: 60px; margin: 5px;
                 padding: 0; border-radius: 8px">
                     <div style="position: absolute; left: 70px;
-                margin-top: 10px; font-weight: bold">{{item.userName}}</div>
-                    <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：{{item.papers}}</div>
+                margin-top: 10px; font-weight: bold">{{item.name}}</div>
+                    <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：{{item.count}}</div>
                 </div>
             </div>
 
@@ -84,10 +84,13 @@
 </template>
 
 <script>
+    import qs from 'qs';
     export default {
         name: "NS",
         data() {
             return {
+                uid: '540888a2dabfae92b4247e94',
+                userName: '',
                 baseInfo: {
                     userName: '王海涛',
                     avatar: 'YAN.jpg',
@@ -96,63 +99,52 @@
                 heat: 38,
                 visitors: 23,
                 paperList: [
-                    {
-                        title: '改进的二分法查找',
-                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
-                        citation: 27
-                    },
-                    {
-                        title: '改进的二分法查找',
-                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
-                        citation: 27
-                    },
-                    {
-                        title: '改进的二分法查找',
-                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
-                        citation: 27
-                    },
-                    {
-                        title: '改进的二分法查找',
-                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
-                        citation: 27
-                    },
-                    {
-                        title: '改进的二分法查找',
-                        detail: '王海涛， 朱洪 - 计算机工程, 2006 - cqvip.com',
-                        citation: 27
-                    },
 
                 ],
                 scholarList: [
-                    {
-                        userName: 'YAN',
-                        avatar: 'YAN.jpg',
-                        papers: 26,
-                    },
-                    {
-                        userName: 'YAN',
-                        avatar: 'YAN.jpg',
-                        papers: 26,
-                    },
 
-                    {
-                        userName: 'YAN',
-                        avatar: 'YAN.jpg',
-                        papers: 26,
-                    },
-                    {
-                        userName: 'YAN',
-                        avatar: 'YAN.jpg',
-                        papers: 26,
-                    },
-                    {
-                        userName: 'YAN',
-                        avatar: 'YAN.jpg',
-                        papers: 26,
-                    },
+                ],
+                test: [
 
                 ]
             }
+        },
+        methods: {
+            getCoworkers(uid){
+                this.axios({
+                    method: 'post',
+                    url: this.$store.state.address+'api/author/getAuthor/',
+                    data: qs.stringify({
+                        id: uid
+                    })
+                }).then(res => {
+                    console.log(res.data)
+                    this.scholarList = res.data.coworkers;
+                    this.paperList = res.data.data.pubs;
+                    this.userName = res.data.data.name;
+                }).catch(err => {
+                    console.log(err)
+                })
+            },
+            getBaseInfo(uid){
+                this.axios({
+                    method: 'post',
+                    url: 'http://127.0.0.1:8000/api/ScholarPortal/GetBaseInfo/',
+                    data: qs.stringify({
+                        id: uid
+                    })
+                }).then(res => {
+                    console.log(res)
+                }).catch(err =>{
+                    console.log(err)
+                })
+
+
+            }
+        },
+        created() {
+            this.getCoworkers(this.uid)
+            // this.getBaseInfo(this.uid)
         }
     }
 </script>
@@ -188,9 +180,10 @@
     }
     .middle .title {
         position: absolute;
-        margin: 10px;
+        margin-left: 10px;
+        margin-top: 5px;
         left: 25px;
-        font-size: 18px;
+        font-size: 15px;
         color: #4DA5FF;
     }
     .right .bxs-contact {
@@ -235,9 +228,10 @@
         color: #FBBD08;
     }
     .middle .author {
-        position: absolute;
+        position: relative;
+        display: inline-block;
         margin-left: 10px;
-        bottom: 10px;
+        top: 60px;
         font-size: 10px;
         color: #24bf24;
     }
@@ -255,7 +249,7 @@
     }
     .middle .contents {
         position: relative;
-        height: 70px;
+        height: 90px;
         width: 95%;
         margin: 10px auto;
         border-radius: 10px;
