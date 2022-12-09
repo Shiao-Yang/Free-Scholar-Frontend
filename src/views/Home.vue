@@ -195,7 +195,7 @@
         </div>
       </div>
     </div>
-    <el-dialog show-close=true title="编辑信息" :visible="editInfoVisible" width="35%" center="true">
+    <el-dialog show-close="true" title="编辑信息" :visible="editInfoVisible" width="35%" center="true">
       <el-form :model="infoForm" label-width="80px">
         <el-form-item label="用户名" label-width="80px">
           <el-input v-model="infoForm.name" autocomplete="off" :placeholder="infoForm.username"></el-input>
@@ -229,7 +229,7 @@
       <div slot="footer" class="dialog-footer" style=" position: relative; top: -20px;">
         <el-button @click="editInfoVisible = false">取 消</el-button>
         &emsp;&emsp;&emsp;
-        <el-button type="primary" plain @click="editInfoVisible = false">确 定</el-button>
+        <el-button type="primary" plain @click="changeInfo(uid); editInfoVisible = false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -313,14 +313,13 @@ export default {
     changeInfo(uid) {
       let param = this.infoForm;
       this.axios({
-        method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/editInfo',
+        data: param,
       })
       .then(res => {
         console.log(res.data)
 
-        this.baseInfo = res.data
-        this.baseInfo.avatar = 'img/home/avatar1.jpg'
         console.log(this.baseInfo)
 
       })
