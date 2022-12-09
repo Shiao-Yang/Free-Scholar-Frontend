@@ -75,6 +75,7 @@
             个人信息
           </span>
         </div>
+        <!--
         <div class="source-item" :class="{'active' : isActive2}" @click="changeActive2">
           <span class="image">
             <img src="../assets/img/home/password.png">
@@ -83,6 +84,7 @@
             修改密码
           </span>
         </div>
+        -->
         <div class="source-item" :class="{'active' : isActive3}" @click="changeActive3">
           <span class="image">
             <img src="../assets/img/home/avatar.png">
@@ -94,7 +96,7 @@
       </div>
       <div class="divider-y"></div>
       <div class="content-box">
-        <div class="show-box">
+        <div class="show-box" v-if="isActive1">
           <div class="content-item">
             <div class="item-name">
               用户名
@@ -191,47 +193,72 @@
               {{baseInfo.bio}}
             </div>
           </div>
-          <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; right: 0px; top: 0px;" @click="editInfoVisible = true;">编辑</el-button>
+          <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; right: 0px; top: 0px;" @click="editInfoVisible = true;">编辑信息</el-button>
+          <el-button type="primary" plain icon="el-icon-lock" style="position: absolute; right: 150px; top: 0px;" @click="changePwdVisible = true;">修改密码</el-button>
+          <el-dialog title="编辑信息" :visible="editInfoVisible" width="35%" :center="isCenter">
+            <el-form :model="infoForm" label-width="80px">
+              <el-form-item label="用户名" label-width="80px">
+                <el-input v-model="infoForm.name" autocomplete="off" :placeholder="infoForm.name"></el-input>
+              </el-form-item>
+              <el-form-item label="邮箱" >
+                <el-input v-model="infoForm.mail" autocomplete="off" :placeholder="infoForm.mail"></el-input>
+              </el-form-item>
+              <el-form-item label="生日" >
+                <el-date-picker
+                    v-model="infoForm.birthday"
+                    type="date"
+                    placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="性别" >
+                <el-select v-model="infoForm.gender" placeholder="请选择性别">
+                  <el-option label="保密" :value=0></el-option>
+                  <el-option label="男" :value=1></el-option>
+                  <el-option label="女" :value=2></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="个人简介">
+                <el-input
+                    type="textarea"
+                    maxlength="60"
+                    placeholder="请输入内容"
+                    v-model="infoForm.bio">
+                </el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer" style=" position: relative; top: -20px;">
+              <el-button @click="editInfoVisible = false">取 消</el-button>
+              &emsp;&emsp;&emsp;
+              <el-button type="primary" plain @click="changeInfo(uid); editInfoVisible = false">确 定</el-button>
+            </div>
+          </el-dialog>
+          <el-dialog title="修改密码" :visible="changePwdVisible" width="35%" :center="isCenter">
+            <el-form :model="password" label-width="80px">
+              <el-form-item label="原密码" label-width="80px">
+                <el-input v-model="password.password_old" autocomplete="off" placeholder="请输入原密码" show-password clearable></el-input>
+              </el-form-item>
+              <el-form-item label="新密码" >
+                <el-input v-model="password.password1" autocomplete="off" placeholder="请输入新密码" show-password clearable></el-input>
+              </el-form-item>
+              <el-form-item label="确认密码" >
+                <el-input v-model="password.password2" autocomplete="off" placeholder="请再次输入新密码" show-password clearable></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer" style=" position: relative; top: -20px;">
+              <el-button @click="changePwdVisible = false">取 消</el-button>
+              &emsp;&emsp;&emsp;
+              <el-button type="primary" plain @click="changePwd(uid); changePwdVisible = false">确 定</el-button>
+            </div>
+          </el-dialog>
+        </div>
+        <div class="show-box" v-if="isActive3">
+          <div class="user-avatar">
+            <img :src="require('../assets/' + baseInfo.avatar)">
+          </div>
+          <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; left: 50px; bottom: 10px;">更换头像</el-button>
         </div>
       </div>
     </div>
-    <el-dialog show-close="true" title="编辑信息" :visible="editInfoVisible" width="35%" center="true">
-      <el-form :model="infoForm" label-width="80px">
-        <el-form-item label="用户名" label-width="80px">
-          <el-input v-model="infoForm.name" autocomplete="off" :placeholder="infoForm.username"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" >
-          <el-input v-model="infoForm.mail" autocomplete="off" :placeholder="infoForm.mail"></el-input>
-        </el-form-item>
-        <el-form-item label="生日" >
-          <el-date-picker
-              v-model="infoForm.birthday"
-              type="date"
-              placeholder="选择日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="性别" >
-          <el-select v-model="infoForm.gender" placeholder="请选择性别">
-            <el-option label="保密" value=0></el-option>
-            <el-option label="男" value=1></el-option>
-            <el-option label="女" value=2></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="个人简介">
-          <el-input
-              type="textarea"
-              maxlength="60"
-              placeholder="请输入内容"
-              v-model="infoForm.bio">
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer" style=" position: relative; top: -20px;">
-        <el-button @click="editInfoVisible = false">取 消</el-button>
-        &emsp;&emsp;&emsp;
-        <el-button type="primary" plain @click="changeInfo(uid); editInfoVisible = false">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -241,9 +268,11 @@ export default {
   data() {
     return {
       uid: 1,
-      isActive1: true, //true 则展示系统消息
+      closable: true, //是否可关闭dialog
+      isCenter: true, //dialog footer 和 head 是否居中
+      isActive1: false, //true 则展示系统消息
       isActive2: false, //true 则展示收到的私信
-      isActive3: false, //true 则展示发送的私信
+      isActive3: true, //true 则展示发送的私信
       avatar: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
@@ -251,12 +280,16 @@ export default {
       isFollow: false,
       isLike: false,
       isScholar: false,
-      follows: 32,
-      likes: 20,
-      followers: 15,
       editInfoVisible: false,
+      changePwdVisible: false,
+      password: {
+        id: this.uid,
+        password_old: '',
+        password1: '',
+        password2: '',
+      },
       infoForm: {
-        username: '',
+        name: '',
         mail: '',
         birthday: '',
         bio: '',
@@ -273,11 +306,15 @@ export default {
         institution: {
           name: 'Beihang University',
         },
+        follows: 32,
+        likes: 20,
+        followers: 15,
         identity: 1,
         bio:"2234223422342234223422342234223422342234",
         state: 1,
         gender: 1,
         login_date: '2022-10-16 22:10:16',
+
       },
 
     }
@@ -310,8 +347,54 @@ export default {
         this.isActive2 = false;
       }
     },
+    changePwd(uid) {
+      let param = this.password
+      param.id = uid
+      console.log(param)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/changePwd',
+        data: param,
+      })
+      .then(res => {
+        console.log(res.data)
+        if(res.data.errno === 0) {
+          this.$message ({
+            message: '修改成功',
+            type: 'success',
+            showClose: true,
+          });
+        }
+        else {
+          this.$message ({
+            message: res.data.msg,
+            type: 'error',
+            showClose: true,
+          });
+        }
+
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+      this.password = { //重置为空
+        id: this.uid,
+        password_old: '',
+        password1: '',
+        password2: '',
+      }
+    },
     changeInfo(uid) {
-      let param = this.infoForm;
+      let param = {
+        id: uid,
+        name: this.infoForm.name,
+        mail: this.infoForm.mail,
+        birthday: this.infoForm.birthday,
+        gender: this.infoForm.gender,
+        bio: this.infoForm.bio,
+      }
+      console.log(param)
       this.axios({
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/editInfo',
@@ -320,12 +403,25 @@ export default {
       .then(res => {
         console.log(res.data)
 
+
+
         console.log(this.baseInfo)
 
       })
       .catch(err => {
         console.log(err);
       })
+
+      this.infoForm = {
+        name: '',  //重置为空
+        mail: '',
+        birthday: '',
+        bio: '',
+        gender: null,
+        style: {
+          width: "100px",
+        },
+      }
     },
     getBaseInfo(uid) {
       this.axios({
@@ -635,9 +731,9 @@ export default {
 }
 
 .info-box .content-box .show-box .content-item {
+  /*border: solid red;*/
   display: flex;
   flex-direction: row;
-  /*border: solid red;*/
   width: 850px;
   height: 50px;
   margin: 10px 0px 10px 5px;
@@ -706,8 +802,24 @@ export default {
   position: relative;
 }
 
+/*************  我的头像 css  ***********/
 
+.info-box .content-box .show-box .user-avatar {
+  /*border: solid red;*/
+  position: relative;
+  left: -70px;
+  top: 10px;
+  width: 350px;
+  height: 350px;
+}
 
+.info-box .content-box .show-box .user-avatar img {
+  /*border: solid red;*/
+  width: 330px;
+  height: 330px;
+  margin: 10px 10px 10px 10px;
+  border-radius: 5px;
+}
 
 
 
