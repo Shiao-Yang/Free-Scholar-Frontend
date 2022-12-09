@@ -811,7 +811,7 @@ export default {
   margin: auto;
   /*border-radius: 10px;*/
   border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
   background-color: white;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
@@ -946,7 +946,7 @@ export default {
   font-size: 18px;
   width: 100%;
   height: 50px;
-  padding: 10px 20px 10px 10px;
+  padding: 0 20px 0 10px;
   /*border-radius: 10px;*/
   border: none;
   /*border: 2px solid rgb(240,240,240);*/
