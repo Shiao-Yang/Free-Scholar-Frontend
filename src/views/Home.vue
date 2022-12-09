@@ -108,7 +108,7 @@
               邮箱
             </div>
             <div class="item-content">
-              {{baseInfo.email}}
+              {{baseInfo.mail}}
             </div>
           </div>
           <div class="content-item">
@@ -116,18 +116,122 @@
               身份
             </div>
             <div class="item-content" v-if="baseInfo.identity === 0">
-              普通用户
+              <div class="text">
+                普通用户
+              </div>
+              <div class="image">
+                <img src="../assets/img/home/user.png" style="margin: 5px; width: 35px; height: 35px; position: relative; left: -100px; filter: drop-shadow(100px 0px rgba(98,100,100,0.82)); ">
+              </div>
             </div>
             <div class="item-content" v-if="baseInfo.identity === 1">
-              学者
-            </div>
-            <div class="item-content" v-if="baseInfo.identity === 2">
-              管理员
+              <div class="text">
+                认证学者
+              </div>
+              <div class="image">
+                <img src="../assets/img/home/scholar.png">
+              </div>
             </div>
           </div>
+          <div class="content-item">
+            <div class="item-name">
+              当前状态
+            </div>
+            <div class="item-content" v-if="baseInfo.state === 0">
+              <div class="text" style="width: 50px;">
+                正常
+              </div>
+              <div class="image">
+                <img src="../assets/img/home/state-point.png" style="width: 80px; height: 80px; position: relative; left: -110px; filter: drop-shadow(90px 0px rgba(8,117,8,0.82)); ">
+              </div>
+            </div>
+            <div class="item-content" v-if="baseInfo.state === 1">
+              <div class="text" style="width: 50px;">
+                禁言
+              </div>
+              <div class="image">
+                <img src="../assets/img/home/state-point.png" style="width: 80px; height: 80px; position: relative; left: -110px; filter: drop-shadow(90px 0px rgba(217,4,21,0.97)); ">
+              </div>
+            </div>
+            <div class="item-content" v-if="baseInfo.state === 2">
+              <div class="text" style="width: 50px;">
+                封禁
+              </div>
+              <div class="image">
+                <img src="../assets/img/home/state-point.png" style="width: 80px; height: 80px; position: relative; left: -110px; filter: drop-shadow(90px 0px rgb(0,0,0)); ">
+              </div>
+            </div>
+          </div>
+          <div class="content-item">
+            <div class="item-name">
+              生日
+            </div>
+            <div class="item-content">
+              {{baseInfo.birthday}}
+            </div>
+          </div>
+          <div class="content-item">
+            <div class="item-name">
+              性别
+            </div>
+            <div class="item-content" v-if="baseInfo.gender===0">
+              保密
+            </div>
+            <div class="item-content" v-if="baseInfo.gender===1">
+              男
+            </div>
+            <div class="item-content" v-if="baseInfo.gender===2">
+              女
+            </div>
+          </div>
+          <div class="content-item">
+            <div class="item-name">
+              个人简介
+            </div>
+            <div class="item-content">
+              {{baseInfo.bio}}
+            </div>
+          </div>
+          <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; right: 0px; top: 0px;" @click="editInfoVisible = true;">编辑</el-button>
         </div>
       </div>
     </div>
+    <el-dialog show-close=true title="编辑信息" :visible="editInfoVisible" width="35%" center="true">
+      <el-form :model="infoForm" label-width="80px">
+        <el-form-item label="用户名" label-width="80px">
+          <el-input v-model="infoForm.name" autocomplete="off" style="width: 200px;" :placeholder="infoForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" >
+          <el-input v-model="infoForm.mail" autocomplete="off" :placeholder="infoForm.mail"></el-input>
+        </el-form-item>
+        <el-form-item label="生日" label-width="97px">
+          <el-date-picker
+              v-model="infoForm.birthday"
+              type="date"
+              placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="性别" label-width="97px">
+          <el-select v-model="infoForm.gender" placeholder="请选择性别">
+            <el-option label="保密" value=0></el-option>
+            <el-option label="男" value=1></el-option>
+            <el-option label="女" value=2></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="个人简介">
+          <el-input
+              type="textarea"
+              maxlength="60"
+              placeholder="请输入内容"
+              v-model="infoForm.bio">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer" style=" position: relative; top: -20px;">
+        <el-button @click="editInfoVisible = false">取 消</el-button>
+        &emsp;&emsp;&emsp;
+        <el-button type="primary" plain @click="editInfoVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -150,87 +254,32 @@ export default {
       follows: 32,
       likes: 20,
       followers: 15,
+      editInfoVisible: false,
+      infoForm: {
+        username: '',
+        mail: '',
+        birthday: '',
+        bio: '',
+        gender: null,
+        style: {
+          width: "100px",
+        }
+      },
       baseInfo: {
         username:"lisi",
         avatar: 'img/home/avatar1.jpg',
-        email: '123@qq.com',
-        identity: 0,
-        institution:{
-          name:"UBAA",
+        mail: '123@qq.com',
+        birthday: "2022-10-16",
+        institution: {
+          name: 'Beihang University',
         },
-        bio:"2234",
-        follows:1,
-        followers:1,
-        likes:0,
+        identity: 1,
+        bio:"2234223422342234223422342234223422342234",
+        state: 1,
+        gender: 1,
+        login_date: '2022-10-16 22:10:16',
       },
-      showList: [
-        {
-          id: 1,
-          avatar: 'img/home/avatar1.jpg',
-          username: '王婉',
-          institution: 'Beihang University',
-          bio: 'I am 王婉',
-          time: '2022-01-10 16:07',
-        },
-        {
-          id: 1,
-          avatar: 'img/home/avatar1.jpg',
-          username: '王婉',
-          institution: 'Beihang University',
-          bio: 'I am 王婉',
-          time: '2022-01-10 16:07',
-        },
-        {
-          id: 1,
-          avatar: 'img/home/avatar1.jpg',
-          username: '王婉',
-          institution: 'Beihang University',
-          bio: 'I am 王婉',
-          time: '2022-01-10 16:07',
-        },
-      ],
-      followList:[
-        {
-          id: 1,
-          avatar: 'img/home/avatar1.jpg',
-          username: '王婉',
-          institution: 'Beihang University',
-          bio: 'I am 王婉',
-          time: '2022-01-10 16:01',
-        },
-        {
-          id: 1,
-          avatar: 'img/home/avatar1.jpg',
-          username: '王婉',
-          institution: 'Beihang University',
-          bio: 'I am 王婉',
-          time: '2022-01-10 16:02',
-        },
-        {
-          id: 1,
-          avatar: 'img/home/avatar1.jpg',
-          username: '王婉',
-          institution: 'Beihang University',
-          bio: 'I am 王婉',
-          time: '2022-01-10 16:03',
-        },
-        {
-          id: 1,
-          avatar: 'img/home/avatar1.jpg',
-          username: '王婉',
-          institution: 'Beihang University',
-          bio: 'I am 王婉',
-          time: '2022-01-10 16:04',
-        },
-        {
-          id: 1,
-          avatar: 'img/home/avatar1.jpg',
-          username: '王婉',
-          institution: 'Beihang University',
-          bio: 'I am 王婉',
-          time: '2022-01-10 16:05',
-        },
-      ]
+
     }
   },
   methods: {
@@ -551,7 +600,7 @@ export default {
 
 .info-box .content-box {
   display: inline-block;
-  border: solid red;
+  /*border: solid red;*/
   position: absolute;
   top: 95px;
   left: 340px;
@@ -560,25 +609,25 @@ export default {
 }
 
 .info-box .content-box .show-box {
-  border: solid red;
+  /*border: solid red;*/
   width: 900px;
-  height: 400px;
+  height: 430px;
   position: relative;
-  top: 25px;
-  left: 25px;
+  top: 10px;
+  left: 100px;
 }
 
 .info-box .content-box .show-box .content-item {
   display: flex;
   flex-direction: row;
-  border: solid red;
+  /*border: solid red;*/
   width: 850px;
   height: 50px;
   margin: 10px 0px 10px 5px;
 }
 
 .info-box .content-box .show-box .content-item .item-name {
-  border: solid red;
+  /*border: solid red;*/
   display: flex;
   position: relative;
   left: 0px;
@@ -594,7 +643,7 @@ export default {
 }
 
 .info-box .content-box .show-box .content-item .item-content {
-  border: solid red;
+  /*border: solid red;*/
   display: flex;
   position: relative;
   left: 50px;
@@ -606,6 +655,40 @@ export default {
   line-height: 50px;
   align-items: center;
 }
+
+.info-box .content-box .show-box .content-item .item-content .text {
+  /*border: solid red;*/
+  display: flex;
+  position: relative;
+  height: 50px;
+  width: 90px;
+  font-size: 20px;
+  font-weight: normal;
+  flex-direction: row;
+  line-height: 50px;
+  align-items: center;
+}
+
+.info-box .content-box .show-box .content-item .item-content .image {
+  /*border: solid red;*/
+  display: flex;
+  position: relative;
+  height: 50px;
+  width: 50px;
+  font-size: 20px;
+  font-weight: normal;
+  flex-direction: row;
+  line-height: 50px;
+  align-items: center;
+  overflow: hidden;
+}
+
+.info-box .content-box .show-box .content-item .item-content .image img {
+  height: 45px;
+  width: 45px;
+  position: relative;
+}
+
 
 
 
