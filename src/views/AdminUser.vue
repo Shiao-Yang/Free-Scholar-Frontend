@@ -6,21 +6,21 @@
         <i class='bx bxs-user'></i>
         <div class="info">
           <p class="title">用户数量</p>
-          <p class="num">48</p>
+          <p class="num">{{userNum}}</p>
         </div>
       </div>
       <div class="scholar-box data-box">
         <i class='bx bx-award'></i>
         <div class="info">
           <p class="title">认证学者</p>
-          <p class="num">32</p>
+          <p class="num">{{scholarNum}}</p>
         </div>
       </div>
       <div class="admin-box data-box">
         <i class='bx bxs-coffee-alt' ></i>
         <div class="info">
           <p class="title">管理员</p>
-          <p class="num">23</p>
+          <p class="num">{{adminNum}}</p>
         </div>
       </div>
     </div>
@@ -40,8 +40,7 @@
       <div v-for="(item, i) in displayResult" class="result-box">
         <img class="avatar" src="../assets/YAN.jpg">
         <table class="result-info">
-          <tr class="id"><td class="title">用户id:</td><span>{{item.id}}</span></tr>
-          <tr class="name"><td class="title">姓名:</td><span>{{item.name}}&nbsp</span><i :class="{'bx bxs-user':item.role===0,'bx bx-award':item.role===1}"></i></tr>
+          <tr class="name"><td class="title">姓名:</td><span>{{item.name}}&nbsp</span><i class="bx bxs-user"></i></tr>
           <tr class="e-mail"><td class="title">e-mail:</td><span>{{item.mail}}</span></tr>
           <tr class="status"><td class="title">状态:</td>
             <span v-if="item.status===0">正常&nbsp&nbsp<i class='bx bxs-circle green'></i></span>
@@ -50,9 +49,9 @@
           </tr>
         </table>
         <div class="op-box">
-          <img src="../assets/img/adminUser/eyedropper.png" class="op" title="恢复正常">
-          <img src="../assets/img/adminUser/comment-slash.png" class="op" title="禁言">
-          <img src="../assets/img/adminUser/ban.png" class="op" title="封禁">
+          <img src="../assets/img/adminUser/eyedropper.png" class="op" title="恢复正常" @click="setNormal(item.id,i)">
+          <img src="../assets/img/adminUser/comment-slash.png" class="op" title="禁言" @click="setMute(item.id,i)">
+          <img src="../assets/img/adminUser/ban.png" class="op" title="封禁" @click="setBan(item.id,i)">
         </div>
       </div>
     </div>
@@ -61,7 +60,7 @@
       <el-pagination
           layout="prev, pager, next, jumper"
           :page-size="5"
-          :pager-count="10"
+          :pager-count="11"
           :total="users.length"
           @current-change="changePage"
       >
@@ -76,6 +75,8 @@ export default {
   name: 'AdminUser',
   created() {
     window.myData = this;
+    this.getNum()
+    this.getUser()
   },
   mounted() {
 
@@ -83,89 +84,11 @@ export default {
   data() {
     return {
       input: '',
-      displayResult: [
-        {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 0,
-          status: 0,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 1,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 2,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 2,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 0,
-        }],
-      users: [
-        {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 0,
-          status: 0,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 1,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 2,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 2,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 0,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 0,
-          status: 1,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 1,
-        }, {
-          id: 1,
-          name: '王婉',
-          mail: 'abc@mail.com',
-          role: 1,
-          status: 2,
-        }
-      ]
+      adminNum: 0,
+      scholarNum: 0,
+      userNum: 0,
+      displayResult: [],
+      users: []
     }
   },
   methods: {
@@ -179,6 +102,85 @@ export default {
         this.displayResult.push(this.users[i]);
       }
     },
+    getUser() {
+      this.axios( {
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getUser',
+      })
+          .then(res => {
+            console.log(res.data)
+            let i = 0;
+            for (; i < res.data.length; i++) {
+              this.users.push({id: res.data[i].id,
+                name: res.data[i].name,
+                mail: res.data[i].mail,
+                avatar: res.data[i].avatar,
+                status: res.data[i].state})
+            }
+            i = 0;
+            for (; i < 5 && i < res.data.length; i++) {
+              this.displayResult.push({id: res.data[i].id,
+                name: res.data[i].name,
+                mail: res.data[i].mail,
+                avatar: res.data[i].avatar,
+                status: res.data[i].state})
+            }
+          })
+    },
+    getNum() {
+      this.axios( {
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getNum',
+      })
+          .then(res => {
+            console.log(res.data)
+            this.adminNum = res.data.adminNum
+            this.scholarNum = res.data.scholarNum
+            this.userNum = res.data.userNum
+          })
+    },
+    setNormal(id,i) {
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/relation/setNormal',
+        data: {_id: id}
+      })
+          .then(res => {
+            switch (res.data.errno) {
+              case 0:
+                    this.displayResult[i].status = 0
+                    this.$message(res.data.msg)
+            }
+          })
+    },
+    setMute(id,i) {
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/relation/setMute',
+        data: {_id: id}
+      })
+          .then(res => {
+            switch (res.data.errno) {
+              case 0:
+                this.displayResult[i].status = 1
+                this.$message(res.data.msg)
+            }
+          })
+    },
+    setBan(id,i) {
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/relation/setBan',
+        data: {_id: id}
+      })
+          .then(res => {
+            switch (res.data.errno) {
+              case 0:
+                this.displayResult[i].status = 2
+                this.$message(res.data.msg)
+            }
+          })
+    }
   }
 }
 </script>
@@ -346,8 +348,9 @@ export default {
   color: #C34A36;
 }
 .result-box .op-box {
-  float: left;
-  margin: 45px 0 0 35%;
+  position: absolute;
+  right: 10%;
+  margin-top: 50px;
 }
 .result-box .op {
   width: 50px;
