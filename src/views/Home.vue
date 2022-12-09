@@ -198,19 +198,19 @@
     <el-dialog show-close=true title="编辑信息" :visible="editInfoVisible" width="35%" center="true">
       <el-form :model="infoForm" label-width="80px">
         <el-form-item label="用户名" label-width="80px">
-          <el-input v-model="infoForm.name" autocomplete="off" style="width: 200px;" :placeholder="infoForm.username"></el-input>
+          <el-input v-model="infoForm.name" autocomplete="off" :placeholder="infoForm.username"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" >
           <el-input v-model="infoForm.mail" autocomplete="off" :placeholder="infoForm.mail"></el-input>
         </el-form-item>
-        <el-form-item label="生日" label-width="97px">
+        <el-form-item label="生日" >
           <el-date-picker
               v-model="infoForm.birthday"
               type="date"
               placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="性别" label-width="97px">
+        <el-form-item label="性别" >
           <el-select v-model="infoForm.gender" placeholder="请选择性别">
             <el-option label="保密" value=0></el-option>
             <el-option label="男" value=1></el-option>
@@ -309,6 +309,24 @@ export default {
         this.isActive1 = false;
         this.isActive2 = false;
       }
+    },
+    changeInfo(uid) {
+      let param = this.infoForm;
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+      })
+      .then(res => {
+        console.log(res.data)
+
+        this.baseInfo = res.data
+        this.baseInfo.avatar = 'img/home/avatar1.jpg'
+        console.log(this.baseInfo)
+
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
     getBaseInfo(uid) {
       this.axios({
