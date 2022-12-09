@@ -2,7 +2,9 @@
 
     <div class="background">
         <div class="ScholarsTop">
-
+            <div class="Image">
+                <img src="../assets/YAN.jpg" class="cover">
+            </div>
             <div class="line_1">
                 <div class="name">
                     YAN
@@ -12,6 +14,9 @@
                 </div>
                 <div class="number">
                     574
+                </div>
+                <div class="university">
+                    北京航空航天大学
                 </div>
             </div>
             <div class="line_2">
@@ -27,15 +32,14 @@
                 </div>
             </div>
 
-            <div class="university">
-                北京航空航天大学
-            </div>
+
         </div>
-        <div class="Image">
-            <img src="../assets/YAN.jpg" class="cover">
-        </div>
+
         <div class="academicAchieve">
-            <div class="title">学术成果</div>
+            <div>
+                <img src="../assets/img/ScholarsPortal/AcademicAchieve.svg" class="academic">
+                <div class="title">学术成果</div>
+            </div>
             <div class="contents">
                 <div class="paper">急性脑梗死的治疗进展</div>
                 <img src="../assets/img/thumb.png" class="thumb">
@@ -92,27 +96,25 @@
 <style scoped>
 
     .ScholarsTop {
-        position: absolute;
-        height: 200px;
-        width: 1500px;
-        left: 0;
-        right: 0;
-        /*margin: 0 auto;*/
+        position: relative;
+        height: 140px;
+        width: 100%;
+        top:20px;
+        margin: 0 auto;
+
         background-color: white;
         border-radius: 10px;
-        margin-top: 50px;
+        /*margin-top: 50px;*/
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
     }
     .academicAchieve {
-        position: absolute;
+        position: relative;
         height: 500px;
-        width: 1500px;
-        top: 250px;
-        left: 0;
-        right: 0;
+        width: 100%;
+        top: 50px;
         background-color: white;
         border-radius: 10px;
-        margin-top: 50px;
+        margin: 0 auto;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
     }
 
@@ -122,66 +124,88 @@
     }
     .background {
         position: absolute;
+        width: 100%;
+        margin: 0 auto;
     }
     .cover {
-        position: absolute;
-        height: 230px;
-        width: 230px;
-        top: 20px;
+        position: relative;
+        height: 170px;
+        width: 170px;
+        top: -30px;
         /*margin: 20px;*/
         border-radius: 10px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
     }
-
+    .line_1 {
+        width: 100%;
+        text-align: center;
+    }
     .line_1 .name {
+
         position: absolute;
-        font-size: 35px;
-        left: 250px;
+        font-size: 25px;
+        left: 200px;
         top: 20px;
     }
     .line_1 .visitors {
         position: absolute;
-        font-size: 35px;
-        left: 650px;
+        font-size: 25px;
+        left: 600px;
         top: 20px;
 
     }
     .line_1 .number {
-        position: absolute;
-        font-size: 35px;
 
-        left: 770px;
+        position: absolute;
+        font-size: 25px;
+
+        left: 680px;
         top: 20px;
     }
     .line_2 .major {
         position: absolute;
-        font-size: 35px;
-        left: 250px;
+        font-size: 25px;
+        left: 200px;
         bottom: 20px;
     }
-
     .line_2 .thumb {
         position: absolute;
-        font-size: 35px;
-        left: 650px;
+        font-size: 25px;
+        left: 600px;
         bottom: 20px;
     }
     .line_2 .number {
         position: absolute;
-        font-size: 35px;
-        left: 770px;
+        font-size: 25px;
+        left: 680px;
         bottom: 20px;
     }
-    .university {
+    .line_1 .university {
+
         position: absolute;
         color: #4DA5FF;
-        font-size: 35px;
+        font-size: 25px;
         left: 1000px;
         top: 20px;
     }
+    .academic {
+        position: relative;
+        display: inline-block;
+        height: 45px;
+        width: 45px;
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+    .academicAchieve .contents{
+        margin: 0 auto;
+    }
     .academicAchieve .title {
+        position: relative;
+        display: inline-block;
+        top: -10px;
         font-size: 35px;
-        margin: 20px;
+        left: 10px;
+        /*margin: 20px;*/
     }
     .academicAchieve .paper {
         display: inline-block;
@@ -229,8 +253,9 @@
         right: 70px;
     }
     .academicAchieve .line {
-        margin: 20px;
-        width: 1460px;
+        /*margin: 20px;*/
+        margin: 10px 18px;
+        width: 98%;
         height: 2px;
         background-color: #e0e0e0;
     }

@@ -1,8 +1,5 @@
 <template>
   <div class="box">
-    <h3>
-      this is collection
-    </h3>
     <div class="myCollection">
       <div class="title">
         <div class="titleName">
@@ -13,182 +10,299 @@
         </div>
       </div>
       <div class="divider"></div>
-      <div class="Collections">
-        <el-collapse v-model="activeNames" @change="handleChange">
-          <el-collapse-item name="1">
-            <template slot="title">
+      <div class="main-container">
+        <div class="Collections">
+          <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse-item name="1">
+              <template slot="title">
               <span style="font-size: 18px;margin-left: 20px">
                 我创建的
               </span>
-            </template>
-            <div class="item" @mouseenter="onNew" @mouseleave="leaveNew" :style="NewStyle">
-              <i class="el-icon-circle-plus" style="margin-right: 5px;margin-left: 10px;"></i><b>新建收藏夹</b>
-            </div>
-            <div v-for="(item,index) in List" :key="index">
-              <div class="item" @mouseenter="onItem(index)" @mouseleave="leaveItem(index)" @click="clickItem(index)" :style="List[index].style">
-                <div v-if="List[index].isClick === 0">
-                  <i class="bx bxs-folder" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List[index].name}}</b>
-                </div>
-                <div v-if="List[index].isClick === 1">
-                  <i class="bx bxs-folder-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List[index].name}}</b>
+              </template>
+              <div class="item" @mouseenter="onNew" @mouseleave="leaveNew" :style="NewStyle">
+                <i class="el-icon-circle-plus" style="margin-right: 5px;margin-left: 10px;"></i><b>新建收藏夹</b>
+              </div>
+              <div v-for="(item,index) in List" :key="index">
+                <div class="item" @mouseenter="onItem(index)" @mouseleave="leaveItem(index)" @click="clickItem(index)" :style="List[index].style">
+                  <div v-if="List[index].isClick === 0">
+                    <i class="bx bxs-folder" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List[index].name}}</b>
+                  </div>
+                  <div v-if="List[index].isClick === 1">
+                    <i class="bx bxs-folder-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List[index].name}}</b>
+                  </div>
                 </div>
               </div>
-            </div>
-          </el-collapse-item>
-          <el-collapse-item name="2">
-            <template slot="title">
+            </el-collapse-item>
+            <el-collapse-item name="2">
+              <template slot="title">
               <span style="font-size: 18px;margin-left: 20px">
                 我的订阅与收藏
               </span>
-            </template>
-            <div v-for="(item,index) in List1" :key="index">
-              <div class="item" @mouseenter="onItem1(index)" @mouseleave="leaveItem1(index)" @click="click1Item(index)" :style="List1[index].style">
-                <div v-if="List1[index].isClick === 0">
-                  <i class="bx bxs-book-alt" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List1[index].name}}</b>
-                  <span style="float: right;margin-right: 20px">
+              </template>
+              <div v-for="(item,index) in List1" :key="index">
+                <div class="item" @mouseenter="onItem1(index)" @mouseleave="leaveItem1(index)" @click="click1Item(index)" :style="List1[index].style">
+                  <div v-if="List1[index].isClick === 0">
+                    <i class="bx bxs-book-alt" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List1[index].name}}</b>
+                    <span style="float: right;margin-right: 20px">
                     32
                   </span>
-                </div>
-                <div v-if="List1[index].isClick === 1">
-                  <i class="bx bxs-book-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List1[index].name}}</b>
-                  <span style="float: right;margin-right: 20px;color: white">
+                  </div>
+                  <div v-if="List1[index].isClick === 1">
+                    <i class="bx bxs-book-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List1[index].name}}</b>
+                    <span style="float: right;margin-right: 20px;color: white">
                     32
                   </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div v-for="(item,index) in List2" :key="index">
-              <div class="item" @mouseenter="onItem2(index)" @mouseleave="leaveItem2(index)" @click="click2Item(index)" :style="List2[index].style">
-                <div v-if="List2[index].isClick === 0">
-                  <i class="bx bxs-folder" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List2[index].name}}</b>
-                </div>
-                <div v-if="List2[index].isClick === 1">
-                  <i class="bx bxs-folder-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List2[index].name}}</b>
+              <div v-for="(item,index) in List2" :key="index">
+                <div class="item" @mouseenter="onItem2(index)" @mouseleave="leaveItem2(index)" @click="click2Item(index)" :style="List2[index].style">
+                  <div v-if="List2[index].isClick === 0">
+                    <i class="bx bxs-folder" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List2[index].name}}</b>
+                  </div>
+                  <div v-if="List2[index].isClick === 1">
+                    <i class="bx bxs-folder-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List2[index].name}}</b>
+                  </div>
                 </div>
               </div>
+            </el-collapse-item>
+          </el-collapse>
+        </div>
+        <div class="CollectionItems">
+          <div class="CollectionItem">
+            <div class="itemTitle">
+              改进的二分法查找
             </div>
-          </el-collapse-item>
-        </el-collapse>
+            <div class="author">
+              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+            </div>
+            <div class="introductions">
+              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
+              更加有效的查找方式，文章给出了一个称之为改进的...
+            </div>
+            <div style="margin-top: 7px">
+            <span style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">53</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
+              <span style="font-size: 14px">31</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">10</span>
+            </span>
+              <span style="font-size: 14px">
+              被引用次数：27
+            </span>
+            </div>
+          </div>
+          <div class="CollectionItem">
+            <div class="itemTitle">
+              改进的二分法查找
+            </div>
+            <div class="author">
+              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+            </div>
+            <div class="introductions">
+              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
+              更加有效的查找方式，文章给出了一个称之为改进的...
+            </div>
+            <div style="margin-top: 7px">
+            <span style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">53</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
+              <span style="font-size: 14px">31</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">10</span>
+            </span>
+              <span style="font-size: 14px">
+              被引用次数：27
+            </span>
+            </div>
+          </div>
+          <div class="CollectionItem">
+            <div class="itemTitle">
+              改进的二分法查找
+            </div>
+            <div class="author">
+              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+            </div>
+            <div class="introductions">
+              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
+              更加有效的查找方式，文章给出了一个称之为改进的...
+            </div>
+            <div style="margin-top: 7px">
+            <span style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">53</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
+              <span style="font-size: 14px">31</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">10</span>
+            </span>
+              <span style="font-size: 14px">
+              被引用次数：27
+            </span>
+            </div>
+          </div>
+          <div class="CollectionItem">
+            <div class="itemTitle">
+              改进的二分法查找
+            </div>
+            <div class="author">
+              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+            </div>
+            <div class="introductions">
+              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
+              更加有效的查找方式，文章给出了一个称之为改进的...
+            </div>
+            <div style="margin-top: 7px">
+            <span style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">53</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
+              <span style="font-size: 14px">31</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">10</span>
+            </span>
+              <span style="font-size: 14px">
+              被引用次数：27
+            </span>
+            </div>
+          </div>
+          <div class="CollectionItem">
+            <div class="itemTitle">
+              改进的二分法查找
+            </div>
+            <div class="author">
+              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+            </div>
+            <div class="introductions">
+              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
+              更加有效的查找方式，文章给出了一个称之为改进的...
+            </div>
+            <div style="margin-top: 7px">
+            <span style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">53</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
+              <span style="font-size: 14px">31</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">10</span>
+            </span>
+              <span style="font-size: 14px">
+              被引用次数：27
+            </span>
+            </div>
+          </div>
+          <div class="CollectionItem">
+            <div class="itemTitle">
+              改进的二分法查找
+            </div>
+            <div class="author">
+              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+            </div>
+            <div class="introductions">
+              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
+              更加有效的查找方式，文章给出了一个称之为改进的...
+            </div>
+            <div style="margin-top: 7px">
+            <span style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">53</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
+              <span style="font-size: 14px">31</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">10</span>
+            </span>
+              <span style="font-size: 14px">
+              被引用次数：27
+            </span>
+            </div>
+          </div>
+          <div class="CollectionItem">
+            <div class="itemTitle">
+              改进的二分法查找
+            </div>
+            <div class="author">
+              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+            </div>
+            <div class="introductions">
+              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
+              更加有效的查找方式，文章给出了一个称之为改进的...
+            </div>
+            <div style="margin-top: 7px">
+            <span style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">53</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
+              <span style="font-size: 14px">31</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">10</span>
+            </span>
+              <span style="font-size: 14px">
+              被引用次数：27
+            </span>
+            </div>
+          </div>
+          <div class="CollectionItem">
+            <div class="itemTitle">
+              改进的二分法查找
+            </div>
+            <div class="author">
+              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+            </div>
+            <div class="introductions">
+              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
+              更加有效的查找方式，文章给出了一个称之为改进的...
+            </div>
+            <div style="margin-top: 7px">
+            <span style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">53</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
+              <span style="font-size: 14px">31</span>
+            </span>
+              <span style="margin-right: 50px">
+              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
+              <span style="font-size: 14px">10</span>
+            </span>
+              <span style="font-size: 14px">
+              被引用次数：27
+            </span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="CollectionItems">
-        <div class="CollectionItem">
-          <div class="itemTitle">
-            改进的二分法查找
-          </div>
-          <div class="author">
-            王嗨涛，朱虹-计算机工程，2006-cqvip.com
-          </div>
-          <div class="introductions">
-            ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-            更加有效的查找方式，文章给出了一个称之为改进的...
-          </div>
-          <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-            <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-            <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-            <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-          </div>
-        </div>
-        <div class="CollectionItem">
-          <div class="itemTitle">
-            改进的二分法查找
-          </div>
-          <div class="author">
-            王嗨涛，朱虹-计算机工程，2006-cqvip.com
-          </div>
-          <div class="introductions">
-            ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-            更加有效的查找方式，文章给出了一个称之为改进的...
-          </div>
-          <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-            <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-            <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-            <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-          </div>
-        </div>
-        <div class="CollectionItem">
-          <div class="itemTitle">
-            改进的二分法查找
-          </div>
-          <div class="author">
-            王嗨涛，朱虹-计算机工程，2006-cqvip.com
-          </div>
-          <div class="introductions">
-            ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-            更加有效的查找方式，文章给出了一个称之为改进的...
-          </div>
-          <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-            <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-            <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-            <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-          </div>
-        </div>
-        <div class="CollectionItem">
-          <div class="itemTitle">
-            改进的二分法查找
-          </div>
-          <div class="author">
-            王嗨涛，朱虹-计算机工程，2006-cqvip.com
-          </div>
-          <div class="introductions">
-            ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-            更加有效的查找方式，文章给出了一个称之为改进的...
-          </div>
-          <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-            <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-            <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-            <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-          </div>
-        </div>
-      </div>
-      <!--<div class="divider-ver"></div>-->
     </div>
   </div>
 </template>
@@ -362,6 +476,7 @@ export default {
   color: #4DA5FF;
   font-size: 22px;
 }
+
 .CollectionItem {
   position: relative;
   height: auto;
@@ -369,11 +484,12 @@ export default {
 }
 .CollectionItems {
   text-align: left;
-  position: relative;
-  top:-600px;
-  left: 280px;
-  height: auto;
-  width: 600px;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 50px;
+  height: 760px;
+  overflow: auto;
+
 }
 .item {
   padding-top: 10px;
@@ -388,7 +504,6 @@ export default {
   border-right-style: solid;
   left: 4px;
   width: 240px;
-  height: 600px;
 }
 .titleName {
   position: relative;
@@ -398,7 +513,7 @@ export default {
 .divider {
   position: relative;
   margin: 0 auto;
-  width: 1100px;
+  width: 100%;
   height: 2px;
   background-color: #d4d4d4;
   text-align: center;
@@ -410,17 +525,18 @@ export default {
   margin-left: 100px;
   height: 100px;
 }
-.box{
-  background-color: gray;
-  height: 1000px;
-  margin: auto;
-}
+
 .myCollection {
-  height: 710px;
-  width: 1125px;
+  width: 100%;
+  min-width: 1125px;
+  height: auto;
   background-color: white;
-  margin: auto;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  margin: auto auto 40px;
+}
+
+.main-container {
+  display: flex;
 }
 </style>

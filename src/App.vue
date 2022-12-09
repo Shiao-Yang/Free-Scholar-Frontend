@@ -1,11 +1,12 @@
 <template>
   <div id="app">
-    <div>
+    <div v-if="">
       <SideNavigation @getActive="getSideActive" v-if="needSide"></SideNavigation>
-      <div class="app-container" :class="{'active': sideActive}" :style="{width: containerWidth+'px'}">
+      <div class="app-container" :class="{'active': sideActive, 'login': isLoginPage}" :style="{width: containerWidth+'px'}">
         <router-view/>
       </div>
     </div>
+    <div></div>
   </div>
 </template>
 
@@ -13,15 +14,18 @@
 .app-container {
   position: absolute;
   top: 0;
-  left:120px;
+  left:100px;
   transition: 0.5s;
-  margin-top: 10px;
+  margin-top: 20px;
+}
+
+.app-container.login {
+  margin-top: 0;
 }
 
 .app-container.active {
   left:220px;
 }
-
 </style>
 <script>
 import SideNavigation from "@/components/SideNavigation";
@@ -44,7 +48,13 @@ export default {
       if(this.sideActive === true)
         val = 220;
       return this.screenWidth - val
-    }
+    },
+    isLoginPage() {
+      if(this.$route.path === '/login&signup')
+        return true;
+      else
+        return false;
+    },
   },
   methods: {
     getSideActive(isActive) {

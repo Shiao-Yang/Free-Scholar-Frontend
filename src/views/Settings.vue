@@ -5,7 +5,7 @@
         <p id="welcome" class="header-text">开启你的学术之旅</p>
       </div>
       <div class="header-search-box">
-        <input type="text" autocomplete="off"  
+        <input type="text" autocomplete="off"
                id="input"
                class="search-input"
                v-model="input"
@@ -17,9 +17,8 @@
         <ul id="hot" class="hotWord-list">
           <li><span class="hotWord-text">热词推荐</span></li>
           <li id="hot1" class="hot-item"><span class="hotWord">AI</span></li>
-          <li id="hot2" class="hot-item"><span class="hotWord">计算而非热热分人吧v非本人是个特别让他是通过机技术</span></li>
+          <li id="hot2" class="hot-item"><span class="hotWord">计算机技术</span></li>
           <li id="hot3" class="hot-item"><span class="hotWord">核磁共振</span></li>
-          <li id="hot4" class="hot-item"><span class="hotWord">无机化学</span></li>
         </ul>
       </div>
     </div>
@@ -51,7 +50,7 @@ export default {
   height: 300px;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
-  background: url("../assets/img/searchImg.jpg") no-repeat;
+  background: url("../assets/img/settings/searchImg.jpg") no-repeat;
   background-size: 100% 300px;
 }
 
@@ -76,6 +75,7 @@ export default {
 }
 
 .header-search-box {
+  /*margin: 0 auto;*/
   position: relative;
   text-align: center;
 }
@@ -148,6 +148,7 @@ export default {
 .hotWord-list .hot-item:hover {
   padding: 8px 20px;
   font-size: 18px;
+  font-weight: bold;
   color: white;
   background: #2196f3;
 }

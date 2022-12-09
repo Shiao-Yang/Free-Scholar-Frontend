@@ -3,33 +3,33 @@
     <div class="side-menu-top" v-on:click="changeIsActive">
     </div>
     <ul class="side-navigation-list">
-      <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': index === 1}">
-        <router-link to="#" style="--clr:#f44336;" title="主页">
+      <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': activeIndex === 1}">
+        <router-link :to="{path: '/'}" style="--clr:#f44336;" title="主页">
           <span class="icon"><i class='bx bxs-home'></i></span>
           <span class="text">主页</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(2)" :class="{'active': index === 2}">
-        <router-link to="#" style="--clr:#ffa117;" title="搜索">
+      <li class="side-navigation-item" v-on:click="activeLink(2)" :class="{'active': activeIndex === 2}">
+        <router-link :to="{path: '/'}" style="--clr:#ffa117;" title="搜索">
           <span class="icon"><i class='bx bx-search' ></i></span>
           <span class="text">高级检索</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(3)" :class="{'active': index === 3}">
-        <router-link to="#" style="--clr:#0fc70f;" title="主页">
+      <li class="side-navigation-item" v-on:click="activeLink(3)" :class="{'active': activeIndex === 3}">
+        <router-link :to="{path: '/'}" style="--clr:#0fc70f;" title="主页">
           <span class="icon"><i class='bx bxs-home'></i></span>
           <span class="text">主页</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(4)" :class="{'active': index === 4}">
-        <router-link to="#" style="--clr:#2196f3;" title="主页">
+      <li class="side-navigation-item" v-on:click="activeLink(4)" :class="{'active': activeIndex === 4}">
+        <router-link :to="{path: '/'}" style="--clr:#2196f3;" title="主页">
           <span class="icon"><i class='bx bxs-home'></i></span>
           <span class="text">主页</span>
         </router-link>
       </li>
       <li class="side-navigation-item user-box">
-        <router-link to="#" style="--clr:#0fc70f;">
-          <i class='bx bxs-circle' style="position:absolute;top: 0; right:0;z-index:100;font-size:12px;color: #FF5733; transition: all 0.4s ease;"></i>
+        <router-link to="#" :style="{'--clr':userStateClr}">
+          <i class='bx bxs-circle user-info' style=""></i>
           <span class="icon avatar"><img alt="头像" src="../assets/logo.png"></span>
           <span class="text">用户名用户名用户名</span>
         </router-link>
@@ -47,7 +47,7 @@
           <li class="sub-item">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
-            <i class='bx bxs-circle' style="font-size:12px;color: #FF5733;"></i>
+            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
             <i class='bx bx-chevron-right right'></i>
           </li>
           <li class="sub-item">
@@ -75,11 +75,17 @@ export default {
     return {
       isActive: false,
       index: 0,
+      userStateClr: '#f44336',
     }
+  },
+  computed :{
+    activeIndex() {
+      if(this.$route.path === '' || this.$route.path === '/' || this.$route.path === '/settings')
+        return 1;
+    },
   },
   methods: {
     activeLink(index){
-      this.index = index
     },
     changeIsActive() {
       this.isActive = !this.isActive;
@@ -361,6 +367,23 @@ export default {
   pointer-events: auto;
 }
 
+.user-box .user-info {
+  position:absolute;
+  top: 0;
+  right:0;
+  z-index:100;
+  font-size:12px;
+  color: #FF5733;
+  visibility: visible;
+  opacity: 1;
+  transition: all 0.5s ease;
+}
+
+.user-box:hover .user-info{
+  opacity: 0;
+  visibility: hidden;
+}
+
 .user-box .user-sub-menu li{
   display: flex;
   height: 30px;
@@ -378,6 +401,7 @@ export default {
 .user-box .user-sub-menu .right{
   margin-left: auto;
 }
+
 
 .user-box .user-sub-menu li i{
   font-size: 20px;
