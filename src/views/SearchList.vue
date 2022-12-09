@@ -807,7 +807,7 @@ export default {
   display: flex;
   height: 50px;
   width: 50%;
-  min-width: 1000px;
+  min-width: 900px;
   margin: auto;
   /*border-radius: 10px;*/
   border-top-left-radius: 10px;
