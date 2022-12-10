@@ -44,7 +44,7 @@
             <span>账号设置</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
-          <li class="sub-item">
+          <li class="sub-item" @click="toMessageCenter">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
             <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
@@ -85,6 +85,10 @@ export default {
     },
   },
   methods: {
+    toMessageCenter() {
+      let that = this;
+      that.$router.push('/MessageManage')
+    },
     activeLink(index){
     },
     changeIsActive() {
