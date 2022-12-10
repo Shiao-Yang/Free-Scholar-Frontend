@@ -918,7 +918,7 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Nerko+One&display=swap');
+@import url('https://fonts.font.im/css2?family=Nerko+One&display=swap');
 .search-box {
   position: relative;
   margin: 0 auto 20px;
@@ -968,6 +968,7 @@ export default {
   border-bottom-right-radius: 10px;
   background-color: white;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 
 .search-box .first-selects .mainSelect {
