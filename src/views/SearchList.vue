@@ -146,9 +146,9 @@
           </div>
           <table>
             <tr>
-              <td style="cursor: pointer" :class="{'active':activeYear===10}" @click="searchByYearBtn(10);activeYear=10"><span style="color: #2196f3;margin: 15px;">近十年</span></td>
-              <td style="cursor: pointer" :class="{'active':activeYear===5}" @click="searchByYearBtn(5);activeYear=5"><span style="color: #2196f3;margin: 15px;">近五年</span></td>
-              <td style="cursor: pointer" :class="{'active':activeYear===3}" @click="searchByYearBtn(3);activeYear=3"><span style="color: #2196f3;margin: 15px;">近三年</span></td>
+              <td style="cursor: pointer" :class="{'active':activeYear===10}" @click="searchByYearBtn(10);"><span style="color: #2196f3;margin: 15px;">近十年</span></td>
+              <td style="cursor: pointer" :class="{'active':activeYear===5}" @click="searchByYearBtn(5);"><span style="color: #2196f3;margin: 15px;">近五年</span></td>
+              <td style="cursor: pointer" :class="{'active':activeYear===3}" @click="searchByYearBtn(3);"><span style="color: #2196f3;margin: 15px;">近三年</span></td>
             </tr>
           </table>
         </div>
@@ -690,9 +690,13 @@ export default {
       }
       this.startTime = ''
       this.endTime = ''
-      this.activeYear = val
-      let date = new Date()
-      params.filter.push({field: 'year',value: [''+(date.getFullYear()-val),''+date.getFullYear()]})
+      if (this.activeYear === val) {
+        this.activeYear = 0
+      } else {
+        this.activeYear = val
+        let date = new Date()
+        params.filter.push({field: 'year',value: [''+(date.getFullYear()-val),''+date.getFullYear()]})
+      }
       let i;
       for (i = 0; i < this.oldInputs.length; i++) {
         params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
