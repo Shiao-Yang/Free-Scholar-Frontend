@@ -14,7 +14,7 @@
 .app-container {
   position: absolute;
   top: 0;
-  left:100px;
+  left:115px;
   transition: 0.5s;
   margin-top: 20px;
 }
@@ -44,7 +44,7 @@ export default {
 
   computed: {
     containerWidth() {
-      let val = 120;
+      let val = 115;
       if(this.sideActive === true)
         val = 220;
       return this.screenWidth - val

@@ -260,28 +260,28 @@ export default {
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getFollowers?user_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.followList = [];
-        this.followList = res.data;
-        this.showList = [];
+          .then(res => {
+            console.log(res.data)
+            this.followList = [];
+            this.followList = res.data;
+            this.showList = [];
 
-        console.log(this.followList[0]);
-        console.log(typeof this.followList[0].time)
+            console.log(this.followList[0]);
+            console.log(typeof this.followList[0].time)
 
-        for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
-          this.showList[j] = this.followList[i]
-          if(this.showList[j].avatar === null) {
-            this.showList[j].avatar = 'img/home/no-avatar.png'
-          }
-          // this.showList[j].avatar = 'img/home/avatar1.jpg'
-          this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
-        }
+            for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
+              this.showList[j] = this.followList[i]
+              if(this.showList[j].avatar === null) {
+                this.showList[j].avatar = 'img/home/no-avatar.png'
+              }
+              // this.showList[j].avatar = 'img/home/avatar1.jpg'
+              this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+            }
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 

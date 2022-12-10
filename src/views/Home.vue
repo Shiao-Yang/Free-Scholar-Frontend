@@ -660,7 +660,7 @@ export default {
 }
 
 .social-info .social-info-item:hover {
-  color: #2196f3;
+  color: #009EFA;
 }
 
 .social-info .social-info-item .title {
