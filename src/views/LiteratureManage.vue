@@ -93,7 +93,7 @@
                v-model="input"
                placeholder="Search resources..."
                @keyup.enter="">
-        <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
+        <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search"></i></span>
       </div>
       <div class="literature">
         <div class="literature-box" v-for="(item,index) in Literature" :key="index">
@@ -368,10 +368,27 @@ export default {
       // 当前显示的数据
       dataShow: "",
       // 默认当前显示第一页
-      currentPage: 0
+      currentPage: 0,
+      input: '',
     }
   },
   created() {
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.List.push({
+          "id":res.data.id,
+          "name":res.data.title,
+          "origin":res.data.publisher,
+          "date":res.data.year,
+          "author":res.data.author
+        })
+      }
+    })
     var i = 0;
     i = this.List.length / 6;
     if (i < 1)
@@ -397,7 +414,62 @@ export default {
     },
     deleteRow(index, rows) {
       rows.splice(index, 1);
-    }
+      this.$axios({
+        method: 'post',
+        url: '',
+        data: qs.stringify({
+          "id":this.Literature[this.currentInstitutional].id,
+          "uid":this.Literature[this.currentInstitutional].author[index].uid,
+          "name":this.Literature[this.currentInstitutional].author[index].name
+        })
+      }).then(res =>{
+        switch (res.data.errno){
+          case 0:
+            window.alert(res.data.msg);
+        }
+      })
+    },
+    search(){
+      this.List.length = 0;
+      this.$axios({
+        method: 'get',
+        url: '',
+        data: {"search":this.input},
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.List.push({
+            "id":res.data.id,
+            "name":res.data.title,
+            "origin":res.data.publisher,
+            "date":res.data.year,
+            "author":res.data.author
+          })
+        }
+      })
+      var i = 0;
+      i = this.List.length / 6;
+      if (i < 1)
+        i = 1;
+      this.pageNum = i * 10;
+      this.changePage(1);
+    },
+    addAuthor(){
+      this.$axios({
+        method: 'post',
+        url: '',
+        data: qs.stringify({
+          "id":this.Literature[this.currentInstitutional].id,
+          "uid":this.Literature[this.currentInstitutional].author[index].uid,
+          "name":this.Literature[this.currentInstitutional].author[index].name
+        })
+      }).then(res =>{
+        switch (res.data.errno){
+          case 0:
+            window.alert(res.data.msg);
+        }
+      })
+    },
   }
 }
 </script>

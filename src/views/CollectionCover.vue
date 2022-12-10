@@ -17,33 +17,15 @@
             <span class="sub-title">我创建的</span>
           </div>
         </div>
-        <div class="item">
+        <div class="item" v-for="(item,index) in MyCreateList" :key="index">
           <img src="../assets/Cover1.jpg" class="cover">
           <div class="name">
-            植物学研究
+            {{MyCreateList[index].title}}
           </div>
           <div class="date">
-            创建于2021-11-03
+            创建于{{MyCreateList[index].date}}
           </div>
         </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          植物学研究
-        </div>
-        <div class="date">
-          创建于2021-11-03
-        </div>
-      </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          {{name|ellipsis}}
-        </div>
-        <div class="date">
-          创建于2021-11-03
-        </div>
-      </div>
         <div class="item">
         <div class="newCollection">
           <i class='bx bx-plus' style="font-size: 150px;position: relative;left: 12px"></i>
@@ -61,41 +43,14 @@
           <i class='bx bxs-folder' style="color: orange"></i>
           我的收藏与订阅
         </div>
-        <div class="item">
+        <div class="item" v-for="(item,index) in MyCollection" :key="index">
           <img src="../assets/Cover1.jpg" class="cover">
           <div class="name">
-            植物学研究
+            {{MyCollection[index].title}}
           </div>
           <div class="date">
-            更新于2021-11-03<i class="dotClass" style="background-color: red"></i>
+            更新于{{MyCollection[index].date}}<i class="dotClass" style="background-color: red"></i>
           </div>
-        </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          植物学研究
-        </div>
-        <div class="date">
-          更新于2021-11-03
-        </div>
-      </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          植物学研究
-        </div>
-        <div class="date">
-          更新于2021-11-03<i class="dotClass" style="background-color: red"></i>
-        </div>
-      </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          植物学研究
-        </div>
-        <div class="date">
-          更新于2021-11-03
-        </div>
       </div>
       </div>
     </div>
@@ -107,8 +62,58 @@ export default {
   name: "CollectionCover",
   data() {
     return {
-      name:'这是一个标题很长的收藏夹'
+      name:'这是一个标题很长的收藏夹',
+      MyCreateList:[
+        {
+          "id":1,
+          "title":"编译技术答案",
+          "date":"2021-12-01",
+        },
+        {
+          "id":1,
+          "title":"编译技术答案",
+          "date":"2021-12-01",
+        },
+      ],
+      MyCollection:[
+        {
+          "id":1,
+          "title":"编译技术答案",
+          "date":"2021-12-01",
+        },
+        {
+          "id":1,
+          "title":"编译技术答案",
+          "date":"2021-12-01",
+        },
+      ],
     };
+  },
+  created() {
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.MyCreateList.push({
+
+        })
+      }
+    })
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.MyCollection.push({
+
+        })
+      }
+    })
   },
   filters:{
     ellipsis(value){
@@ -128,7 +133,8 @@ export default {
     },
     leaveItem() {
       this.itemStyle = '';
-    }
+    },
+
   }
 }
 </script>

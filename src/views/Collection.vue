@@ -382,6 +382,80 @@ export default {
       ],
     };
   },
+  created() {
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.MyCreateList.push({
+
+        })
+      }
+    })
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.List.push({
+
+        })
+      }
+    })
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.MyCreateList.push({
+
+        })
+      }
+    })
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.List1.push({
+
+        })
+      }
+    })
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.MyCreateList.push({
+
+        })
+      }
+    })
+    this.$axios({
+      method: 'get',
+      url: '',
+      data: ''
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.List2.push({
+
+        })
+      }
+    })
+  },
   methods: {
     handleChange(val) {
       console.log(val);
