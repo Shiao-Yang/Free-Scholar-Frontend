@@ -402,30 +402,30 @@ export default {
         url: 'http://139.9.134.209:8000/api/MessageCenter/deleteMessage/',
         data: params,
       })
-      .then(res => {
-        this.dis_msg_list = [];
-        if(this.isActive1) { //当前处于系统消息列表
-          this.getMsgPlm(this.uid);
-        }
-        else if(this.isActive2) { //当前处于收到的私信列表
-          this.getMsgRec(this.uid);
-        }
-        else if(this.isActive3) { //当前处于发送的私信列表
-          this.getMsgSend(this.uid);
-        }
+          .then(res => {
+            this.dis_msg_list = [];
+            if(this.isActive1) { //当前处于系统消息列表
+              this.getMsgPlm(this.uid);
+            }
+            else if(this.isActive2) { //当前处于收到的私信列表
+              this.getMsgRec(this.uid);
+            }
+            else if(this.isActive3) { //当前处于发送的私信列表
+              this.getMsgSend(this.uid);
+            }
 
-        if(res.data.errno === 0) {
-          this.$message({
-            type: 'success',
-            showClose: true,
-            message: '删除成功'
+            if(res.data.errno === 0) {
+              this.$message({
+                type: 'success',
+                showClose: true,
+                message: '删除成功'
+              })
+            }
+
           })
-        }
-
-      })
-      .catch(err => {
-        console.log(err)
-      })
+          .catch(err => {
+            console.log(err)
+          })
     },
 
     //获取系统通知
@@ -434,73 +434,79 @@ export default {
         method: 'get',
         url: 'http://139.9.134.209:8000/api/MessageCenter/getPlatMsg?owner_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.msg_plm_list = res.data;
-        for(let i = 0; i < this.msg_plm_list.length; i++) {
-          this.msg_plm_list[i].avatar = 'user.png';
-          this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
-        }
-        this.dis_msg_list = this.msg_plm_list;
-        this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
-        // if(this.showContent) {
-        //   this.changeShowContent();
-        // }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          .then(res => {
+            console.log(res.data)
+            this.msg_plm_list = res.data;
+            for(let i = 0; i < this.msg_plm_list.length; i++) {
+              this.msg_plm_list[i].avatar = 'user.png';
+              this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.dis_msg_list = this.msg_plm_list;
+            this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     //获取用户收到的私信
-    getMsgRec(uid) {
+    getMsgRec(uid, type) { //type=0,初始化时的调用
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec?owner_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.msg_rec_list = res.data;
-        for(let i = 0; i < this.msg_rec_list.length; i++) {
-          this.msg_rec_list[i].avatar = 'user.png';
-          this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
-        }
-        this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
-        this.dis_msg_list = this.msg_rec_list;
+          .then(res => {
+            console.log(res.data)
+            this.msg_rec_list = res.data;
+            for(let i = 0; i < this.msg_rec_list.length; i++) {
+              this.msg_rec_list[i].avatar = 'user.png';
+              this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+            this.dis_msg_list = this.msg_rec_list;
 
-        console.log(this.dis_msg_list)
-        // if(this.showContent) {
-        //   this.changeShowContent();
-        // }
-        console.log(this.showContent)
-      })
-      .catch(err => {
-        console.log(err);
-      })
+            console.log(this.dis_msg_list)
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+            console.log(this.showContent)
+            if(type === 0) {
+              this.dis_msg_list = this.msg_plm_list;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     //获取用户发送的私信
-    getMsgSend(uid) {
+    getMsgSend(uid, type) { //type=0,初始化时的调用
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgSend?sender_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.msg_send_list = res.data;
-        for(let i = 0; i < this.msg_send_list.length; i++) {
-          this.msg_send_list[i].avatar = 'user.png';
-          this.msg_send_list[i].create_time = new Date(this.msg_send_list[i].create_time).toLocaleString('zh', {hour12: false})
-        }
-        this.dis_msg_list = this.msg_send_list;
+          .then(res => {
+            console.log(res.data)
+            this.msg_send_list = res.data;
+            for(let i = 0; i < this.msg_send_list.length; i++) {
+              this.msg_send_list[i].avatar = 'user.png';
+              this.msg_send_list[i].create_time = new Date(this.msg_send_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.dis_msg_list = this.msg_send_list;
 
-        // if(this.showContent) {
-        //   this.changeShowContent();
-        // }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+            if(type === 0) {
+              this.dis_msg_list = this.msg_plm_list;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     readMsg(mid) {
@@ -512,12 +518,12 @@ export default {
         url: 'http://139.9.134.209:8000/api/MessageCenter/readMessage/',
         data: param,
       })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          .then(res => {
+            console.log(res.data);
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
@@ -566,14 +572,14 @@ export default {
 
   },
   created() {
-
+    this.getMsgRec(this.uid, 1);
   },
   mounted() {
-    this.getMsgRec(this.uid);
     this.getMsgPlm(this.uid);
     console.log(this.msg_plm_has_new)
     console.log(this.msg_rec_has_new)
     this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    console.log(this.dis_msg_list)
   }
 }
 </script>
