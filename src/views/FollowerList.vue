@@ -21,7 +21,7 @@
         </ul>
       </div>
       <div class="social-info">
-        <div class="social-info-item" @click="toFollowList">
+        <div class="social-info-item" @click="toFollowList" @click="toFollowList">
           <div class="title">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
             <span class="text" style="position: relative; top: -6px;">关注</span>
@@ -32,6 +32,7 @@
             </div>
           </div>
         </div>
+        <div class="social-info-item" v-if="baseInfo.identity===1" @click="toHome">
         <div class="social-info-item" v-if="baseInfo.identity===1" @click="toHome">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart' ></i></span>
@@ -131,7 +132,19 @@ export default {
         birthday: "2022-10-16",
         institution: {
           name: 'Beihang University',
+        mail: '123@qq.com',
+        birthday: "2022-10-16",
+        institution: {
+          name: 'Beihang University',
         },
+        follows: 32,
+        likes: 20,
+        followers: 15,
+        identity: 1,
+        bio:"2234223422342234223422342234223422342234",
+        state: 1,
+        gender: 1,
+        login_date: '2022-10-16 22:10:16',
         follows: 32,
         likes: 20,
         followers: 15,
@@ -220,6 +233,14 @@ export default {
       let that = this;
       that.$router.push('/followList');
     },
+    toHome() {
+      let that = this;
+      that.$router.push('/home');
+    },
+    toFollowList() {
+      let that = this;
+      that.$router.push('/followList');
+    },
     changePage(currentPage) {
       this.showList = [];
       for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
@@ -238,17 +259,20 @@ export default {
         headers: {
           jwt: this.$store.state.token,
         },
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/unFocus',
         data: params,
       })
-      .then(res => {
-        console.log(res.data);
-        this.getFollowers(uid); //重新获取数据
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          .then(res => {
+            console.log(res.data);
+            this.getFollowers(uid); //重新获取数据
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
@@ -257,31 +281,37 @@ export default {
         headers: {
           jwt: this.$store.state.token,
         },
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getFollowers?user_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.followList = [];
-        this.followList = res.data;
-        this.showList = [];
+          .then(res => {
+            console.log(res.data)
+            this.followList = [];
+            this.followList = res.data;
+            this.showList = [];
 
-        console.log(this.followList[0]);
-        console.log(typeof this.followList[0].time)
+            console.log(this.followList[0]);
+            console.log(typeof this.followList[0].time)
 
-        for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
-          this.showList[j] = this.followList[i]
+            for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
+              this.showList[j] = this.followList[i]
           if(this.showList[j].avatar === null) {
-            this.showList[j].avatar = 'img/home/no-avatar.png'
+                if(this.showList[j].avatar === null) {
+                this.showList[j].avatar = 'img/home/no-avatar.png'
           }
-          // this.showList[j].avatar = 'img/home/avatar1.jpg'
-          this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
-        }
+          // this.showList[j].avatar = 'img/home/no-avatar.png'
+              }
+              // this.showList[j].avatar = 'img/home/avatar1.jpg'
+              this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+            }
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
@@ -290,23 +320,29 @@ export default {
         headers: {
           jwt: this.$store.state.token,
         },
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
+          .then(res => {
+            console.log(res.data)
 
-        this.baseInfo = res.data
+            this.baseInfo = res.data
         if(this.baseInfo.avatar === null) {
-          this.baseInfo.avatar = 'img/home/no-avatar.png'
+              if(this.baseInfo.avatar === null) {
+              this.baseInfo.avatar = 'img/home/no-avatar.png'
         }
-        // this.baseInfo.avatar = 'img/home/avatar1.jpg'
-        console.log(this.baseInfo)
+        // this.baseInfo.avatar = 'img/home/no-avatar.png'
+            }
+            // this.baseInfo.avatar = 'img/home/avatar1.jpg'
+            console.log(this.baseInfo)
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
   },

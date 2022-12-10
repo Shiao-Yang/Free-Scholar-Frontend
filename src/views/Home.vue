@@ -22,7 +22,7 @@
       </div>
       <div class="social-info">
         <div class="social-info-item">
-          <div class="title" @click="toFollowList">
+          <div class="title" @click="toFollowList" @click="toFollowList">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
             <span class="text" style="position: relative; top: -6px;">关注</span>
           </div>
@@ -32,6 +32,7 @@
             </div>
           </div>
         </div>
+        <div class="social-info-item" v-if="baseInfo.identity===1" @click="toFollowerList">
         <div class="social-info-item" v-if="baseInfo.identity===1" @click="toFollowerList">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart' ></i></span>
@@ -80,6 +81,10 @@
                 <div class="source-item" :class="{'active' : isActive2}" @click="changeActive2">
                   <span class="image">
                   <img src="../assets/img/home/password.png">
+        <!--
+                <div class="source-item" :class="{'active' : isActive2}" @click="changeActive2">
+                  <span class="image">
+                  <img src="../assets/img/home/password.png">
             <i class='bx bx-shield'></i>
           </span>
           <span class="name">
@@ -87,19 +92,20 @@
           </span>
         </div>
         -->
+        -->
         <div class="source-item" :class="{'active' : isActive3}" @click="changeActive3">
           <span class="image">
 <!--            <img src="../assets/img/home/avatar.png">-->
             <i class='bx bx-user-circle'></i>
           </span>
-            <span class="name">
+          <span class="name">
             个人头像
           </span>
         </div>
       </div>
       <div class="divider-y"></div>
       <div class="content-box">
-        <div class="show-box" v-if="isActive1">
+        <div class="show-box" v-if="isActive1" v-if="isActive1">
           <div class="content-item">
             <div class="item-name">
               用户名
@@ -112,8 +118,11 @@
             <div class="item-name">
               邮箱
             </div>
-            <div class="item-content" v-if="baseInfo.mail !== null">
+            <div class="item-content" v-if="baseInfo.mail !== null" v-if="baseInfo.mail !== null">
               {{baseInfo.mail}}
+            </div>
+            <div class="item-content" v-if="baseInfo.mail === null">
+              未设置
             </div>
             <div class="item-content" v-if="baseInfo.mail === null">
               未设置
@@ -173,8 +182,11 @@
             <div class="item-name">
               生日
             </div>
-            <div class="item-content" v-if="baseInfo.birthday !== null">
+            <div class="item-content" v-if="baseInfo.birthday !== null" v-if="baseInfo.birthday !== null">
               {{baseInfo.birthday}}
+            </div>
+            <div class="item-content" v-if="baseInfo.birthday === null">
+              未设置
             </div>
             <div class="item-content" v-if="baseInfo.birthday === null">
               未设置
@@ -184,13 +196,13 @@
             <div class="item-name">
               性别
             </div>
-            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender===0">
+            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender !== null && baseInfo.gender===0">
               保密
             </div>
-            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender===1">
+            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender !== null && baseInfo.gender===1">
               男
             </div>
-            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender===2">
+            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender !== null && baseInfo.gender===2">
               女
             </div>
             <div class="item-content" v-if="baseInfo.gender === null">
@@ -201,7 +213,7 @@
             <div class="item-name">
               个人简介
             </div>
-            <div class="item-content" v-if="baseInfo.bio !== null">
+            <div class="item-content" v-if="baseInfo.bio !== null" v-if="baseInfo.bio !== null">
               {{baseInfo.bio}}
             </div>
             <div class="item-content" v-if="baseInfo.bio === null">
@@ -294,11 +306,16 @@
 import {format} from 'date-fns';
 import moment from 'moment';
 
+import {format} from 'date-fns';
+import moment from 'moment';
+
 export default {
   name: "Home",
   data() {
     return {
       uid: 1,
+      closable: true, //是否可关闭dialog
+      isCenter: true, //dialog footer 和 head 是否居中
       closable: true, //是否可关闭dialog
       isCenter: true, //dialog footer 和 head 是否居中
       isActive1: true, //true 则展示系统消息
@@ -320,7 +337,16 @@ export default {
         password1: '',
         password2: '',
       },
+      changePwdVisible: false,
+      changeAvatarVisible: false,
+      password: {
+        id: this.uid,
+        password_old: '',
+        password1: '',
+        password2: '',
+      },
       infoForm: {
+        name: '',
         name: '',
         mail: '',
         birthday: '',
@@ -341,6 +367,9 @@ export default {
         follows: 32,
         likes: 20,
         followers: 15,
+        follows: 32,
+        likes: 20,
+        followers: 15,
         identity: 1,
         bio:"2234223422342234223422342234223422342234",
         state: 1,
@@ -351,6 +380,14 @@ export default {
     }
   },
   methods: {
+    toFollowerList() {
+      let that = this;
+      that.$router.push('/followList');
+    },
+    toFollowList() {
+      let that = this;
+      that.$router.push('/followList');
+    },
     toFollowerList() {
       let that = this;
       that.$router.push('/followList');
@@ -477,6 +514,97 @@ export default {
       })
 
     },
+    changePwd(uid) {
+      let param = this.password
+      param.id = uid
+      console.log(param)
+      this.axios({
+        headers: {
+          jwt: this.$store.state.token,
+        },
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/changePwd',
+        data: param,
+      })
+          .then(res => {
+            console.log(res.data)
+            if(res.data.errno === 0) {
+              this.$message ({
+                message: '修改成功',
+                type: 'success',
+                showClose: true,
+              });
+            }
+            else {
+              this.$message ({
+                message: res.data.msg,
+                type: 'error',
+                showClose: true,
+              });
+            }
+
+          })
+          .catch(err => {
+            console.log(err);
+          })
+
+      this.password = { //重置为空
+        id: this.uid,
+        password_old: '',
+        password1: '',
+        password2: '',
+      }
+    },
+    toChangeAvatar(){
+      this.changeAvatarVissible = false;
+      const tempthis = this;
+      let fileToUpload = this.$refs.pic.files[0];
+      //console.log(fileToUpload)
+      let param = new FormData();  //创建表单对象
+      param.append("avatar",fileToUpload);
+      // param.append("uid",tempthis.$store.state.userInfo.uid);
+      param.append("uid",tempthis.uid);
+
+      param.forEach((value, key) => {
+        console.log(`key ${key}: value ${value}`);
+      })
+
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/editInfo/aaa',
+        data: param,
+        headers: {
+          jwt: this.$store.state.token,
+        },
+      })
+          .then(res => {
+            console.log(res.data)
+            if(res.data.errno===0) {
+              tempthis.$message({
+                type: 'success',
+                showClose: true,
+                message: "头像上传成功",
+              })
+            }
+            else {
+              if(res.data.errno===0) {
+                tempthis.$message({
+                  type: 'success',
+                  showClose: true,
+                  // message: "res.data.msg",
+                  message: "头像上传失败",
+                })
+              }
+            }
+            tempthis.getBaseInfo(tempthis.uid);
+            console.log(this.baseInfo)
+
+          })
+          .catch(err => {
+            console.log(err);
+          })
+
+    },
     changeInfo(uid) {
       let birth;
     // .format("yyyy-MM-dd"),
@@ -498,12 +626,15 @@ export default {
         headers: {
           jwt: this.$store.state.token,
         },
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/editInfo',
         data: param,
       })
-      .then(res => {
-        console.log(res.data)
+          .then(res => {
+            console.log(res.data)
         if(res.data.errno === 0) {
           if(res.data.errno === 0) {
             this.$message ({
@@ -514,6 +645,16 @@ export default {
             this.baseInfo.follows--;
             this.getBaseInfo(uid); //重新获取数据
           }
+            if(res.data.errno === 0) {
+              if(res.data.errno === 0) {
+                this.$message ({
+                  message: "取消成功",
+                  showClose: true,
+                  type: 'success',
+                })
+                this.baseInfo.follows--;
+                this.getBaseInfo(uid); //重新获取数据
+              }
 
           else {
             this.$message ({
@@ -524,10 +665,21 @@ export default {
           }
         }
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
+
+      this.infoForm = {
+        name: '',  //重置为空
+        mail: '',
+        birthday: '',
+        bio: '',
+        gender: null,
+        style: {
+          width: "100px",
+        },
+      }
 
       this.infoForm = {
         name: '',  //重置为空
@@ -547,15 +699,21 @@ export default {
         headers: {
           jwt: this.$store.state.token,
         },
+        headers: {
+          jwt: this.$store.state.token,
+        },
       })
-      .then(res => {
-        console.log(res.data)
+          .then(res => {
+            console.log(res.data)
 
         this.baseInfo = res.data
-        if(this.baseInfo.avatar === null) {
+            if(this.baseInfo.avatar === null) {
+          if(this.baseInfo.avatar === null) {
           this.baseInfo.avatar = 'img/home/no-avatar.png'
         }
-        // this.baseInfo.avatar = 'img/home/avatar1.jpg'
+        // this.baseInfo.avatar = 'img/home/no-avatar.png'
+            }
+            // this.baseInfo.avatar = 'img/home/avatar1.jpg'
         console.log(this.baseInfo)
 
       })
@@ -601,12 +759,14 @@ export default {
   position: relative;
   margin: 15px 0px 15px 30px;
   width: 170px;
+  width: 170px;
   height: 170px;
   vertical-align: middle;
 }
 
 .avatar img {
   height: 170px;
+  width: 170px;
   width: 170px;
   max-height: 100%;
   vertical-align: middle;
@@ -657,6 +817,7 @@ export default {
   height: 80px;
   cursor: pointer;
   transition: 0.2s
+  transition: 0.2s
 }
 
 .social-info .social-info-item:hover {
@@ -666,6 +827,7 @@ export default {
 .social-info .social-info-item .title {
   width: 120px;
   height: 40px;
+
 
 }
 
@@ -887,6 +1049,7 @@ export default {
 
 .info-box .content-box .show-box .content-item {
   /*border: solid red;*/
+  /*border: solid red;*/
   display: flex;
   flex-direction: row;
   width: 850px;
@@ -956,6 +1119,30 @@ export default {
   width: 45px;
   position: relative;
 }
+
+/*************  我的头像 css  ***********/
+
+.info-box .content-box .show-box .user-avatar {
+  /*border: solid red;*/
+  position: relative;
+  left: -70px;
+  top: 10px;
+  width: 350px;
+  height: 350px;
+}
+
+.info-box .content-box .show-box .user-avatar img {
+  /*border: solid red;*/
+  width: 330px;
+  height: 330px;
+  margin: 10px 10px 10px 10px;
+  border-radius: 5px;
+}
+
+
+
+
+
 
 /*************  我的头像 css  ***********/
 
