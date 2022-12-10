@@ -110,7 +110,7 @@ export default {
           sessionStorage.removeItem('baseInfo')
 
 
-          this.$router.push('/')
+          this.$router.push('/login&signup')
         }
         else {
           this.$message({

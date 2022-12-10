@@ -2,7 +2,7 @@
   <div class="container" :class="{'sign-up-mode': !loginMode}">
     <div class="forms-container">
       <div class="signin-signup">
-        <form action="#" class="sign-in-form">
+        <form class="sign-in-form">
           <h2 class="title">登录</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
@@ -12,7 +12,8 @@
             <i class="fas fa-lock"></i>
             <input type="password" v-model="login_password" placeholder="密码" />
           </div>
-          <input type="submit" value="立即登录" class="btn solid" @click="login"/>
+          <el-button style="position: relative; top: 10px;" type="primary" plain round @click="login">立即登录</el-button>
+          <!--<input type="submit" value="立即登录" class="btn solid" @click="login"/>-->
         </form>
         <form action="#" class="sign-up-form">
           <h2 class="title">注册</h2>
@@ -32,7 +33,8 @@
             <i class="fas fa-lock"></i>
             <input type="password" v-model="register_password2" placeholder="确认密码" />
           </div>
-          <input type="submit" class="btn" value="立即注册" @click="register"/>
+          <el-button style="position: relative;" type="primary" plain round @click="register">立即注册</el-button>
+          <!--<input class="btn" value="立即注册" @click="register"/>-->
         </form>
       </div>
     </div>
@@ -208,7 +210,7 @@ input {
   transform: translate(-50%, -50%);
   left: 75%;
   width: 50%;
-  transition: 1s 0.7s ease-in-out;
+  transition: 0.5s 0.35s ease-in-out;
   display: grid;
   grid-template-columns: 1fr;
   z-index: 5;
@@ -322,6 +324,12 @@ form.sign-in-form {
   transition: 0.5s;
 }
 
+.sign-in-form .btn input::placeholder{
+  border: solid red;
+  position: relative;
+  left: 20px;
+}
+
 .btn:hover {
   background-color: #4d84e2;
 }
@@ -344,7 +352,7 @@ form.sign-in-form {
   right: 48%;
   transform: translateY(-50%);
   background-image: linear-gradient(-45deg, #4481eb 0%, #04befe 100%);
-  transition: 1.8s ease-in-out;
+  transition: 0.9s ease-in-out;
   border-radius: 50%;
   z-index: 6;
 }
@@ -352,7 +360,7 @@ form.sign-in-form {
 .image {
   width: 100%;
   transition: transform 1.1s ease-in-out;
-  transition-delay: 0.4s;
+  transition-delay: 0.2s;
 }
 
 .panel {
