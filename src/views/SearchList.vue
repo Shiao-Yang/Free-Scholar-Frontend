@@ -121,126 +121,131 @@
         </div>
       </div>
     </div>
-    <div id="filter">
-      <p style="left: 5px;position:relative;">筛选</p>
-      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="time_zone = !time_zone">
-        时间
-        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px;"></i>
-      </p>
-      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-      <div class="time-range" v-if="time_zone">
-        <div class="block">
-          <el-date-picker
-              style="width: 95px;margin-right: 20px"
-              v-model="startTime"
-              type="year">
-          </el-date-picker>
-          <span>~</span>
-          <el-date-picker
-              style="width: 95px;margin-left: 20px"
-              v-model="endTime"
-              type="year">
-          </el-date-picker>
-          <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search(4)"></i></span>
+    <div class="search-content-container">
+      <div id="filter">
+        <p style="left: 5px;position:relative;">筛选</p>
+        <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="time_zone = !time_zone">
+          时间
+          <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px;"></i>
+        </p>
+        <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+        <div class="time-range" v-if="time_zone">
+          <div class="block">
+            <el-date-picker
+                style="width: 95px;margin-right: 20px"
+                v-model="startTime"
+                type="year">
+            </el-date-picker>
+            <span>~</span>
+            <el-date-picker
+                style="width: 95px;margin-left: 20px"
+                v-model="endTime"
+                type="year">
+            </el-date-picker>
+            <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search(4)"></i></span>
+          </div>
+          <table>
+            <tr>
+              <td style="cursor: pointer" :class="{'active':activeYear===10}" @click="searchByYearBtn(10);"><span style="color: #2196f3;margin: 15px;">近十年</span></td>
+              <td style="cursor: pointer" :class="{'active':activeYear===5}" @click="searchByYearBtn(5);"><span style="color: #2196f3;margin: 15px;">近五年</span></td>
+              <td style="cursor: pointer" :class="{'active':activeYear===3}" @click="searchByYearBtn(3);"><span style="color: #2196f3;margin: 15px;">近三年</span></td>
+            </tr>
+          </table>
         </div>
-        <table>
-          <tr>
-            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近十年</span></td>
-            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近五年</span></td>
-            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近三年</span></td>
-          </tr>
-        </table>
-      </div>
-      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;width: 100%;cursor: pointer" @click="type_zone = !type_zone">出版物类型
-        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
-      </p>
-      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-      <div class="item" v-for="item in types" v-if="type_zone">
-        <img v-if=!item.active :src="item.src" class="icon" :style="{width: item.size,height: item.size}">
-        <img v-else :src="item.srcActive" class="icon" :style="{width: item.size,height: item.size}">
-        <span v-if=item.active class="type" @click="item.active=false" style="color: #2196f3">{{item.type}}</span>
-        <span v-else class="type" @click="item.active=true">{{item.type}}</span>
-        <span class="num">{{item.num}}</span>
-      </div>
-      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="language_zone = !language_zone">语言
-        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
-      </p>
-      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-      <div class="item" v-for="item in languages" v-if="language_zone">
-        <label v-if="item.active"><input type="checkbox" :checked="item.active" @click="item.active=false"/>{{item.language}} </label>
-        <label v-else><input type="checkbox" :checked="item.active" @click="item.active=true"/>{{item.language}} </label>
-        <span class="num">{{item.num}}</span>
-      </div>
-      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="keyword_zone = !keyword_zone">关键词
-        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
-      </p>
-      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-      <div class="item-2" v-for="item in keywords" v-if="keyword_zone">
-        <p class="filter-item">
-          <span v-if="item !== keyword" style="cursor: pointer" @click="search(1,item)">{{item}}</span>
-          <span v-else style="cursor: pointer;color: #2196f3" @click="search(5)">{{item}}</span>
+        <!--
+        <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;width: 100%;cursor: pointer" @click="type_zone = !type_zone">出版物类型
+          <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
         </p>
-      </div>
-      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="organization_zone = !organization_zone">机构
-        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
-      </p>
-      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-      <div class="item-2" v-for="item in organizations" v-if="organization_zone">
-        <p class="filter-item">
-          <span v-if="item !== org" style="cursor: pointer" @click="search(2,item)">{{item}}</span>
-          <span v-else style="cursor: pointer;color: #2196f3" @click="search(6)">{{item}}</span>
+        <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+        <div class="item" v-for="item in types" v-if="type_zone">
+          <img v-if=!item.active :src="item.src" class="icon" :style="{width: item.size,height: item.size}">
+          <img v-else :src="item.srcActive" class="icon" :style="{width: item.size,height: item.size}">
+          <span v-if=item.active class="type" @click="item.active=false" style="color: #2196f3">{{item.type}}</span>
+          <span v-else class="type" @click="item.active=true">{{item.type}}</span>
+          <span class="num">{{item.num}}</span>
+        </div>
+        -->
+        <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="language_zone = !language_zone">语言
+          <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
         </p>
-      </div>
-      <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="journal_zone = !journal_zone">期刊
-        <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
-      </p>
-      <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-      <div class="item-2" v-for="item in journals" v-if="journal_zone">
-        <p class="filter-item">
-          <span v-if="item !== venue" style="cursor: pointer" @click="search(3,item)">{{item}}</span>
-          <span v-else style="cursor: pointer;color: #2196f3" @click="search(7)">{{item}}</span>
+        <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+        <div class="item" v-for="item in languages" v-if="language_zone">
+          <p class="filter-item">
+            <span v-if="item.val !== lang" style="cursor: pointer" @click="search(8,item.val)">{{item.language}}</span>
+            <span v-else style="cursor: pointer;color: #2196f3" @click="search(9)">{{item.language}}</span>
+          </p>
+        </div>
+        <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="keyword_zone = !keyword_zone">关键词
+          <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
         </p>
+        <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+        <div class="item-2" v-for="item in keywords" v-if="keyword_zone">
+          <p class="filter-item">
+            <span v-if="item !== keyword" style="cursor: pointer" @click="search(1,item)">{{item}}</span>
+            <span v-else style="cursor: pointer;color: #2196f3" @click="search(5)">{{item}}</span>
+          </p>
+        </div>
+        <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="organization_zone = !organization_zone">机构
+          <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
+        </p>
+        <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+        <div class="item-2" v-for="item in organizations" v-if="organization_zone">
+          <p class="filter-item">
+            <span v-if="item !== org" style="cursor: pointer" @click="search(2,item)">{{item}}</span>
+            <span v-else style="cursor: pointer;color: #2196f3" @click="search(6)">{{item}}</span>
+          </p>
+        </div>
+        <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="journal_zone = !journal_zone">期刊
+          <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
+        </p>
+        <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
+        <div class="item-2" v-for="item in journals" v-if="journal_zone">
+          <p class="filter-item">
+            <span v-if="item !== venue" style="cursor: pointer" @click="search(3,item)">{{item}}</span>
+            <span v-else style="cursor: pointer;color: #2196f3" @click="search(7)">{{item}}</span>
+          </p>
+        </div>
       </div>
-    </div>
-    <div class="content">
-      <div class="result-box" v-for="(result, i) in displayResult">
-        <p class="articleName"><span style="cursor: pointer" @click="">{{result.articleName}}</span></p>
-        <ul class="authors-list">
-          <li class="author" v-for="author in result.author">{{author.name}}</li>
-        </ul>
-        <p class="abstract">{{result.abstract}}</p>
-        <ul class="info-list">
-          <li class="info">
-            <i v-if="!result.user_collected" class='bx bxs-star'  :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
-            <i v-else class='bx bxs-star' style="color: #2196f3" :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
-            <span class="nums">{{result.collections}}</span>
-          </li>
-          <li class="info">
-            <i class='bx bxs-comment icon'></i>
-            <span class="nums">{{result.comments}}</span>
-          </li>
-          <li class="info">
-            <span>被引用次数:&nbsp</span>
-            <span class="nums">{{result.quotes}}</span>
-          </li>
-          <li class="info">
-            <span>年份:&nbsp</span>
-            <span class="nums">{{result.year}}</span>
-          </li>
-        </ul>
+      <div class="content">
+        <div class="result-box" v-for="(result, i) in displayResult">
+          <p class="articleName"><span style="cursor: pointer" @click="">{{result.articleName}}</span></p>
+          <ul class="authors-list">
+            <li class="author" v-for="author in result.author">{{author.name}}</li>
+          </ul>
+          <p class="abstract">{{result.abstract}}</p>
+          <ul class="info-list">
+            <li class="info">
+              <i v-if="!result.user_collected" class='bx bxs-star'  :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
+              <i v-else class='bx bxs-star' style="color: #2196f3" :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
+              <span class="nums">{{result.collections}}</span>
+            </li>
+            <li class="info">
+              <i class='bx bxs-comment icon'></i>
+              <span class="nums">{{result.comments}}</span>
+            </li>
+            <li class="info">
+              <span>被引用次数:&nbsp</span>
+              <span class="nums">{{result.quotes}}</span>
+            </li>
+            <li class="info">
+              <span>年份:&nbsp</span>
+              <span class="nums">{{result.year}}</span>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="block">
-      <el-pagination
-          style="position: absolute;left: 35%;"
-          layout="prev, pager, next, jumper"
-          :page-size="20"
-          :current-page.sync="currentPage"
-          :pager-count="11"
-          :total="total"
-          @current-change="changePage"
-      >
-      </el-pagination>
+      <div class="block">
+        <el-pagination
+            style="position: absolute;left: 40%;"
+            layout="prev, pager, next, jumper"
+            :page-size="20"
+            :current-page.sync="currentPage"
+            :pager-count="11"
+            :total="total"
+            @current-change="changePage"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -255,7 +260,7 @@ export default {
     window.myData = this;
   },
   mounted() {
-
+    let date = new Date()
   },
   data() {
     return {
@@ -268,6 +273,7 @@ export default {
       organization_zone: true,
       journal_zone: true,
       show_card: false,
+      activeYear: 0,
       startTime: '',
       endTime: '',
       searchType: '',
@@ -290,6 +296,7 @@ export default {
       keyword: '',
       org: '',
       venue: '',
+      lang: '',
       types: [{
           active: false,
           srcActive: require("../assets/img/searchList/conferenceActive.png"),
@@ -308,16 +315,10 @@ export default {
       ],
       languages: [{
           language: "英文",
-          active: false,
-          num: "1234",
+          val: 'en'
         }, {
           language: "中文",
-          active: false,
-          num: "12",
-        }, {
-          language: "其它",
-          active: false,
-          num: "2377"
+          val: 'zh'
         }
       ],
       keywords: [
@@ -404,7 +405,7 @@ export default {
       else
         return "";
     },
-    search(flag,val) { // flag = 0:普通搜索,1:筛选关键词搜索,2:筛选机构搜索,3:筛选期刊搜索，4:筛选时间搜索,5:取消关键词搜索,6:取消机构搜索,7:取消期刊搜索
+    search(flag,val) { // flag = 0:普通搜索,1:筛选关键词搜索,2:筛选机构搜索,3:筛选期刊搜索，4:筛选时间搜索,5:取消关键词搜索,6:取消机构搜索,7:取消期刊搜索,8:筛选语言搜素,9:取消语言搜素
       this.show_card = false;
       let params = {
         page: 1,
@@ -442,6 +443,9 @@ export default {
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
@@ -458,6 +462,9 @@ export default {
         }
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
@@ -476,6 +483,9 @@ export default {
         if (this.org !== '') {
           params.filter.push({field: 'org',value: this.org})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
@@ -488,6 +498,7 @@ export default {
           this.$message('请选择正确的时间顺序')
           return;
         }
+        this.activeYear = 0
         params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         let i;
         for (i = 0; i < this.oldInputs.length; i++) {
@@ -502,6 +513,9 @@ export default {
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
         this.$refs.box.scrollIntoView()
       } else if (flag === 5) {
         this.keyword = '';
@@ -514,6 +528,9 @@ export default {
         }
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
@@ -531,6 +548,9 @@ export default {
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
@@ -547,6 +567,48 @@ export default {
         if (this.org !== '') {
           params.filter.push({field: 'org',value: this.org})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 8) {
+        this.lang = val
+        params.filter.push({field: 'lang',value: val})
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 9) {
+        this.lang = '';
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
@@ -562,8 +624,8 @@ export default {
             console.log(res.data)
             this.total = res.data.total.value
             this.displayResult = [];
-            let i = 0;
-            for (i = 0; i < res.data.hits.length; i++) {
+            let i = 0,len = res.data.hits.length;
+            for (i = 0; i < len; i++) {
               let Abstract, quotes;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
@@ -596,13 +658,108 @@ export default {
                 this.keyword = ''
                 this.org = ''
                 this.venue = ''
+                this.activeYear = 0
               }
               this.getPaperData(res.data.hits[i]._source.id, i)
-              this.getOrgList()
-              this.getKeyList()
-              this.getVenueList()
             }
+            if (len === 0) {
+              this.$message('搜索结果为空')
+            }
+            this.getOrgList()
+            this.getKeyList()
+            this.getVenueList()
             this.show_card = true;
+            this.currentPage = 1;
+          })
+    },
+    searchByYearBtn(val) {
+      let params = {
+        page: 1,
+        condition: [
+          {
+            type: "OR",
+            input: this.input,
+            field: this.field
+          }
+        ],
+        filter: [],
+      }
+      if (this.input === '') {
+        this.$message('请输入首项搜索值')
+        return;
+      }
+      this.startTime = ''
+      this.endTime = ''
+      if (this.activeYear === val) {
+        this.activeYear = 0
+      } else {
+        this.activeYear = val
+        let date = new Date()
+        params.filter.push({field: 'year',value: [''+(date.getFullYear()-val),''+date.getFullYear()]})
+      }
+      let i;
+      for (i = 0; i < this.oldInputs.length; i++) {
+        params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+      }
+      if (this.keyword !== '') {
+        params.filter.push({field: 'keyword',value: this.keyword})
+      }
+      if (this.org !== '') {
+        params.filter.push({field: 'org',value: this.org})
+      }
+      if (this.venue !== '') {
+        params.filter.push({field: 'venue',value: this.venue})
+      }
+      if (this.lang !== '') {
+        params.filter.push({field: 'lang',value: this.lang})
+      }
+      this.$refs.box.scrollIntoView()
+      console.log(params)
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/publication/search/',
+        data: params
+      })
+          .then(async res => {
+            console.log(res.data)
+            this.total = res.data.total.value
+            this.displayResult = [];
+            let i = 0,len = res.data.hits.length;
+            for (i = 0; i < len; i++) {
+              let Abstract, quotes;
+              if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
+                Abstract = res.data.hits[i]._source.abstract
+              } else {
+                Abstract = '';
+              }
+              if (res.data.hits[i]._source.hasOwnProperty('n_citation')) {
+                quotes = res.data.hits[i]._source.n_citation
+              } else {
+                quotes = 0;
+              }
+              this.displayResult.push(
+                  {
+                    id: res.data.hits[i]._source.id,
+                    articleName: res.data.hits[i]._source.title,
+                    author: res.data.hits[i]._source.authors,
+                    abstract: Abstract,
+                    liked: false,
+                    likes: '54',
+                    collected: this.user_collected,
+                    collections: this.collection_num,
+                    comments: this.comment_num,
+                    quotes: quotes,
+                    year: res.data.hits[i]._source.year,
+                  }
+              )
+              this.getPaperData(res.data.hits[i]._source.id, i)
+            }
+            if (len === 0) {
+              this.$message('搜索结果为空')
+            }
+            this.getOrgList()
+            this.getKeyList()
+            this.getVenueList()
             this.currentPage = 1;
           })
     },
@@ -633,6 +790,9 @@ export default {
       if (this.venue !== '') {
         params.filter.push({field: 'venue',value: this.venue})
       }
+      if (this.lang !== '') {
+        params.filter.push({field: 'lang',value: this.lang})
+      }
       if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
         params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
       }
@@ -646,8 +806,8 @@ export default {
             console.log(res.data)
             this.total = res.data.total.value
             this.displayResult = [];
-            let i = 0;
-            for (i = 0; i < res.data.hits.length; i++) {
+            let i = 0,len = res.data.hits.length;
+            for (i = 0; i < len; i++) {
               let Abstract, quotes;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
@@ -675,10 +835,10 @@ export default {
                   }
               )
               this.getPaperData(res.data.hits[i]._source.id, i)
-              this.getOrgList()
-              this.getKeyList()
-              this.getVenueList()
             }
+            this.getOrgList()
+            this.getKeyList()
+            this.getVenueList()
             this.show_card = true;
           })
     },
@@ -764,7 +924,7 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Nerko+One&display=swap');
+@import url('https://fonts.font.im/css2?family=Nerko+One&display=swap');
 .search-box {
   position: relative;
   margin: 0 auto 20px;
@@ -814,6 +974,7 @@ export default {
   border-bottom-right-radius: 10px;
   background-color: white;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 
 .search-box .first-selects .mainSelect {
@@ -1095,8 +1256,15 @@ export default {
   min-width: 330px;
   margin-bottom: 40px;
   padding: 10px;
+  max-height: 3000px;
+  overflow: auto;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.1);
 }
+
+#filter::-webkit-scrollbar {
+  width: 0;
+}
+
 .time-range {
   margin: 10px 0 10px 5px;
 }
@@ -1132,6 +1300,9 @@ td {
 td:hover {
   background-color: #f8f8ff;
 }
+td.active {
+  background-color: #ededff;
+}
 .item {
   margin: 10px 0px 10px 0px;
 }
@@ -1158,40 +1329,62 @@ td:hover {
 
 .result-box {
   margin: 0 0 20px 0;
-  width: 80%;
+  width: 95%;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 10px;
+  transition: 0.2s;
 }
+
+.result-box:hover
+{
+  background-color: #f4f4f4;
+}
+
 .articleName {
   color: #2196f3;
   font-size: 19px;
   margin: 0;
 }
+
+/*.articleName:hover {*/
+/*  color: #0c34fe;*/
+/*  font-weight: bold;*/
+/*}*/
+
 .authors-list {
   margin: 0;
   padding: 0;
-  width: 70%;
   display: flex;
   flex-wrap: wrap;
   list-style: none;
   line-height: 15px;
   align-items: center;
 }
+
 .author {
   font-size: 15px;
   color: #27ae60;
   margin-right: 10px;
   cursor: pointer;
 }
+
+.author:hover {
+  color: #248F24;
+  font-weight: bold;
+}
 .abstract {
   margin: 4px 0 8px 0;
   font-size: 15px;
   line-height: 18px;
-  width: 90%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
   cursor: pointer;
+  color: #333333;
 }
+
 .info-list {
   margin: 0;
   padding: 0;
@@ -1211,5 +1404,11 @@ td:hover {
 .info .icon-active {
   font-size: 15px;
   color: #2196f3;
+}
+
+.search-content-container {
+  position: relative;
+  width: 1300px;
+  margin: auto;
 }
 </style>
