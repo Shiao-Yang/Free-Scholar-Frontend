@@ -255,29 +255,29 @@ export default {
           jwt: this.$store.state.token,
         },
       })
-      .then(res => {
-        console.log(res.data);
-        if(res.data.errno === 0) {
-          this.$message ({
-            message: "取消成功",
-            showClose: true,
-            type: 'success',
-          })
-          this.baseInfo.follows--;
-          this.getFollows(uid); //重新获取数据
-        }
+          .then(res => {
+            console.log(res.data);
+            if(res.data.errno === 0) {
+              this.$message ({
+                message: "取消成功",
+                showClose: true,
+                type: 'success',
+              })
+              this.baseInfo.follows--;
+              this.getFollows(uid); //重新获取数据
+            }
 
-        else {
-          this.$message ({
-            message: "操作失败",
-            showClose: true,
-            type: 'error',
+            else {
+              this.$message ({
+                message: "操作失败",
+                showClose: true,
+                type: 'error',
+              })
+            }
           })
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
@@ -289,28 +289,28 @@ export default {
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.followList = [];
-        this.followList = res.data;
-        this.showList = [];
+          .then(res => {
+            console.log(res.data)
+            this.followList = [];
+            this.followList = res.data;
+            this.showList = [];
 
-        console.log(this.followList[0]);
-        console.log(typeof this.followList[0].time)
+            console.log(this.followList[0]);
+            console.log(typeof this.followList[0].time)
 
-        for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
-          this.showList[j] = this.followList[i]
-          if(this.showList[j].avatar === null) {
-            this.showList[j].avatar = 'img/home/no-avatar.png'
-          }
-          // this.showList[j].avatar = 'img/home/avatar1.jpg'
-          this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
-        }
+            for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
+              this.showList[j] = this.followList[i]
+              if(this.showList[j].avatar === null) {
+                this.showList[j].avatar = 'img/home/no-avatar.png'
+              }
+              // this.showList[j].avatar = 'img/home/avatar1.jpg'
+              this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+            }
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
@@ -322,20 +322,20 @@ export default {
           jwt: this.$store.state.token,
         },
       })
-      .then(res => {
-        console.log(res.data)
+          .then(res => {
+            console.log(res.data)
 
-        this.baseInfo = res.data
-        if(this.baseInfo.avatar === null) {
-          this.baseInfo.avatar = 'img/home/no-avatar.png'
-        }
-        // this.baseInfo.avatar = 'img/home/avatar1.jpg'
-        console.log(this.baseInfo)
+            this.baseInfo = res.data
+            if(this.baseInfo.avatar === null) {
+              this.baseInfo.avatar = 'img/home/no-avatar.png'
+            }
+            // this.baseInfo.avatar = 'img/home/avatar1.jpg'
+            console.log(this.baseInfo)
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
   },

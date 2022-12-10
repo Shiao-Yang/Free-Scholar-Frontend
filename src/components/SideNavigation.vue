@@ -33,7 +33,7 @@
           <span class="icon avatar"><img alt="头像" src="../assets/logo.png"></span>
           <span class="text">用户名用户名用户名</span>
         </router-link>
-        <ul class="user-sub-menu">
+        <ul class="user-sub-menu" @click="toHome">
           <li class="sub-item">
             <i class='bx bx-user'></i>
             <span>个人中心</span>
@@ -85,6 +85,10 @@ export default {
     },
   },
   methods: {
+    toHome() {
+      let that = this;
+      that.$router.push('/home')
+    },
     toMessageCenter() {
       let that = this;
       that.$router.push('/MessageManage')

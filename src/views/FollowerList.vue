@@ -242,13 +242,13 @@ export default {
         url: 'http://139.9.134.209:8000/api/relation/unFocus',
         data: params,
       })
-      .then(res => {
-        console.log(res.data);
-        this.getFollowers(uid); //重新获取数据
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          .then(res => {
+            console.log(res.data);
+            this.getFollowers(uid); //重新获取数据
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
@@ -293,20 +293,20 @@ export default {
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
+          .then(res => {
+            console.log(res.data)
 
-        this.baseInfo = res.data
-        if(this.baseInfo.avatar === null) {
-          this.baseInfo.avatar = 'img/home/no-avatar.png'
-        }
-        // this.baseInfo.avatar = 'img/home/avatar1.jpg'
-        console.log(this.baseInfo)
+            this.baseInfo = res.data
+            if(this.baseInfo.avatar === null) {
+              this.baseInfo.avatar = 'img/home/no-avatar.png'
+            }
+            // this.baseInfo.avatar = 'img/home/avatar1.jpg'
+            console.log(this.baseInfo)
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
   },
