@@ -21,7 +21,7 @@
         </ul>
       </div>
       <div class="social-info">
-        <div class="social-info-item">
+        <div class="social-info-item" @click="toFollowList">
           <div class="title">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
             <span class="text" style="position: relative; top: -6px;">关注</span>
@@ -32,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="isScholar===true">
+        <div class="social-info-item" v-if="baseInfo.identity===1" @click="toHome">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart' ></i></span>
             <span class="text">粉丝</span>
@@ -127,13 +127,19 @@ export default {
       baseInfo: {
         username:"lisi",
         avatar: 'img/home/avatar1.jpg',
-        institution:{
-          name:"UBAA",
+        mail: '123@qq.com',
+        birthday: "2022-10-16",
+        institution: {
+          name: 'Beihang University',
         },
-        bio:"2234",
-        follows:1,
-        followers:1,
-        likes:0,
+        follows: 32,
+        likes: 20,
+        followers: 15,
+        identity: 1,
+        bio:"2234223422342234223422342234223422342234",
+        state: 1,
+        gender: 1,
+        login_date: '2022-10-16 22:10:16',
       },
       showList: [
         {
@@ -206,6 +212,14 @@ export default {
     }
   },
   methods: {
+    toHome() {
+      let that = this;
+      that.$router.push('/home');
+    },
+    toFollowList() {
+      let that = this;
+      that.$router.push('/followList');
+    },
     changePage(currentPage) {
       this.showList = [];
       for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
@@ -221,6 +235,9 @@ export default {
       }
 
       this.axios({
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/unFocus',
         data: params,
@@ -237,6 +254,9 @@ export default {
 
     getFollowers(uid) {
       this.axios({
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getFollowers?user_id=' + uid,
       })
@@ -251,7 +271,10 @@ export default {
 
         for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
           this.showList[j] = this.followList[i]
-          this.showList[j].avatar = 'img/home/avatar1.jpg'
+          if(this.showList[j].avatar === null) {
+            this.showList[j].avatar = 'img/home/no-avatar.png'
+          }
+          // this.showList[j].avatar = 'img/home/avatar1.jpg'
           this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
         }
 
@@ -264,6 +287,9 @@ export default {
 
     getBaseInfo(uid) {
       this.axios({
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
       })
@@ -271,7 +297,10 @@ export default {
         console.log(res.data)
 
         this.baseInfo = res.data
-        this.baseInfo.avatar = 'img/home/avatar1.jpg'
+        if(this.baseInfo.avatar === null) {
+          this.baseInfo.avatar = 'img/home/no-avatar.png'
+        }
+        // this.baseInfo.avatar = 'img/home/avatar1.jpg'
         console.log(this.baseInfo)
 
       })

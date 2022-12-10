@@ -22,7 +22,7 @@
       </div>
       <div class="social-info">
         <div class="social-info-item">
-          <div class="title">
+          <div class="title" @click="toFollowList">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
             <span class="text" style="position: relative; top: -6px;">关注</span>
           </div>
@@ -32,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="isScholar===true">
+        <div class="social-info-item" v-if="baseInfo.identity===1" @click="toFollowerList">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart' ></i></span>
             <span class="text">粉丝</span>
@@ -109,8 +109,11 @@
             <div class="item-name">
               邮箱
             </div>
-            <div class="item-content">
+            <div class="item-content" v-if="baseInfo.mail !== null">
               {{baseInfo.mail}}
+            </div>
+            <div class="item-content" v-if="baseInfo.mail === null">
+              未设置
             </div>
           </div>
           <div class="content-item">
@@ -167,30 +170,39 @@
             <div class="item-name">
               生日
             </div>
-            <div class="item-content">
+            <div class="item-content" v-if="baseInfo.birthday !== null">
               {{baseInfo.birthday}}
+            </div>
+            <div class="item-content" v-if="baseInfo.birthday === null">
+              未设置
             </div>
           </div>
           <div class="content-item">
             <div class="item-name">
               性别
             </div>
-            <div class="item-content" v-if="baseInfo.gender===0">
+            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender===0">
               保密
             </div>
-            <div class="item-content" v-if="baseInfo.gender===1">
+            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender===1">
               男
             </div>
-            <div class="item-content" v-if="baseInfo.gender===2">
+            <div class="item-content" v-if="baseInfo.gender !== null && baseInfo.gender===2">
               女
+            </div>
+            <div class="item-content" v-if="baseInfo.gender === null">
+              未设置
             </div>
           </div>
           <div class="content-item">
             <div class="item-name">
               个人简介
             </div>
-            <div class="item-content">
+            <div class="item-content" v-if="baseInfo.bio !== null">
               {{baseInfo.bio}}
+            </div>
+            <div class="item-content" v-if="baseInfo.bio === null">
+              未设置
             </div>
           </div>
           <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; right: 0px; top: 0px;" @click="editInfoVisible = true;">编辑信息</el-button>
@@ -255,7 +267,20 @@
           <div class="user-avatar">
             <img :src="require('../assets/' + baseInfo.avatar)">
           </div>
-          <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; left: 50px; bottom: 10px;">更换头像</el-button>
+          <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; left: 50px; bottom: 10px;" @click="changeAvatarVisible = true">更换头像</el-button>
+          <el-dialog
+              title="上传头像"
+              :visible.sync="changeAvatarVisible"
+              width="30%"
+              class = "changeAvatar">
+              <span>
+                <input type="file" ref="pic">
+              </span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="changeAvatarVisible = false">取 消 上 传</el-button>
+                <el-button type="primary" @click="toChangeAvatar(uid)">确 定 上 传</el-button>
+              </span>
+          </el-dialog>
         </div>
       </div>
     </div>
@@ -263,6 +288,9 @@
 </template>
 
 <script>
+import {format} from 'date-fns';
+import moment from 'moment';
+
 export default {
   name: "Home",
   data() {
@@ -270,9 +298,9 @@ export default {
       uid: 1,
       closable: true, //是否可关闭dialog
       isCenter: true, //dialog footer 和 head 是否居中
-      isActive1: false, //true 则展示系统消息
+      isActive1: true, //true 则展示系统消息
       isActive2: false, //true 则展示收到的私信
-      isActive3: true, //true 则展示发送的私信
+      isActive3: false, //true 则展示发送的私信
       avatar: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
@@ -282,6 +310,7 @@ export default {
       isScholar: false,
       editInfoVisible: false,
       changePwdVisible: false,
+      changeAvatarVisible: false,
       password: {
         id: this.uid,
         password_old: '',
@@ -314,12 +343,19 @@ export default {
         state: 1,
         gender: 1,
         login_date: '2022-10-16 22:10:16',
-
       },
 
     }
   },
   methods: {
+    toFollowerList() {
+      let that = this;
+      that.$router.push('/followList');
+    },
+    toFollowList() {
+      let that = this;
+      that.$router.push('/followList');
+    },
     changePage(currentPage) {
       this.showList = [];
       for(let i = (currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
@@ -352,6 +388,9 @@ export default {
       param.id = uid
       console.log(param)
       this.axios({
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/changePwd',
         data: param,
@@ -385,27 +424,102 @@ export default {
         password2: '',
       }
     },
+    toChangeAvatar(){
+      this.changeAvatarVissible = false;
+      const tempthis = this;
+      let fileToUpload = this.$refs.pic.files[0];
+      //console.log(fileToUpload)
+      let param = new FormData();  //创建表单对象
+      param.append("avatar",fileToUpload);
+      // param.append("uid",tempthis.$store.state.userInfo.uid);
+      param.append("uid",tempthis.uid);
+
+      param.forEach((value, key) => {
+        console.log(`key ${key}: value ${value}`);
+      })
+
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/editInfo/aaa',
+        data: param,
+        headers: {
+          jwt: this.$store.state.token,
+        },
+      })
+      .then(res => {
+        console.log(res.data)
+        if(res.data.errno===0) {
+          tempthis.$message({
+            type: 'success',
+            showClose: true,
+            message: "头像上传成功",
+          })
+        }
+        else {
+          if(res.data.errno===0) {
+            tempthis.$message({
+              type: 'success',
+              showClose: true,
+              // message: "res.data.msg",
+              message: "头像上传失败",
+            })
+          }
+        }
+        tempthis.getBaseInfo(tempthis.uid);
+        console.log(this.baseInfo)
+
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
     changeInfo(uid) {
+      let birth;
+    // .format("yyyy-MM-dd"),
+      console.log(typeof this.infoForm.birthday)
+      birth = format(this.infoForm.birthday, "yyyy-MM-dd");
+      console.log(birth)
+
+      // console.log(this.infoForm.birthday)
       let param = {
         id: uid,
         name: this.infoForm.name,
         mail: this.infoForm.mail,
-        birthday: this.infoForm.birthday,
+        birthday: birth,
         gender: this.infoForm.gender,
         bio: this.infoForm.bio,
       }
       console.log(param)
       this.axios({
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/editInfo',
         data: param,
       })
       .then(res => {
         console.log(res.data)
+        if(res.data.errno === 0) {
+          if(res.data.errno === 0) {
+            this.$message ({
+              message: "取消成功",
+              showClose: true,
+              type: 'success',
+            })
+            this.baseInfo.follows--;
+            this.getBaseInfo(uid); //重新获取数据
+          }
 
-
-
-        console.log(this.baseInfo)
+          else {
+            this.$message ({
+              message: "操作失败",
+              showClose: true,
+              type: 'error',
+            })
+          }
+        }
 
       })
       .catch(err => {
@@ -427,18 +541,24 @@ export default {
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+        headers: {
+          jwt: this.$store.state.token,
+        },
       })
       .then(res => {
         console.log(res.data)
 
-            this.baseInfo = res.data
-            this.baseInfo.avatar = 'img/home/avatar1.jpg'
-            console.log(this.baseInfo)
+        this.baseInfo = res.data
+        if(this.baseInfo.avatar === null) {
+          this.baseInfo.avatar = 'img/home/no-avatar.png'
+        }
+        // this.baseInfo.avatar = 'img/home/avatar1.jpg'
+        console.log(this.baseInfo)
 
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      })
+      .catch(err => {
+        console.log(err);
+      })
 
     },
   },
@@ -476,14 +596,14 @@ export default {
 .avatar {
   position: relative;
   margin: 15px 0px 15px 30px;
-  width: 150px;
+  width: 170px;
   height: 170px;
   vertical-align: middle;
 }
 
 .avatar img {
   height: 170px;
-  width: 140px;
+  width: 170px;
   max-height: 100%;
   vertical-align: middle;
   border-radius: 5px;
@@ -531,11 +651,18 @@ export default {
 .social-info .social-info-item {
   width: 120px;
   height: 80px;
+  cursor: pointer;
+  transition: 0.2s
+}
+
+.social-info .social-info-item:hover {
+  color: #2196f3;
 }
 
 .social-info .social-info-item .title {
   width: 120px;
   height: 40px;
+
 }
 
 .social-info .social-info-item .title .icon {

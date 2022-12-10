@@ -11,7 +11,8 @@ export default new Vuex.Store({
       email: "",
       profile: "I'm Peter",
     },
-    address: 'http://139.9.134.209:8000/'
+    address: 'http://139.9.134.209:8000/',
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYWRtaW4iOmZhbHNlLCJleHAiOjE2NzA2ODE2NTZ9.a0l85agpNJToPRElI1EATRq3CF2Pw6EzgTP7stSaWg8",
   },
   getters: {
   },

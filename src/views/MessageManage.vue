@@ -453,7 +453,7 @@ export default {
     },
 
     //获取用户收到的私信
-    getMsgRec(uid) {
+    getMsgRec(uid, type) { //type=0,初始化时的调用
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec?owner_id=' + uid,
@@ -473,6 +473,9 @@ export default {
         //   this.changeShowContent();
         // }
         console.log(this.showContent)
+        if(type === 0) {
+          this.dis_msg_list = this.msg_plm_list;
+        }
       })
       .catch(err => {
         console.log(err);
@@ -480,7 +483,7 @@ export default {
     },
 
     //获取用户发送的私信
-    getMsgSend(uid) {
+    getMsgSend(uid, type) { //type=0,初始化时的调用
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgSend?sender_id=' + uid,
@@ -497,6 +500,9 @@ export default {
         // if(this.showContent) {
         //   this.changeShowContent();
         // }
+        if(type === 0) {
+          this.dis_msg_list = this.msg_plm_list;
+        }
       })
       .catch(err => {
         console.log(err);
@@ -566,14 +572,14 @@ export default {
 
   },
   created() {
-
+    this.getMsgRec(this.uid);
   },
   mounted() {
-    this.getMsgRec(this.uid);
     this.getMsgPlm(this.uid);
     console.log(this.msg_plm_has_new)
     console.log(this.msg_rec_has_new)
     this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    console.log(this.dis_msg_list)
   }
 }
 </script>
