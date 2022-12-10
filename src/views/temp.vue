@@ -92,7 +92,7 @@
 <!--            <img src="../assets/img/home/avatar.png">-->
             <i class='bx bx-user-circle'></i>
           </span>
-            <span class="name">
+          <span class="name">
             个人头像
           </span>
         </div>
@@ -279,7 +279,7 @@
               <span>
                 <input type="file" ref="pic">
               </span>
-              <span slot="footer" class="dialog-footer">
+            <span slot="footer" class="dialog-footer">
                 <el-button @click="changeAvatarVisible = false">取 消 上 传</el-button>
                 <el-button type="primary" @click="toChangeAvatar(uid)">确 定 上 传</el-button>
               </span>
@@ -398,27 +398,27 @@ export default {
         url: 'http://139.9.134.209:8000/api/relation/changePwd',
         data: param,
       })
-      .then(res => {
-        console.log(res.data)
-        if(res.data.errno === 0) {
-          this.$message ({
-            message: '修改成功',
-            type: 'success',
-            showClose: true,
-          });
-        }
-        else {
-          this.$message ({
-            message: res.data.msg,
-            type: 'error',
-            showClose: true,
-          });
-        }
+          .then(res => {
+            console.log(res.data)
+            if(res.data.errno === 0) {
+              this.$message ({
+                message: '修改成功',
+                type: 'success',
+                showClose: true,
+              });
+            }
+            else {
+              this.$message ({
+                message: res.data.msg,
+                type: 'error',
+                showClose: true,
+              });
+            }
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
       this.password = { //重置为空
         id: this.uid,
@@ -449,37 +449,37 @@ export default {
           jwt: this.$store.state.token,
         },
       })
-      .then(res => {
-        console.log(res.data)
-        if(res.data.errno===0) {
-          tempthis.$message({
-            type: 'success',
-            showClose: true,
-            message: "头像上传成功",
-          })
-        }
-        else {
-          if(res.data.errno===0) {
-            tempthis.$message({
-              type: 'success',
-              showClose: true,
-              // message: "res.data.msg",
-              message: "头像上传失败",
-            })
-          }
-        }
-        tempthis.getBaseInfo(tempthis.uid);
-        console.log(this.baseInfo)
+          .then(res => {
+            console.log(res.data)
+            if(res.data.errno===0) {
+              tempthis.$message({
+                type: 'success',
+                showClose: true,
+                message: "头像上传成功",
+              })
+            }
+            else {
+              if(res.data.errno===0) {
+                tempthis.$message({
+                  type: 'success',
+                  showClose: true,
+                  // message: "res.data.msg",
+                  message: "头像上传失败",
+                })
+              }
+            }
+            tempthis.getBaseInfo(tempthis.uid);
+            console.log(this.baseInfo)
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
     changeInfo(uid) {
       let birth;
-    // .format("yyyy-MM-dd"),
+      // .format("yyyy-MM-dd"),
       console.log(typeof this.infoForm.birthday)
       birth = format(this.infoForm.birthday, "yyyy-MM-dd");
       console.log(birth)
@@ -502,32 +502,32 @@ export default {
         url: 'http://139.9.134.209:8000/api/relation/editInfo',
         data: param,
       })
-      .then(res => {
-        console.log(res.data)
-        if(res.data.errno === 0) {
-          if(res.data.errno === 0) {
-            this.$message ({
-              message: "取消成功",
-              showClose: true,
-              type: 'success',
-            })
-            this.baseInfo.follows--;
-            this.getBaseInfo(uid); //重新获取数据
-          }
+          .then(res => {
+            console.log(res.data)
+            if(res.data.errno === 0) {
+              if(res.data.errno === 0) {
+                this.$message ({
+                  message: "取消成功",
+                  showClose: true,
+                  type: 'success',
+                })
+                this.baseInfo.follows--;
+                this.getBaseInfo(uid); //重新获取数据
+              }
 
-          else {
-            this.$message ({
-              message: "操作失败",
-              showClose: true,
-              type: 'error',
-            })
-          }
-        }
+              else {
+                this.$message ({
+                  message: "操作失败",
+                  showClose: true,
+                  type: 'error',
+                })
+              }
+            }
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
       this.infoForm = {
         name: '',  //重置为空
@@ -548,20 +548,20 @@ export default {
           jwt: this.$store.state.token,
         },
       })
-      .then(res => {
-        console.log(res.data)
+          .then(res => {
+            console.log(res.data)
 
-        this.baseInfo = res.data
-        if(this.baseInfo.avatar === null) {
-          this.baseInfo.avatar = 'img/home/no-avatar.png'
-        }
-        // this.baseInfo.avatar = 'img/home/avatar1.jpg'
-        console.log(this.baseInfo)
+            this.baseInfo = res.data
+            if(this.baseInfo.avatar === null) {
+              this.baseInfo.avatar = 'img/home/no-avatar.png'
+            }
+            // this.baseInfo.avatar = 'img/home/avatar1.jpg'
+            console.log(this.baseInfo)
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
   },

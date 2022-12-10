@@ -572,7 +572,7 @@ export default {
 
   },
   created() {
-    this.getMsgRec(this.uid);
+    this.getMsgRec(this.uid, 1);
   },
   mounted() {
     this.getMsgPlm(this.uid);
