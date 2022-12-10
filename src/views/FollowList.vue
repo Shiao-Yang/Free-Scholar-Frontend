@@ -22,7 +22,7 @@
       </div>
       <div class="social-info">
         <div class="social-info-item">
-          <div class="title">
+          <div class="title" @click="toHome">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
             <span class="text" style="position: relative; top: -6px;">关注</span>
           </div>
@@ -32,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="isScholar===true">
+        <div class="social-info-item" v-if="baseInfo.identity===1" @click="toFollowerList">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart' ></i></span>
             <span class="text">粉丝</span>
@@ -86,7 +86,7 @@
               <span class="icon" style="color: cornflowerblue"><i class='bx bxs-message-rounded-dots' title="私信"></i></span>
             </div>
             <div class="social-info-item">
-              <span class="icon" style="color: red" @click="unFocus(this.uid, item.id)"><i class='bx bxs-user-x' title="取消关注"></i></span>
+              <span class="icon" style="color: red" @click="unFocus(uid, item.scholar_id)"><i class='bx bxs-user-x' title="取消关注"></i></span>
             </div>
           </div>
           <div class="social-info-number">
@@ -130,13 +130,19 @@ export default {
       baseInfo: {
         username:"lisi",
         avatar: 'img/home/avatar1.jpg',
-        institution:{
-          name:"UBAA",
+        mail: '123@qq.com',
+        birthday: "2022-10-16",
+        institution: {
+          name: 'Beihang University',
         },
-        bio:"2234",
-        follows:1,
-        followers:1,
-        likes:0,
+        follows: 32,
+        likes: 20,
+        followers: 15,
+        identity: 1,
+        bio:"2234223422342234223422342234223422342234",
+        state: 1,
+        gender: 1,
+        login_date: '2022-10-16 22:10:16',
       },
       showList: [
         {
@@ -146,6 +152,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -154,6 +161,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -162,6 +170,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
+          scholar_id: 1,
         },
       ],
       followList:[
@@ -172,6 +181,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:01',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -180,6 +190,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:02',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -188,6 +199,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:03',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -196,6 +208,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:04',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -204,11 +217,20 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:05',
+          scholar_id: 1,
         },
       ]
     }
   },
   methods: {
+    toHome() {
+      let that = this;
+      that.$router.push('/home');
+    },
+    toFollowerList() {
+      let that = this;
+      that.$router.push('/followerList');
+    },
     changePage(currentPage) {
       this.showList = [];
       for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
@@ -223,45 +245,72 @@ export default {
         aim_id: aid,
       }
 
+      console.log(params);
+
       this.axios({
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/unFocus',
         data: params,
+        headers: {
+          jwt: this.$store.state.token,
+        },
       })
-      .then(res => {
-        console.log(res.data);
-        this.getFollows(uid); //重新获取数据
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          .then(res => {
+            console.log(res.data);
+            if(res.data.errno === 0) {
+              this.$message ({
+                message: "取消成功",
+                showClose: true,
+                type: 'success',
+              })
+              this.baseInfo.follows--;
+              this.getFollows(uid); //重新获取数据
+            }
+
+            else {
+              this.$message ({
+                message: "操作失败",
+                showClose: true,
+                type: 'error',
+              })
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
     getFollows(uid) {
       this.axios({
+        headers: {
+          jwt: this.$store.state.token,
+        },
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.followList = [];
-        this.followList = res.data;
-        this.showList = [];
+          .then(res => {
+            console.log(res.data)
+            this.followList = [];
+            this.followList = res.data;
+            this.showList = [];
 
-        console.log(this.followList[0]);
-        console.log(typeof this.followList[0].time)
+            console.log(this.followList[0]);
+            console.log(typeof this.followList[0].time)
 
-        for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
-          this.showList[j] = this.followList[i]
-          this.showList[j].avatar = 'img/home/avatar1.jpg'
-          this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
-        }
+            for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
+              this.showList[j] = this.followList[i]
+              if(this.showList[j].avatar === null) {
+                this.showList[j].avatar = 'img/home/no-avatar.png'
+              }
+              // this.showList[j].avatar = 'img/home/avatar1.jpg'
+              this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+            }
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
@@ -269,18 +318,24 @@ export default {
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+        headers: {
+          jwt: this.$store.state.token,
+        },
       })
-      .then(res => {
-        console.log(res.data)
+          .then(res => {
+            console.log(res.data)
 
-        this.baseInfo = res.data
-        this.baseInfo.avatar = 'img/home/avatar1.jpg'
-        console.log(this.baseInfo)
+            this.baseInfo = res.data
+            if(this.baseInfo.avatar === null) {
+              this.baseInfo.avatar = 'img/home/no-avatar.png'
+            }
+            // this.baseInfo.avatar = 'img/home/avatar1.jpg'
+            console.log(this.baseInfo)
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
   },
