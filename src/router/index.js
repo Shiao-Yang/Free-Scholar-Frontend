@@ -8,6 +8,10 @@ import Home from "@/views/FollowList"
 import followerList from "@/views/Home";
 import followList from "@/views/FollowList";
 import messageManage from "@/views/MessageManage";
+import SearchDetails from "@/views/SearchDetails"
+import History from "@/views/History"
+import TransactionCenter from "@/views/TransactionCenter"
+import LoginSignUp from "@/views/Login&SignUp";
 
 Vue.use(VueRouter)
 
@@ -16,6 +20,14 @@ const routes = [
     path: '/',
     name: 'home',
     component: Settings
+  },
+  {
+    path: '/login&signup',
+    name: 'login&register',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/Login&SignUp.vue')
   },
   {
     path: '/about',
@@ -51,6 +63,11 @@ const routes = [
     path: '/ScholarsPortal',
     name: 'ScholarsPortal',
     component: () => import('../views/ScholarsPortal.vue')
+  },
+  {
+    path: '/NS',
+    name: 'NS',
+    component: () => import('../views/NS')
   },
   {
     path: '/searchList',
@@ -96,7 +113,27 @@ const routes = [
     path: '/MessageManage',
     name: 'MessageManage',
     component: () => import('../views/MessageManage.vue')
-  }
+  },
+  {
+    path: '/SearchDetails',
+    name: 'SearchDetails',
+    component: () => import('../views/SearchDetails.vue')
+  },
+  {
+    path: '/History',
+    name: 'History',
+    component: () => import('../views/History.vue')
+  },
+  {
+    path: '/TransactionCenter',
+    name: 'TransactionCenter',
+    component: () => import('../views/TransactionCenter.vue')
+  },
+  {
+    path: '/login&signup',
+    name: 'login&signup',
+    component: () => import('../views/Login&SignUp'),
+  },
 ]
 
 const router = new VueRouter({

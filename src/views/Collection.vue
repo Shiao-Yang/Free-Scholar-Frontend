@@ -561,7 +561,9 @@ export default {
   margin-left: 50px;
   margin-right: 50px;
   margin-bottom: 50px;
-  height: auto;
+  height: 760px;
+  overflow: auto;
+
 }
 .item {
   padding-top: 10px;
@@ -599,7 +601,7 @@ export default {
 }
 
 .myCollection {
-  width: 80%;
+  width: 100%;
   min-width: 1125px;
   height: auto;
   background-color: white;

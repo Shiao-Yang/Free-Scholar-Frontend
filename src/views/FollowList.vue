@@ -2,21 +2,21 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="require('../assets/' + url)">
+        <img :src="require('../assets/' + baseInfo.avatar)">
       </div>
       <div class="profile">
         <ul class="profile-list">
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-user'></i></span>
-            <span class="text" style="font-size: 25px; font-weight: bold">{{username}}</span>
+            <span class="text" style="font-size: 25px; font-weight: bold">{{baseInfo.username}}</span>
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-home'></i></span>
-            <span class="text">{{institution}}</span>
+            <span class="text">{{baseInfo.institution.name}}</span>
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-bookmark'></i></span>
-            <span class="text">{{profile}}</span>
+            <span class="text">{{baseInfo.bio}}</span>
           </li>
         </ul>
       </div>
@@ -28,7 +28,7 @@
           </div>
           <div class="social-info-number">
             <div class="number">
-              {{FollowNumber}}
+              {{baseInfo.follows}}
             </div>
           </div>
         </div>
@@ -39,7 +39,7 @@
           </div>
           <div class="social-info-number">
             <div class="number">
-              {{FanNumber}}
+              {{baseInfo.followers}}
             </div>
           </div>
         </div>
@@ -50,7 +50,7 @@
           </div>
           <div class="social-info-number">
             <div class="number">
-              {{LikeNumber}}
+              {{baseInfo.likes}}
             </div>
           </div>
         </div>
@@ -67,21 +67,17 @@
       <div class="follow-list">
         <div class="follow-list-item" v-for="(item,index) in showList" :key="index">
           <div class="avatar">
-            <img :src="require('../assets/' + item.Avatar)" style="max-width: 100%">
+            <img :src="require('../assets/' + item.avatar)" style="max-width: 100%">
           </div>
           <div class="profile">
             <ul class="profile-list">
               <li class="profile-list-item">
                 <span class="icon"><i class='bx bxs-user'></i></span>
-                <span class="text" style="font-size: 20px; font-weight: bold">{{item.Userame}}</span>
-              </li>
-              <li class="profile-list-item">
-                <span class="icon"><i class='bx bxs-home'></i></span>
-                <span class="text">{{item.Institution}}</span>
+                <span class="text" style="font-size: 20px; font-weight: bold">{{item.username}}</span>
               </li>
               <li class="profile-list-item">
                 <span class="icon"><i class='bx bxs-bookmark'></i></span>
-                <span class="text">{{item.Profile}}</span>
+                <span class="text">{{item.bio}}</span>
               </li>
             </ul>
           </div>
@@ -90,18 +86,18 @@
               <span class="icon" style="color: cornflowerblue"><i class='bx bxs-message-rounded-dots' title="私信"></i></span>
             </div>
             <div class="social-info-item">
-              <span class="icon" style="color: red"><i class='bx bxs-user-x' title="取消关注"></i></span>
+              <span class="icon" style="color: red" @click="unFocus(this.uid, item.id)"><i class='bx bxs-user-x' title="取消关注"></i></span>
             </div>
           </div>
           <div class="social-info-number">
-            <span class="number">关注于 : {{item.FollowTime}}</span>
+            <span class="number">关注于 : {{item.time}}</span>
           </div>
         </div>
       </div>
       <div class="pagination">
         <el-pagination
             background
-            page-size="3"
+            :page-size="3"
             layout="prev, pager, next"
             :hide-on-single-page=true
             :current-page="this.currentPage"
@@ -118,75 +114,96 @@ export default {
   name: "FollowList",
   data() {
     return {
-      url: 'img/home/avatar1.jpg',
+      uid: 1,
+      avatar: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
-      profile: 'I am Peter',
+      bio: 'I am Peter',
       isFollow: false,
       isLike: false,
       isScholar: false,
-      FollowNumber: 32,
-      LikeNumber: 20,
-      FanNumber: 15,
+      follows: 32,
+      likes: 20,
+      followers: 15,
       currentPage: 1,
+      pageSize: 3,
+      baseInfo: {
+        username:"lisi",
+        avatar: 'img/home/avatar1.jpg',
+        institution:{
+          name:"UBAA",
+        },
+        bio:"2234",
+        follows:1,
+        followers:1,
+        likes:0,
+      },
       showList: [
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          id: 1,
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:07',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          id: 1,
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:07',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:07',
+          id: 1,
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:07',
         },
       ],
       followList:[
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:01',
+          id: 1,
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:01',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:02',
+          id: 1,
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:02',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:03',
+          id: 1,
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:03',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:04',
+          id: 1,
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:04',
         },
         {
-          Avatar: 'img/home/avatar1.jpg',
-          Userame: '王婉',
-          Institution: 'Beihang University',
-          Profile: 'I am 王婉',
-          FollowTime: '2022-01-10 16:05',
+          id: 1,
+          avatar: 'img/home/avatar1.jpg',
+          username: '王婉',
+          institution: 'Beihang University',
+          bio: 'I am 王婉',
+          time: '2022-01-10 16:05',
         },
       ]
     }
@@ -194,19 +211,83 @@ export default {
   methods: {
     changePage(currentPage) {
       this.showList = [];
-      for(let i = (currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
+      for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
         this.showList[j] = this.followList[i]
+        this.showList[j].avatar = 'img/home/avatar1.jpg'
+        this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
       }
     },
-    init() {
-      this.showList = [];
-      for(let i = (this.currentPage-1)*3, j = 0; i < this.followList.length && j < 3; i++,j++) {
-        this.showList[j] = this.followList[i]
+    unFocus(uid, aid) { //uid: 当前用户, aid: 被关注的用户
+      let params = {
+        user_id: uid,
+        aim_id: aid,
       }
-    }
+
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/unFocus',
+        data: params,
+      })
+      .then(res => {
+        console.log(res.data);
+        this.getFollows(uid); //重新获取数据
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
+
+    getFollows(uid) {
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
+      })
+      .then(res => {
+        console.log(res.data)
+        this.followList = [];
+        this.followList = res.data;
+        this.showList = [];
+
+        console.log(this.followList[0]);
+        console.log(typeof this.followList[0].time)
+
+        for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
+          this.showList[j] = this.followList[i]
+          this.showList[j].avatar = 'img/home/avatar1.jpg'
+          this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+        }
+
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
+
+    getBaseInfo(uid) {
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+      })
+      .then(res => {
+        console.log(res.data)
+
+        this.baseInfo = res.data
+        this.baseInfo.avatar = 'img/home/avatar1.jpg'
+        console.log(this.baseInfo)
+
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
   },
+
   created() {
-    this.init()
+    this.getBaseInfo(1);
+    this.getFollows(1);
   }
 }
 </script>
@@ -221,11 +302,11 @@ export default {
 
 .intro {
   position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 1400px;
+  width: 100%;
+  min-width: 700px;
   height: 200px;
-  background: rgb(244,244,244);
+  border-radius: 10px;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: flex-start;
   border-radius: 5px;
@@ -290,11 +371,18 @@ export default {
 .social-info .social-info-item {
   width: 120px;
   height: 80px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .social-info .social-info-item .title {
   width: 120px;
   height: 40px;
+
+}
+
+.social-info .social-info-item:hover {
+  color: #2196f3;
 }
 
 .social-info .social-info-item .title .icon {
@@ -331,10 +419,12 @@ export default {
   position: absolute;
   top: 220px;
   left: 0px;
-  width: 1400px;
+  width: 100%;
+  min-width: 700px;
   height: 470px;
-  background: rgb(244,244,244);
-  border-radius: 5px;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  align-items: center;
 }
 
 .content-list .title {
@@ -355,9 +445,8 @@ export default {
 .divider {
   position: absolute;
   margin: 0 auto;
-  width: 1350px;
+  width: 100%;
   height: 2px;
-  left: 25px;
   top: 75px;
   background-color: #d4d4d4;
   text-align: center;
@@ -368,15 +457,17 @@ export default {
 .follow-list {
   position: absolute;
   top: 90px;
-  width: 1400px;
+  width: 100%;
+  min-width: 665px;
   height: 370px;
 }
 
 .follow-list-item {
   position: relative;
-  width: 1375px;
+  width: 100%;
+  min-width: 700px;
   height: 110px;
-  margin: 0 0 15px 10px;
+  margin-bottom: 20px;
   background: rgb(255, 255, 255);
   display: flex;
   justify-content: flex-start;
@@ -418,8 +509,10 @@ export default {
 .follow-list-item .profile .profile-list .profile-list-item {
   width: 600px;
   display: flex;
-  height: 3px;
-  line-height: 10px;
+  position: relative;
+  top: -7px;
+  height: 30px;
+  line-height: 30px;
   align-items: center;
 }
 
@@ -431,34 +524,43 @@ export default {
 .follow-list-item .profile .profile-list .profile-list-item .text {
   font-size: 10px;
   position: relative;
-  top: 2px;
+  top: 0px;
+  width: 400px;
+  max-width: 400px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .follow-list-item .social-info {
   position: absolute;
   right: 0px;
-  bottom: 0px;
-  width: 370px;
-  height: 85px;
+  top: 0px;
+  width: 120px;
+  height: 100px;
   display: flex;
   justify-content: flex-end;
 }
 
 .follow-list-item .social-info .social-info-item {
+  width: 120px;
+  height: 100px;
   position: relative;
-  right: -5px;
+  top: 25px;
+  right: 20px;
   display: inline;
 }
 
 .follow-list-item .social-info .social-info-item .icon {
-  margin: 0px 10px 0 40px;
-  font-size: 45px;
+  color: cornflowerblue;
+  margin: 20px;
+  font-size: 40px;
   transition: all .5s ease;
   cursor: pointer;
 }
 
 .follow-list-item .social-info .social-info-item .icon:hover {
-  font-size: 55px;
+  font-size: 35px;
 }
 
 .follow-list-item .social-info .social-info-item .icon.active{

@@ -5,7 +5,7 @@
         <p id="welcome" class="header-text">开启你的学术之旅</p>
       </div>
       <div class="header-search-box">
-        <input type="text" autocomplete="off"  
+        <input type="text" autocomplete="off"
                id="input"
                class="search-input"
                v-model="input"
@@ -19,7 +19,6 @@
           <li id="hot1" class="hot-item"><span class="hotWord">AI</span></li>
           <li id="hot2" class="hot-item"><span class="hotWord">计算机技术</span></li>
           <li id="hot3" class="hot-item"><span class="hotWord">核磁共振</span></li>
-          <li id="hot4" class="hot-item"><span class="hotWord">无机化学</span></li>
         </ul>
       </div>
     </div>
@@ -149,6 +148,7 @@ export default {
 .hotWord-list .hot-item:hover {
   padding: 8px 20px;
   font-size: 18px;
+  font-weight: bold;
   color: white;
   background: #2196f3;
 }
