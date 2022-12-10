@@ -145,9 +145,9 @@
         </div>
         <table>
           <tr>
-            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近十年</span></td>
-            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近五年</span></td>
-            <td style="cursor: pointer"><span style="color: #2196f3;margin: 15px;">近三年</span></td>
+            <td style="cursor: pointer" :class="{'active':activeYear===10}" @click="searchByYearBtn(10);activeYear=10"><span style="color: #2196f3;margin: 15px;">近十年</span></td>
+            <td style="cursor: pointer" :class="{'active':activeYear===5}" @click="searchByYearBtn(5);activeYear=5"><span style="color: #2196f3;margin: 15px;">近五年</span></td>
+            <td style="cursor: pointer" :class="{'active':activeYear===3}" @click="searchByYearBtn(3);activeYear=3"><span style="color: #2196f3;margin: 15px;">近三年</span></td>
           </tr>
         </table>
       </div>
@@ -169,9 +169,10 @@
       </p>
       <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
       <div class="item" v-for="item in languages" v-if="language_zone">
-        <label v-if="item.active"><input type="checkbox" :checked="item.active" @click="item.active=false"/>{{item.language}} </label>
-        <label v-else><input type="checkbox" :checked="item.active" @click="item.active=true"/>{{item.language}} </label>
-        <span class="num">{{item.num}}</span>
+        <p class="filter-item">
+          <span v-if="item.val !== lang" style="cursor: pointer" @click="search(8,item.val)">{{item.language}}</span>
+          <span v-else style="cursor: pointer;color: #2196f3" @click="search(9)">{{item.language}}</span>
+        </p>
       </div>
       <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="keyword_zone = !keyword_zone">关键词
         <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
@@ -257,7 +258,7 @@ export default {
     window.myData = this;
   },
   mounted() {
-
+    let date = new Date()
   },
   data() {
     return {
@@ -270,6 +271,7 @@ export default {
       organization_zone: true,
       journal_zone: true,
       show_card: false,
+      activeYear: 0,
       startTime: '',
       endTime: '',
       searchType: '',
@@ -292,6 +294,7 @@ export default {
       keyword: '',
       org: '',
       venue: '',
+      lang: '',
       types: [{
           active: false,
           srcActive: require("../assets/img/searchList/conferenceActive.png"),
@@ -310,16 +313,10 @@ export default {
       ],
       languages: [{
           language: "英文",
-          active: false,
-          num: "1234",
+          val: 'en'
         }, {
           language: "中文",
-          active: false,
-          num: "12",
-        }, {
-          language: "其它",
-          active: false,
-          num: "2377"
+          val: 'zh'
         }
       ],
       keywords: [
@@ -406,7 +403,7 @@ export default {
       else
         return "";
     },
-    search(flag,val) { // flag = 0:普通搜索,1:筛选关键词搜索,2:筛选机构搜索,3:筛选期刊搜索，4:筛选时间搜索,5:取消关键词搜索,6:取消机构搜索,7:取消期刊搜索
+    search(flag,val) { // flag = 0:普通搜索,1:筛选关键词搜索,2:筛选机构搜索,3:筛选期刊搜索，4:筛选时间搜索,5:取消关键词搜索,6:取消机构搜索,7:取消期刊搜索,8:筛选语言搜素,9:取消语言搜素
       this.show_card = false;
       let params = {
         page: 1,
@@ -444,6 +441,9 @@ export default {
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
@@ -460,6 +460,9 @@ export default {
         }
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
@@ -478,6 +481,9 @@ export default {
         if (this.org !== '') {
           params.filter.push({field: 'org',value: this.org})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
@@ -490,6 +496,7 @@ export default {
           this.$message('请选择正确的时间顺序')
           return;
         }
+        this.activeYear = 0
         params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         let i;
         for (i = 0; i < this.oldInputs.length; i++) {
@@ -504,6 +511,9 @@ export default {
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
         this.$refs.box.scrollIntoView()
       } else if (flag === 5) {
         this.keyword = '';
@@ -516,6 +526,9 @@ export default {
         }
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
@@ -533,6 +546,9 @@ export default {
         if (this.venue !== '') {
           params.filter.push({field: 'venue',value: this.venue})
         }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
@@ -548,6 +564,48 @@ export default {
         }
         if (this.org !== '') {
           params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 8) {
+        this.lang = val
+        params.filter.push({field: 'lang',value: val})
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        this.$refs.box.scrollIntoView()
+      } else if (flag === 9) {
+        this.lang = '';
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
@@ -598,6 +656,7 @@ export default {
                 this.keyword = ''
                 this.org = ''
                 this.venue = ''
+                this.activeYear = 0
               }
               this.getPaperData(res.data.hits[i]._source.id, i)
             }
@@ -608,6 +667,93 @@ export default {
             this.getKeyList()
             this.getVenueList()
             this.show_card = true;
+            this.currentPage = 1;
+          })
+    },
+    searchByYearBtn(val) {
+      let params = {
+        page: 1,
+        condition: [
+          {
+            type: "OR",
+            input: this.input,
+            field: this.field
+          }
+        ],
+        filter: [],
+      }
+      if (this.input === '') {
+        this.$message('请输入首项搜索值')
+        return;
+      }
+      this.startTime = ''
+      this.endTime = ''
+      this.activeYear = val
+      let date = new Date()
+      params.filter.push({field: 'year',value: [''+(date.getFullYear()-val),''+date.getFullYear()]})
+      let i;
+      for (i = 0; i < this.oldInputs.length; i++) {
+        params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+      }
+      if (this.keyword !== '') {
+        params.filter.push({field: 'keyword',value: this.keyword})
+      }
+      if (this.org !== '') {
+        params.filter.push({field: 'org',value: this.org})
+      }
+      if (this.venue !== '') {
+        params.filter.push({field: 'venue',value: this.venue})
+      }
+      if (this.lang !== '') {
+        params.filter.push({field: 'lang',value: this.lang})
+      }
+      this.$refs.box.scrollIntoView()
+      console.log(params)
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/publication/search/',
+        data: params
+      })
+          .then(async res => {
+            console.log(res.data)
+            this.total = res.data.total.value
+            this.displayResult = [];
+            let i = 0,len = res.data.hits.length;
+            for (i = 0; i < len; i++) {
+              let Abstract, quotes;
+              if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
+                Abstract = res.data.hits[i]._source.abstract
+              } else {
+                Abstract = '';
+              }
+              if (res.data.hits[i]._source.hasOwnProperty('n_citation')) {
+                quotes = res.data.hits[i]._source.n_citation
+              } else {
+                quotes = 0;
+              }
+              this.displayResult.push(
+                  {
+                    id: res.data.hits[i]._source.id,
+                    articleName: res.data.hits[i]._source.title,
+                    author: res.data.hits[i]._source.authors,
+                    abstract: Abstract,
+                    liked: false,
+                    likes: '54',
+                    collected: this.user_collected,
+                    collections: this.collection_num,
+                    comments: this.comment_num,
+                    quotes: quotes,
+                    year: res.data.hits[i]._source.year,
+                  }
+              )
+              this.getPaperData(res.data.hits[i]._source.id, i)
+            }
+            if (len === 0) {
+              this.$message('搜索结果为空')
+            }
+            this.getOrgList()
+            this.getKeyList()
+            this.getVenueList()
             this.currentPage = 1;
           })
     },
@@ -637,6 +783,9 @@ export default {
       }
       if (this.venue !== '') {
         params.filter.push({field: 'venue',value: this.venue})
+      }
+      if (this.lang !== '') {
+        params.filter.push({field: 'lang',value: this.lang})
       }
       if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
         params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
@@ -1136,6 +1285,9 @@ td {
 }
 td:hover {
   background-color: #f8f8ff;
+}
+td.active {
+  background-color: #ededff;
 }
 .item {
   margin: 10px 0px 10px 0px;
