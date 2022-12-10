@@ -151,6 +151,7 @@
           </tr>
         </table>
       </div>
+      <!--
       <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;width: 100%;cursor: pointer" @click="type_zone = !type_zone">出版物类型
         <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
       </p>
@@ -162,6 +163,7 @@
         <span v-else class="type" @click="item.active=true">{{item.type}}</span>
         <span class="num">{{item.num}}</span>
       </div>
+      -->
       <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="language_zone = !language_zone">语言
         <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
       </p>
@@ -562,8 +564,8 @@ export default {
             console.log(res.data)
             this.total = res.data.total.value
             this.displayResult = [];
-            let i = 0;
-            for (i = 0; i < res.data.hits.length; i++) {
+            let i = 0,len = res.data.hits.length;
+            for (i = 0; i < len; i++) {
               let Abstract, quotes;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
@@ -598,10 +600,13 @@ export default {
                 this.venue = ''
               }
               this.getPaperData(res.data.hits[i]._source.id, i)
-              this.getOrgList()
-              this.getKeyList()
-              this.getVenueList()
             }
+            if (len === 0) {
+              this.$message('搜索结果为空')
+            }
+            this.getOrgList()
+            this.getKeyList()
+            this.getVenueList()
             this.show_card = true;
             this.currentPage = 1;
           })
@@ -646,8 +651,8 @@ export default {
             console.log(res.data)
             this.total = res.data.total.value
             this.displayResult = [];
-            let i = 0;
-            for (i = 0; i < res.data.hits.length; i++) {
+            let i = 0,len = res.data.hits.length;
+            for (i = 0; i < len; i++) {
               let Abstract, quotes;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
@@ -675,10 +680,10 @@ export default {
                   }
               )
               this.getPaperData(res.data.hits[i]._source.id, i)
-              this.getOrgList()
-              this.getKeyList()
-              this.getVenueList()
             }
+            this.getOrgList()
+            this.getKeyList()
+            this.getVenueList()
             this.show_card = true;
           })
     },
