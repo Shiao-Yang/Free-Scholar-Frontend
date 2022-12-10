@@ -69,7 +69,8 @@
       <div class="source-box">
         <div class="source-item" :class="{'active' : isActive1}" @click="changeActive1">
           <span class="image">
-            <img src="../assets/img/home/information.png">
+<!--            <img src="../assets/img/home/information.png">-->
+            <i class='bx bx-info-circle'></i>
           </span>
           <span class="name">
             个人信息
@@ -77,7 +78,8 @@
         </div>
         <div class="source-item" :class="{'active' : isActive2}" @click="changeActive2">
           <span class="image">
-            <img src="../assets/img/home/password.png">
+<!--            <img src="../assets/img/home/password.png">-->
+            <i class='bx bx-shield'></i>
           </span>
           <span class="name">
             修改密码
@@ -85,7 +87,8 @@
         </div>
         <div class="source-item" :class="{'active' : isActive3}" @click="changeActive3">
           <span class="image">
-            <img src="../assets/img/home/avatar.png">
+<!--            <img src="../assets/img/home/avatar.png">-->
+            <i class='bx bx-user-circle'></i>
           </span>
             <span class="name">
             个人头像
@@ -362,19 +365,20 @@ export default {
 
 .home {
   height: 790px;
-  width: 1400px;
+  width: 100%;
+  min-width: 1400px;
 }
 .intro {
   position: absolute;
   top: 0px;
   left: 0px;
-  width: 1400px;
+  width: 100%;
+  min-width: 1400px;
   height: 200px;
-  background: rgb(244,244,244);
   display: flex;
   justify-content: flex-start;
   border-radius: 5px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
 .avatar {
@@ -435,6 +439,12 @@ export default {
 .social-info .social-info-item {
   width: 120px;
   height: 80px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.social-info .social-info-item:hover {
+  color: #2196f3;
 }
 
 .social-info .social-info-item .title {
@@ -475,11 +485,11 @@ export default {
 .info-box {
   position: relative;
   top: 220px;
-  width: 1400px;
+  width: 100%;
+  min-width: 1400px;
   height: 550px;
-  background: rgb(244,244,244);
   border-radius: 5px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
 .info-box:hover {
@@ -519,9 +529,10 @@ export default {
 .divider-x {
   position: absolute;
   margin: 0 auto;
-  width: 1350px;
+  /*width: 1350px;*/
+  width: 100%;
   height: 2px;
-  left: 25px;
+  /*left: 25px;*/
   top: 90px;
   background-color: #d4d4d4;
   text-align: center;
@@ -545,28 +556,51 @@ export default {
 }
 
 .source-box .source-item {
-  background: rgb(244,244,244);
+  /*background: rgb(244,244,244);*/
   position: relative;
-  height: 60px;
+  height: 70px;
   width: 250px;
   border-radius: 5px;
   margin: 10px 25px 10px 25px;
   vertical-align: middle;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
   transition: all 0.6s;
   overflow: hidden;
+  display: flex;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
 
+.source-box .source-item:hover,
 .source-box .source-item.active {
-  background-color: #d9d7d7;
+  background-color: rgba(244, 244, 244, 0.9);
+  /*background-color: #f4f4f4;*/
   height: 70px;
-  width: 275px;
-  margin: 5px 15px 5px 15px;
+  width: 250px;
+  /*margin: 5px 15px 5px 15px;*/
+}
+
+.source-box .source-item .image{
+  min-width: 40px;
+  min-height: 40px;
+  font-size: 40px;
+  line-height: 70px;
+  margin-right: 10px;
+  transition: 0.6s;
+  /*margin: 0 30px 0 40px;*/
+}
+
+.source-box .source-item:hover .image,
+.source-box .source-item.active.active .image {
+  margin-top: 5px;
+  color: #4DA5FF;
 }
 
 .source-box .source-item .image img {
   height: 40px;
   width: 40px;
-  margin: 10px 30px 10px 40px;
+  /*margin: 10px 30px 10px 40px;*/
   transition-property: height, width, margin;
   transition: ease-in 0.6s ease-out 0s;
 }
@@ -583,21 +617,20 @@ export default {
 .source-box .source-item .name {
   font-size:20px;
   font-weight: 900;
-  position: absolute;
-  top: 15px;
+  text-align: center;
   transition-property: font-size, font-weight, top;
   transition: all 0.6s;
   overflow: hidden;
+  line-height: 70px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.source-box .source-item:hover .name,
 .source-box .source-item.active .name {
   color: #4DA5FF;
-  font-size:25px;
+  font-size: 25px;
   font-weight: 900;
-  position: absolute;
-  top: 17px;
   text-overflow: ellipsis;
 }
 
@@ -622,6 +655,7 @@ export default {
   top: 95px;
   left: 340px;
   width: 1050px;
+  margin: auto;
   height: 450px;
 }
 
@@ -705,12 +739,4 @@ export default {
   width: 45px;
   position: relative;
 }
-
-
-
-
-
-
-
-
 </style>
