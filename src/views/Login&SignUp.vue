@@ -6,29 +6,33 @@
           <h2 class="title">登录</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" placeholder="用户名" />
+            <input type="text" v-model="login_username" placeholder="用户名" />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" placeholder="密码" />
+            <input type="password" v-model="login_password" placeholder="密码" />
           </div>
-          <input type="submit" value="立即登录" class="btn solid" />
+          <input type="submit" value="立即登录" class="btn solid" @click="login"/>
         </form>
         <form action="#" class="sign-up-form">
           <h2 class="title">注册</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" placeholder="用户名" />
+            <input type="text" v-model="register_username" placeholder="用户名" />
           </div>
           <div class="input-field">
             <i class="fas fa-envelope"></i>
-            <input type="email" placeholder="邮箱" />
+            <input type="email" v-model="register_mail" placeholder="邮箱" />
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" placeholder="密码" />
+            <input type="password" v-model="register_password1" placeholder="密码" />
           </div>
-          <input type="submit" class="btn" value="立即注册" />
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input type="password" v-model="register_password2" placeholder="确认密码" />
+          </div>
+          <input type="submit" class="btn" value="立即注册" @click="register"/>
         </form>
       </div>
     </div>
@@ -68,7 +72,100 @@ export default {
   data (){
     return {
       loginMode: true,
+      login_username: '',
+      login_password: '',
+      register_username: '',
+      register_password1: '',
+      register_password2: '',
+      register_mail: '',
     }
+  },
+  methods: {
+    login() {
+      let param = new FormData();
+      console.log(this.login_username)
+      console.log(this.login_password)
+      param.append('username', this.login_username);
+      param.append('password', this.login_password);
+
+      this.axios({
+        method: "post",
+        url: 'http://139.9.134.209:8000/api/user/login/',
+        data: param,
+      })
+      .then(res => {
+        if(res.data.errno === 0) {
+          let baseInfo = {}
+          baseInfo.name = res.data.name
+          baseInfo.mail = res.data.email
+          baseInfo.avatar = res.data.avatar
+          baseInfo.token = res.data.token
+          baseInfo.profile = res.data.profile
+          // console.log(JSON.stringify(baseInfo))
+          sessionStorage.setItem('baseInfo', JSON.stringify(baseInfo))
+
+          this.$message({
+            message: '登陆成功',
+            showClose: true,
+            type: 'success',
+          })
+
+          let tmp = sessionStorage.getItem('baseInfo')
+          console.log(tmp)
+
+          this.$router.push('/')
+        }
+        else {
+          this.$message({
+            message: res.data.msg,
+            showClose: true,
+            type: 'error',
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
+    register() {
+      let param = new FormData();
+      console.log(this.register_username)
+      console.log(this.register_mail)
+      console.log(this.register_password1)
+      console.log(this.register_password2)
+      param.append('username', this.register_username);
+      param.append('email', this.register_mail);
+      param.append('password1', this.register_password1);
+      param.append('password2', this.register_password2);
+
+      this.axios({
+        method: "post",
+        url: 'http://139.9.134.209:8000/api/user/register',
+        data: param,
+      })
+      .then(res => {
+        if(res.data.errno === 0) {
+
+          this.$message({
+            message: '注册成功',
+            showClose: true,
+            type: 'success',
+          })
+
+          this.loginMode = true;
+        }
+        else {
+          this.$message({
+            message: res.data.msg,
+            showClose: true,
+            type: 'error',
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
   },
   mounted() {
   }
