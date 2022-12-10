@@ -236,7 +236,7 @@
       </div>
       <div class="block">
         <el-pagination
-            style="position: absolute;left: 35%;"
+            style="position: absolute;left: 40%;"
             layout="prev, pager, next, jumper"
             :page-size="20"
             :current-page.sync="currentPage"
