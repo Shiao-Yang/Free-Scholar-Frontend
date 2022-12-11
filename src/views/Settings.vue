@@ -340,7 +340,8 @@ export default {
   margin: 0;
 }
 .trending-box {
-  height: 300px;
+  margin-top: 20px;
+  padding: 10px;
   border-radius: 5px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
