@@ -64,10 +64,13 @@
           <div class="red-point" v-if="!item.is_read && !isActive3">
             <img src="../assets/img/MessageManage/red-point.png">
           </div>
-          <div class="operation" style="right: 0px;">
+          <div class="operation" v-if="isActive1">
             <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
           </div>
-          <div class="operation" style="right: 70px;">
+          <div class="operation" v-if="!isActive1" style="right: 0px;">
+            <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
+          </div>
+          <div class="operation" v-if="!isActive1" style="right: 70px;">
             <img class="reply-img" src="../assets/img/MessageManage/reply.png" title="回复" @click="replyVisible = true;">
           </div>
           <div class="send-time">
@@ -84,13 +87,13 @@
           <span class="name" v-if="!isActive1">
             {{ cur_msg.username }}
           </span>
-          <span class="name" v-if="isActive1">
+          <span class="name" v-if="!isActive1">
             系统通知
           </span>
           <div class="operation" style="right: 0px;">
             <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
           </div>
-          <div class="operation" style="right: 70px;">
+          <div class="operation" v-if="!isActive1" style="right: 70px;">
             <img class="reply-img" src="../assets/img/MessageManage/reply.png" title="回复" @click="replyVisible = true;">
           </div>
           <div class="send-time">

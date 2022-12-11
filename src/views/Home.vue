@@ -2,7 +2,7 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="this.$store.state.url+baseInfo.avatar">
+        <img :src="url+baseInfo.avatar">
       </div>
       <div class="profile">
         <ul class="profile-list">
@@ -12,11 +12,13 @@
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-home'></i></span>
-            <span class="text">{{baseInfo.institution.name}}</span>
+            <span class="text" v-if="baseInfo.institution !== null">{{baseInfo.institution.name}}</span>
+            <span class="text" v-if="baseInfo.institution === null">暂无</span>
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-bookmark'></i></span>
-            <span class="text">{{baseInfo.bio}}</span>
+            <span class="text" v-if="baseInfo.bio !== null">{{baseInfo.bio}}</span>
+            <span class="text" v-if="baseInfo.bio === null">暂无</span>
           </li>
         </ul>
       </div>
@@ -32,7 +34,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="baseInfo.identity===1" @click="toFollowerList">
+        <div class="social-info-item" v-if="baseInfo.identity===2" @click="toFollowerList">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart' ></i></span>
             <span class="text">粉丝</span>
@@ -123,7 +125,7 @@
             <div class="item-name">
               身份
             </div>
-            <div class="item-content" v-if="baseInfo.identity === 0">
+            <div class="item-content" v-if="baseInfo.identity === 1">
               <div class="text">
                 普通用户
               </div>
@@ -131,7 +133,7 @@
                 <img src="../assets/img/home/user.png" style="margin: 5px; width: 35px; height: 35px; position: relative; left: -100px; filter: drop-shadow(100px 0px rgba(98,100,100,0.82)); ">
               </div>
             </div>
-            <div class="item-content" v-if="baseInfo.identity === 1">
+            <div class="item-content" v-if="baseInfo.identity === 2">
               <div class="text">
                 认证学者
               </div>
@@ -268,7 +270,7 @@
         </div>
         <div class="show-box" v-if="isActive3">
           <div class="user-avatar">
-            <img :src="this.$store.state.url+baseInfo.avatar">
+            <img :src="url+baseInfo.avatar">
           </div>
           <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; left: 50px; bottom: 10px;" @click="changeAvatarVisible = true">更换头像</el-button>
           <el-dialog
@@ -299,6 +301,7 @@ export default {
   data() {
     return {
       uid: 1,
+      url: this.$store.state.url,
       closable: true, //是否可关闭dialog
       isCenter: true, //dialog footer 和 head 是否居中
       isActive1: true, //true 则展示系统消息
@@ -433,7 +436,7 @@ export default {
       let fileToUpload = this.$refs.pic.files[0];
       //console.log(fileToUpload)
       let param = new FormData();  //创建表单对象
-      param.append("avatar",fileToUpload);
+      param.append("img",fileToUpload);
       // param.append("uid",tempthis.$store.state.userInfo.uid);
       param.append("uid",tempthis.uid);
 
@@ -443,7 +446,7 @@ export default {
 
       this.axios({
         method: 'post',
-        url: 'http://139.9.134.209:8000/api/relation/set_avatar/',
+        url: 'http://139.9.134.209:8000/api/media/set_avatar/',
         data: param,
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
