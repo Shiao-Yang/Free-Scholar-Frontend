@@ -8,13 +8,21 @@
                      font-size: 30px; display: inline-block; left: 85px; right: 0;
                      top: 30px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
-                <i class="bx bxs-user-plus"></i>
-                <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
-                <i class="bx bxs-award"></i>
-                <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;
+                <div class="option-box">
+                  <div class="follow">
+                    <i class="bx bxs-user-plus"></i>
+                    <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
+                  </div>
+                  <div class="claim">
+                    <i class="bx bxs-award"></i>
+                    <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;
                  color: #ffcb74">已认领</div>
-                <i class="bx bxs-chat"></i>
-                <div style="position: absolute; margin-top: 13px; left: 245px; font-size: 15px">私信</div>
+                  </div>
+                  <div class="message">
+                    <i class="bx bxs-chat"></i>
+                    <div style="position: absolute; margin-top: 13px; left: 245px; font-size: 15px">私信</div>
+                  </div>
+                </div>
             </div>
             <div class="introduction">
                 <i class="bx bxs-user-pin"></i>
@@ -151,10 +159,16 @@
 </script>
 
 <style scoped>
+    .NS {
+      width: 100%;
+      min-width: 1450px;
+    }
+
     .left {
         position: relative;
         display: inline-block;
         width: 23%;
+        min-width: 330px;
         margin: 10px;
         height: 760px;
         /*background-color: #4DA5FF;*/
@@ -163,6 +177,7 @@
         position: relative;
         display: inline-block;
         width: 48%;
+        min-width: 680px;
         height: 760px;
         margin: 10px;
         /*background-color: #00CA97;*/
@@ -173,6 +188,7 @@
         position: relative;
         display: inline-block;
         width: 24%;
+        min-width: 330px;
         height: 760px;
         margin: 10px;
         /*margin-top: 0;*/
@@ -292,6 +308,7 @@
         margin-left: 15px;
         color: #333333;
     }
+
     .introduction .bxs-user-pin {
         position: absolute;
         margin-top: 15px;
@@ -382,9 +399,37 @@
     }
     .image {
         position: absolute;
-        padding: 15px;
+        /*padding: 15px;*/
         width: 100px; height: 100px;
-        border-radius: 20px;
+        border-radius: 10px;
         display: inline-block
+    }
+
+    .follow {
+      transition: 0.2s;
+      color: #333333;
+      cursor: pointer;
+    }
+
+    .follow:hover {
+      color: #2196f3;
+    }
+
+    .follow:hover .bxs-user-plus{
+      color: #2196f3;
+    }
+
+    .message {
+      transition: 0.2s;
+      color: #333333;
+      cursor: pointer;
+    }
+
+    .message:hover {
+      color: #2196f3;
+    }
+
+    .message:hover .bxs-chat{
+      color: #2196f3;
     }
 </style>

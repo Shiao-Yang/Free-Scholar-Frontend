@@ -1,6 +1,7 @@
 <template>
 
   <div class="background">
+
     <div class="leftup">
       <div class="title">
         {{ literature_title }}
@@ -45,9 +46,9 @@
       </div>
     </div>
     <div class="rightup">
-      <img src="../assets/logo.png" class="picture">
-      <div style="position:absolute; z-index:2;font-size: 36px;width: 100%;top:70px;text-align: center">今日访问量</div>
-      <div style="position:absolute; z-index:2;font-size: 36px;width: 100%;top:140px;text-align: center">
+      <img src="../assets/img/light.jpg" class="picture">
+      <div style="position:absolute; color: white; z-index:2;font-size: 36px;width: 100%;top:70px;text-align: center">今日访问量</div>
+      <div style="position:absolute; color: white; z-index:2;font-size: 60px;width: 100%;top:140px;text-align: center">
         {{ number_of_today_visit }}
       </div>
     </div>
@@ -178,57 +179,79 @@ export default {
 <style scoped>
 
 .leftup {
-  position: absolute;
+  position: relative;
+  display: inline-block;
   height: 350px;
-  width: 900px;
+  /*width: 900px;*/
+  width: 72%;
   left: 0;
   right: 0;
-  /*margin: 0 auto;*/
+  margin: 10px;
   background-color: white;
   border-radius: 10px;
-  margin-top: 0px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  /*margin-top: 0px;*/
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
   overflow: auto;
 }
 
 .rightup {
   position: absolute;
   height: 275px;
-  width: 275px;
-  left: 925px;
-  right: 0;
-  /*margin: 0 auto;*/
+  display: inline-block;
+  /*width: 275px;*/
+  width: 24%;
+  margin: 10px;
   background-color: white;
   border-radius: 10px;
-  margin-top: 0px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  /*margin-top: 0px;*/
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);*/
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 
 .leftdown {
-  position: absolute;
+  position: relative;
+  display: inline-block;
   height: 275px;
-  width: 900px;
-  top: 325px;
-  left: 0;
-  right: 0;
+  /*width: 900px;*/
+  width: 72%;
+  /*top: 50px;*/
   background-color: white;
   border-radius: 10px;
-  margin-top: 50px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  margin: 10px;
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);*/
   overflow: auto;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 
 .rightdown {
   position: absolute;
   height: 350px;
-  width: 275px;
-  top: 250px;
-  left: 925px;
-  right: 0;
+  display: inline-block;
+  /*width: 275px;*/
+  width: 24%;
+  margin: 10px;
+  /*left: 925px;*/
+  top: 300px;
   background-color: white;
   border-radius: 10px;
-  margin-top: 50px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  /*margin-top: 50px;*/
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width:10px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.3);*/
+  border-radius:10px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius:10px;
+  background:rgba(0,0,0,0.1);
+  /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.5);*/
 }
 
 .Image {
@@ -237,7 +260,9 @@ export default {
 }
 
 .background {
-  position: absolute;
+  width: 88%;
+  margin: 0 auto;
+  position: relative;
 }
 
 .cover {
@@ -258,16 +283,20 @@ export default {
 }
 
 .leftdown .title {
-  position: absolute;
+  position: relative;
   font-size: 35px;
-  left: 20px;
-  top: 20px;
+  /*left: 20px;*/
+  /*top: 20px;*/
+  margin: 20px;
 }
 
 .rightup .picture {
-  position: absolute;
-  height: 275px;
-  width: 275px;
+  position: relative;
+  /*height: 275px;*/
+  /*width: 275px;*/
+  height:100%;
+  width: 100%;
+  border-radius: 10px;
 }
 
 .rightdown .title {
@@ -320,7 +349,7 @@ export default {
 .replys {
   font-size: 15px;
   overflow: auto;
-  width: 850px;
+  width: 100%;
 }
 
 .recommendations {
