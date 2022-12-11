@@ -53,8 +53,8 @@
             </div>
             <div style="position: relative; height: 30px">
                 <div style="position: absolute; left: 20px">排序方式：</div>
-                <button class="sort" @click="">按发表时间排序</button>
-                <button class="sort" style="left: 220px" @click="">按引用量排序</button>
+                <button class="sort" @click="sortByTime(0)">按发表时间排序</button>
+                <button class="sort" style="left: 220px" @click="sortByTime(1)">按引用量排序</button>
             </div>
             <div style="overflow: auto; position: absolute; width: 100%; height: 660px">
                 <div class="contents" v-for="(item) in paperList">
@@ -64,8 +64,12 @@
                     </div>
                     <div style="position: relative; display: flex; flex-wrap: wrap; list-style: none; line-height: 15px;
                     margin-left: 25px; align-items: center;">
-                        <div class="author" v-for="(tItem) in item.authors">{{tItem.name}}</div>
+                        <div class="author" v-for="(tItem) in item.authors" >
+                            <span v-if="tItem.id" @click="temp(tItem.id)">{{tItem.name}}</span>
+                            <span v-else @click="$message('暂无该作者信息')">{{tItem.name}}</span>
+                        </div>
                         <div style="margin-left: auto">
+                            <div class="year">年份: {{item.year}}</div>
                             <i class='bx bx-link'></i>
                             <div class="citation">被引用次数: {{item.n_citation}}</div>
                         </div>
@@ -116,18 +120,28 @@
                 introduction:'这个人很懒，什么都没有写……',
                 heat: 38,
                 visitors: 23,
-                paperList: [
+                paperList: [],
+                scholarList: [],
 
-                ],
-                scholarList: [
-
-                ],
-                test: [
-
-                ]
             }
         },
         methods: {
+            temp(id){
+                this.uid = id;
+                this.getCoworkers(id);
+            },
+            sortByTime(n){
+                if(n==0){
+                    this.paperList.sort(function (a, b) {
+                        return b.year - a.year;
+                    })
+                }
+                else {
+                    this.paperList.sort(function (a, b) {
+                        return b.n_citation - a.n_citation;
+                    })
+                }
+            },
             getCoworkers(uid){
                 this.axios({
                     method: 'post',
@@ -136,10 +150,11 @@
                         id: uid
                     })
                 }).then(res => {
-                    // console.log(res.data)
+                    console.log(res.data)
                     this.scholarList = res.data.coworkers;
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
+                    // this.coID = res.data.
                 }).catch(err => {
                     console.log(err)
                 })
@@ -174,11 +189,11 @@
 
         },
         created() {
-            console.log(this.$route.query.id)
+            // console.log(this.$route.query.id)
             this.uid = this.$route.query.id;
             // console.log(this.uid)
             this.getCoworkers(this.uid)
-            this.getBaseInfo(this.uid)
+            // this.getBaseInfo(this.uid)
         }
     }
 </script>
@@ -245,6 +260,7 @@
         /*left: 25px;*/
         font-size: 15px;
         color: #4DA5FF;
+        cursor: pointer;
     }
     .middle .title:hover {
         position: relative;
@@ -254,6 +270,7 @@
         /*left: 25px;*/
         font-size: 15px;
         color: #4DA5FF;
+        cursor: pointer;
     }
     .right .bxs-contact {
         position: absolute;
@@ -285,6 +302,13 @@
         font-size: 13px;
         margin-right: 5px;
     }
+    .contents .year {
+        position: relative;
+        display: inline-block;
+        /*align-self: cross-end;*/
+        margin-right: 10px;
+        font-size: 13px;
+    }
     .contents .citation {
         position: relative;
         display: inline-block;
@@ -303,10 +327,13 @@
         /*position: relative;*/
         /*display: inline-block;*/
         margin-left: 15px;
-        /*margin-bottom: 10px;*/
-        /*top: 60px;*/
         font-size: 10px;
         color: #24bf24;
+        cursor: pointer;
+    }
+    .middle .author:hover {
+        color: #27ae60;
+        font-weight: bold;
     }
     .middle .sort {
         position: absolute;
@@ -317,6 +344,10 @@
         transition: .5s;
     }
     .middle .sort:hover {
+        color: white;
+        background: #2196f3;
+    }
+    .middle .sort:focus {
         color: white;
         background: #2196f3;
     }
