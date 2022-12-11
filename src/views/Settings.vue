@@ -48,9 +48,10 @@
       </div>
     </div>
     <div class="side">
-      <div class="register-login">
+      <div class="register-login" v-if="!isLogin">
         <p>知识不分国界</p>
         <p>智慧不设围墙</p>
+        <div class="btn" @click="$router.push('/login&signup')"><span>登录/注册</span></div>
       </div>
       <div class="trending-box">
       <p><i class='bx bxs-hot'></i>Trending</p>
@@ -69,9 +70,11 @@
 export default {
   name: 'Settings',
   created() {
+    this.getHotWord()
+    this.getHotPaper()
+    this.isLogin()
   },
   mounted() {
-    this.getHotWord()
   },
   data() {
     return {
@@ -120,6 +123,14 @@ export default {
     }
   },
   methods: {
+    isLogin(){
+      if (sessionStorage.getItem('baseInfo') !== null) {
+        console.log('true111')
+        return true
+      }
+      console.log('false111')
+      return false
+    },
     search() {
       this.$store.state.input = this.input
       this.$router.push('/searchList')
@@ -132,6 +143,16 @@ export default {
           .then(res=>{
             console.log(res.data)
           })
+    },
+    getHotPaper() {
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/publication/HotPaper/'
+      })
+          .then(res=>{
+            console.log('hotPaper:')
+            console.log(res.data)
+          })
     }
   }
 }
@@ -142,7 +163,7 @@ export default {
   position: relative;
   margin: 0 auto;
   width: 100%;
-  min-width: 1450px;
+  min-width: 1300px;
   height: 300px;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
@@ -242,7 +263,7 @@ export default {
   margin: 100px 0 0 0;
   padding: 1px;
   width: 76%;
-  min-width: 1060px;
+  min-width: 900px;
   min-height: 400px;
   border-radius: 10px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
@@ -318,7 +339,7 @@ export default {
   float: left;
   position: relative;
   width: 20%;
-  min-width: 300px;
+  min-width: 250px;
   padding: 10px;
   margin: 100px 0 0 20px;
 }
@@ -328,7 +349,7 @@ export default {
   background: url("../assets/img/settings/sky.png") no-repeat;
   background-size: 100% 300px;
   border-radius: 10px;
-  border: 1px;
+  padding: 1px;
 }
 .register-login p {
   display: flex;
@@ -338,6 +359,32 @@ export default {
   font-weight: bold;
   font-size: 30px;
   margin: 0;
+}
+.register-login > p:first-child {
+  margin-top: 20px;
+}
+.register-login .btn {
+  position: relative;
+  text-align: center;
+  width: 120px;
+  height: 45px;
+  background-color: #2196f3;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  margin: 20px auto;
+  border-radius: 5px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: 0.5s;
+}
+.register-login .btn:hover {
+  background-color: white;
+  color: black;
+}
+.register-login .btn span {
+  position: relative;
+  top: 20%;
 }
 .trending-box {
   margin-top: 20px;
