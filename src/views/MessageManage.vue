@@ -9,81 +9,86 @@
       </span>
     </div>
     <div class="divider-x"></div>
-    <div class="source-box">
-      <div class="platform-msg" :class="{'active' : isActive1}" @click="changeActive1(event)">
-        <div class="red-point" v-if="msg_plm_has_new > 0">
-          <img src="../assets/img/MessageManage/red-point.png">
-        </div>
-        <span class="image">
-          <img src="../assets/img/MessageManage/notice.png">
-        </span>
-        <span class="name">
+    <div class="message-container">
+      <div class="source-box">
+        <div class="platform-msg" :class="{'active' : isActive1}" @click="changeActive1(event)">
+          <div class="red-point" v-if="msg_plm_has_new > 0">
+            <img src="../assets/img/MessageManage/red-point.png">
+          </div>
+          <span class="image">
+<!--          <img src="../assets/img/MessageManage/notice.png">-->
+            <i class='bx bxs-bell' ></i>
+          </span>
+          <span class="name">
           系统通知
         </span>
-      </div>
-      <div class="platform-msg" :class="{'active' : isActive2}" @click="changeActive2(event)">
-        <div class="red-point" v-if="msg_rec_has_new > 0">
-          <img src="../assets/img/MessageManage/red-point.png">
         </div>
+        <div class="platform-msg" :class="{'active' : isActive2}" @click="changeActive2(event)">
+          <div class="red-point" v-if="msg_rec_has_new > 0">
+            <img src="../assets/img/MessageManage/red-point.png">
+          </div>
+          <span class="image">
+<!--          <img src="../assets/img/MessageManage/message-received.png">-->
+            <i class='bx bxs-envelope'></i>
+          </span>
+          <span class="name">
+            收到的私信
+          </span>
+        </div>
+        <div class="platform-msg" :class="{'active' : isActive3}" @click="changeActive3(event)">
         <span class="image">
-          <img src="../assets/img/MessageManage/message-received.png">
+<!--          <img src="../assets/img/MessageManage/message-sent.png">-->
+          <i class='bx bxs-paper-plane'></i>
         </span>
-        <span class="name">
-          收到的私信
-        </span>
-      </div>
-      <div class="platform-msg" :class="{'active' : isActive3}" @click="changeActive3(event)">
-        <span class="image">
-          <img src="../assets/img/MessageManage/message-sent.png">
-        </span>
-        <span class="name">
+          <span class="name">
           发送的私信
         </span>
+        </div>
       </div>
-    </div>
-    <div class="divider-y"></div>
-    <div class="sender-box">
-      <div class="sender" v-for="(item, index) in dis_msg_list" :key="index" v-if="!showContent" @click="openMessage(item.mid, index)">
+      <div class="divider-y"></div>
+      <div class="sender-box">
+        <div class="sender" v-for="(item, index) in dis_msg_list" :key="index" v-if="!showContent" @click="openMessage(item.mid, index)">
         <span class="image">
         <img :src="require('../assets/img/MessageManage/' + item.avatar)">
         </span>
-        <span class="name">
+          <span class="name">
           {{ item.username }}
         </span>
-        <span class="content">
+          <span class="content">
           {{ item.content }}
         </span>
-        <div class="red-point" v-if="!item.is_read && !isActive3">
-          <img src="../assets/img/MessageManage/red-point.png">
-        </div>
-        <div class="operation">
-          <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
-        </div>
-        <div class="send-time">
-          <div class="text">
-            {{item.create_time}}
+          <div class="red-point" v-if="!item.is_read && !isActive3">
+            <img src="../assets/img/MessageManage/red-point.png">
+          </div>
+          <div class="operation">
+            <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
+          </div>
+          <div class="send-time">
+            <div class="text">
+              {{item.create_time}}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="sender-baseInfo" v-if="showContent" @click="changeShowContent(event, true)">
+        <div class="sender-baseInfo" v-if="showContent" @click="changeShowContent(event, true)">
         <span class="image">
         <img :src="require('../assets/img/MessageManage/' + cur_msg.avatar)">
         </span>
-        <span class="name">
+          <span class="name">
           {{ cur_msg.username }}
         </span>
-        <div class="operation">
-          <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(cur_msg.mid)">
-        </div>
-        <div class="send-time">
-          <div class="text">
-            {{cur_msg.create_time}}
+          <div class="operation">
+            <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(cur_msg.mid)">
+          </div>
+          <div class="send-time">
+            <div class="text">
+              {{cur_msg.create_time}}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="content-box" v-if="showContent">
-        <div class="text-area">
-          {{cur_msg.content}}
+        <div class="content-box" v-if="showContent">
+          <div class="text-area">
+            {{cur_msg.content}}
+          </div>
         </div>
       </div>
     </div>
@@ -402,30 +407,30 @@ export default {
         url: 'http://139.9.134.209:8000/api/MessageCenter/deleteMessage/',
         data: params,
       })
-      .then(res => {
-        this.dis_msg_list = [];
-        if(this.isActive1) { //当前处于系统消息列表
-          this.getMsgPlm(this.uid);
-        }
-        else if(this.isActive2) { //当前处于收到的私信列表
-          this.getMsgRec(this.uid);
-        }
-        else if(this.isActive3) { //当前处于发送的私信列表
-          this.getMsgSend(this.uid);
-        }
+          .then(res => {
+            this.dis_msg_list = [];
+            if(this.isActive1) { //当前处于系统消息列表
+              this.getMsgPlm(this.uid);
+            }
+            else if(this.isActive2) { //当前处于收到的私信列表
+              this.getMsgRec(this.uid);
+            }
+            else if(this.isActive3) { //当前处于发送的私信列表
+              this.getMsgSend(this.uid);
+            }
 
-        if(res.data.errno === 0) {
-          this.$message({
-            type: 'success',
-            showClose: true,
-            message: '删除成功'
+            if(res.data.errno === 0) {
+              this.$message({
+                type: 'success',
+                showClose: true,
+                message: '删除成功'
+              })
+            }
+
           })
-        }
-
-      })
-      .catch(err => {
-        console.log(err)
-      })
+          .catch(err => {
+            console.log(err)
+          })
     },
 
     //获取系统通知
@@ -434,73 +439,79 @@ export default {
         method: 'get',
         url: 'http://139.9.134.209:8000/api/MessageCenter/getPlatMsg?owner_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.msg_plm_list = res.data;
-        for(let i = 0; i < this.msg_plm_list.length; i++) {
-          this.msg_plm_list[i].avatar = 'user.png';
-          this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
-        }
-        this.dis_msg_list = this.msg_plm_list;
-        this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
-        // if(this.showContent) {
-        //   this.changeShowContent();
-        // }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          .then(res => {
+            console.log(res.data)
+            this.msg_plm_list = res.data;
+            for(let i = 0; i < this.msg_plm_list.length; i++) {
+              this.msg_plm_list[i].avatar = 'user.png';
+              this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.dis_msg_list = this.msg_plm_list;
+            this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     //获取用户收到的私信
-    getMsgRec(uid) {
+    getMsgRec(uid, type) { //type=0,初始化时的调用
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec?owner_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.msg_rec_list = res.data;
-        for(let i = 0; i < this.msg_rec_list.length; i++) {
-          this.msg_rec_list[i].avatar = 'user.png';
-          this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
-        }
-        this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
-        this.dis_msg_list = this.msg_rec_list;
+          .then(res => {
+            console.log(res.data)
+            this.msg_rec_list = res.data;
+            for(let i = 0; i < this.msg_rec_list.length; i++) {
+              this.msg_rec_list[i].avatar = 'user.png';
+              this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+            this.dis_msg_list = this.msg_rec_list;
 
-        console.log(this.dis_msg_list)
-        // if(this.showContent) {
-        //   this.changeShowContent();
-        // }
-        console.log(this.showContent)
-      })
-      .catch(err => {
-        console.log(err);
-      })
+            console.log(this.dis_msg_list)
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+            console.log(this.showContent)
+            if(type === 0) {
+              this.dis_msg_list = this.msg_plm_list;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     //获取用户发送的私信
-    getMsgSend(uid) {
+    getMsgSend(uid, type) { //type=0,初始化时的调用
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgSend?sender_id=' + uid,
       })
-      .then(res => {
-        console.log(res.data)
-        this.msg_send_list = res.data;
-        for(let i = 0; i < this.msg_send_list.length; i++) {
-          this.msg_send_list[i].avatar = 'user.png';
-          this.msg_send_list[i].create_time = new Date(this.msg_send_list[i].create_time).toLocaleString('zh', {hour12: false})
-        }
-        this.dis_msg_list = this.msg_send_list;
+          .then(res => {
+            console.log(res.data)
+            this.msg_send_list = res.data;
+            for(let i = 0; i < this.msg_send_list.length; i++) {
+              this.msg_send_list[i].avatar = 'user.png';
+              this.msg_send_list[i].create_time = new Date(this.msg_send_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.dis_msg_list = this.msg_send_list;
 
-        // if(this.showContent) {
-        //   this.changeShowContent();
-        // }
-      })
-      .catch(err => {
-        console.log(err);
-      })
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+            if(type === 0) {
+              this.dis_msg_list = this.msg_plm_list;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     readMsg(mid) {
@@ -512,12 +523,12 @@ export default {
         url: 'http://139.9.134.209:8000/api/MessageCenter/readMessage/',
         data: param,
       })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          .then(res => {
+            console.log(res.data);
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
 
@@ -566,14 +577,14 @@ export default {
 
   },
   created() {
-
+    this.getMsgRec(this.uid, 1);
   },
   mounted() {
-    this.getMsgRec(this.uid);
     this.getMsgPlm(this.uid);
     console.log(this.msg_plm_has_new)
     console.log(this.msg_rec_has_new)
     this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    console.log(this.dis_msg_list)
   }
 }
 </script>
@@ -601,11 +612,16 @@ export default {
   background-color: #a3a4a9;
 }
 
-.message-center {
+.title {
+  width: 100%;
+  height: 70px;
+}
 
+.message-center {
   margin: 20px auto;
   height: 730px;
-  width: 90%;
+  width: 100%;
+  min-width: 1300px;
   border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
@@ -624,13 +640,12 @@ export default {
 .source-box {
   display: inline-block;
   /*background-color: #0fc70f;*/
-  top: -50px;
-  left: 5px;
   position: relative;
   height: 580px;
   width: 20%;
+  min-width: 300px;
   overflow: hidden;
-  z-index: 1;
+  margin-left: 10px;
 }
 
 .source-box:hover {
@@ -640,17 +655,20 @@ export default {
 .source-box .platform-msg {
   background-color: white;
   position: relative;
-  height: 60px;
+  height: 70px;
   width: 100%;
   border-radius: 5px;
   margin: 0px 20px 10px 25px;
   vertical-align: middle;
-  transition: all 0.6s;
+  transition: all 0.4s;
+  display: flex;
+  justify-content: center;
 }
 
-.source-box .platform-msg.active {
 
-  background-color: #e7e5e5;
+.source-box .platform-msg.active {
+  background-color: rgba(244, 244, 244, 0.8);
+  color: #009EFA;
   /*background-color: #0fc70f;*/
   height: 70px;
   width: 100%;
@@ -688,6 +706,14 @@ export default {
   filter: drop-shadow(50px 0px red);
 }
 
+.source-box .platform-msg .image {
+  width: 40px;
+  height: 40px;
+  line-height: 70px;
+  margin-right: 10px;
+  font-size: 40px;
+}
+
 .source-box .platform-msg .image img {
   height: 40px;
   width: 40px;
@@ -704,9 +730,10 @@ export default {
 .source-box .platform-msg .name {
   font-size:20px;
   font-weight: 900;
-  position: absolute;
-  top: 15px;
-  transition: all 0.6s;
+  /*position: absolute;*/
+  /*top: 15px;*/
+  /*transition: all 0.6s;*/
+  line-height: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -715,8 +742,8 @@ export default {
 .source-box .platform-msg.active .name {
   font-size:25px;
   font-weight: 900;
-  position: absolute;
-  top: 17px;
+  /*position: absolute;*/
+  /*top: 17px;*/
   text-overflow: ellipsis;
 }
 
@@ -741,8 +768,8 @@ export default {
   position: relative;
   border-radius: 5px;
   height: 100px;
-  width: 90%;
-  margin: 20px 35px 20px 35px;
+  width: 98%;
+  margin: 20px auto;
   vertical-align: middle;
   box-shadow: 0px 0px 5px rgba(0,0,0, 0.3);
   transition: all 0.6s;
@@ -860,9 +887,9 @@ export default {
 
 .divider-y {
   display: inline-block;
-  position: absolute;
-  margin: 2px 0 0 0;
-  left: 320px;
+  /*position: absolute;*/
+  /*left: 25%;*/
+  margin: 2px 0 0 10px;
   width: 2px;
   height: 640px;
   background-color: #d4d4d4;
@@ -985,5 +1012,10 @@ export default {
   letter-spacing: 0px;
 }
 
+.message-container {
+  position: relative;
+  display: flex;
+  z-index: 2;
+}
 
 </style>

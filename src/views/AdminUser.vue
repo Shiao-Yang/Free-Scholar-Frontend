@@ -33,7 +33,7 @@
                id="input"
                class="search-input"
                v-model="input"
-               placeholder="搜索记录"
+               placeholder="搜索用户"
                @keyup.enter="">
         <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
       </div>
@@ -143,9 +143,13 @@ export default {
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/relation/setNormal',
-        data: {_id: id}
+        data: {_id: id},
+        headers: {
+          jwt: this.$store.state.token,
+        },
       })
           .then(res => {
+            console.log(res.data)
             switch (res.data.errno) {
               case 0:
                     this.displayResult[i].status = 0
@@ -157,9 +161,13 @@ export default {
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/relation/setMute',
-        data: {_id: id}
+        data: {_id: id},
+        headers: {
+          jwt: this.$store.state.token,
+        },
       })
           .then(res => {
+            console.log(res.data)
             switch (res.data.errno) {
               case 0:
                 this.displayResult[i].status = 1
@@ -171,9 +179,13 @@ export default {
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/relation/setBan',
-        data: {_id: id}
+        data: {_id: id},
+        headers: {
+          jwt: this.$store.state.token,
+        },
       })
           .then(res => {
+            console.log(res.data)
             switch (res.data.errno) {
               case 0:
                 this.displayResult[i].status = 2

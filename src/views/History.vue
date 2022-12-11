@@ -63,7 +63,7 @@
         <span class="title-name">
           历史记录
         </span>
-        <div style="margin-left: 1000px">
+        <div style="margin-left: auto">
           <el-button @click="toDeleteAllHistory()">清空已选</el-button>
           <el-button @click="toDeleteSelectedHistory()">清空全部</el-button>
         </div>
@@ -71,12 +71,13 @@
       <div class="divider"></div>
       <div class="history-list">
         <div class="history-list-divided-by-data" v-for="(item,index) in historyListDivededByDate" :key="index">
-          {{historyListDivededByDate[index][0].date}}&nbsp
+          <span class="history-time">{{historyListDivededByDate[index][0].date}}&nbsp</span>
           <el-table
                 ref="multipleTable"
                 :data="historyListDivededByDate[index]"
                 tooltip-effect="dark"
                 style="width: 100% ;overflow:auto;"
+                fit="true"
                 @selection-change="handleSelectionChange"
             >
               <el-table-column
@@ -202,7 +203,7 @@ export default {
 
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      this.multipleSelection.push(val);
     }
   },
   created() {
@@ -221,11 +222,10 @@ export default {
 
 .intro {
   position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 1400px;
+  width: 100%;
+  min-width: 1450px;
   height: 200px;
-  background: rgb(244, 244, 244);
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: flex-start;
   border-radius: 5px;
@@ -250,7 +250,7 @@ export default {
 
 .profile {
   position: relative;
-  margin: 10px;
+  margin:10px;
   width: 150px;
   height: 150px;
 }
@@ -290,11 +290,18 @@ export default {
 .social-info .social-info-item {
   width: 120px;
   height: 80px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .social-info .social-info-item .title {
   width: 120px;
   height: 40px;
+
+}
+
+.social-info .social-info-item:hover {
+  color: #2196f3;
 }
 
 .social-info .social-info-item .title .icon {
@@ -304,7 +311,7 @@ export default {
   top: 5px;
 }
 
-.social-info .social-info-item .title .icon.active {
+.social-info .social-info-item .title .icon.active{
   color: pink;
 }
 
@@ -331,20 +338,25 @@ export default {
   position: absolute;
   top: 220px;
   left: 0px;
-  width: 1400px;
-  height: 470px;
-  background: rgb(244, 244, 244);
-  border-radius: 5px;
+  width: 100%;
+  min-width: 1450px;
+  height: 700px;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
 .content-list .title {
+  width: 95%;
   height: 45px;
   line-height: 50px;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 2.5%;
   display: flex;
   align-items: center;
+  margin: 0 auto;
 }
 
 .content-list .title-name {
@@ -355,9 +367,8 @@ export default {
 .divider {
   position: absolute;
   margin: 0 auto;
-  width: 1350px;
+  width: 100%;
   height: 2px;
-  left: 25px;
   top: 75px;
   background-color: #d4d4d4;
   text-align: center;
@@ -365,17 +376,164 @@ export default {
   color: rgba(101, 101, 101, 1);
 }
 
-.history-list {
+.follow-list {
   position: absolute;
   top: 90px;
-  width: 1400px;
+  width: 100%;
+  min-width: 665px;
   height: 370px;
-  overflow: auto;
+}
+
+.follow-list-item {
+  position: relative;
+  width: 100%;
+  min-width: 700px;
+  height: 110px;
+  margin-bottom: 20px;
+  background: rgb(255, 255, 255);
+  display: flex;
+  justify-content: flex-start;
+  border-radius: 5px;
+}
+
+.follow-list-item .avatar {
+  position: relative;
+  top: -5px;
+  left: -10px;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-content: center;
+}
+
+.follow-list-item .avatar img {
+  margin: 0;
+  padding: 0;
+  height: 170px;
+  width: 160px;
+  max-height: 100%;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.follow-list-item .profile {
+  position: relative;
+  top: -5px;
+  left: -10px;
+  width: 200px;
+  height: 100px;
+}
+
+.follow-list-item  .profile ul {
+  list-style: none;
+}
+
+.follow-list-item .profile .profile-list .profile-list-item {
+  width: 600px;
+  display: flex;
+  position: relative;
+  top: -7px;
+  height: 30px;
+  line-height: 30px;
+  align-items: center;
+}
+
+.follow-list-item .profile .profile-list .profile-list-item .icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.follow-list-item .profile .profile-list .profile-list-item .text {
+  font-size: 10px;
+  position: relative;
+  top: 0px;
+  width: 400px;
+  max-width: 400px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+.follow-list-item .social-info {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 120px;
+  height: 100px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.follow-list-item .social-info .social-info-item {
+  width: 120px;
+  height: 100px;
+  position: relative;
+  top: 25px;
+  right: 20px;
+  display: inline;
+}
+
+.follow-list-item .social-info .social-info-item .icon {
+  color: cornflowerblue;
+  margin: 20px;
+  font-size: 40px;
+  transition: all .5s ease;
+  cursor: pointer;
+}
+
+.follow-list-item .social-info .social-info-item .icon:hover {
+  font-size: 35px;
+}
+
+.follow-list-item .social-info .social-info-item .icon.active{
+  color: pink;
+}
+
+.follow-list-item .social-info .social-info-item .text {
+  position: relative;
+  top: -2px;
+  margin: 0px 10px 0 0;
+}
+
+.follow-list-item .social-info-number {
+  position: absolute;
+  right: 10px;
+  bottom: 0px;
+  width: 370px;
+  height: 25px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.follow-list-item .social-info-number .number {
+  margin: 0 25px 0 65px;
+  font-size: 10px;
+}
+
+.content-list .pagination {
+  position: absolute;
+  top: 30px;
+  right: 20px;
+}
+
+.history-list {
+  margin: auto;
+  position: relative;
+  top: 90px;
+  width: 95%;
+  min-width: 1400px;
+  height: 600px;
+  overflow-y: auto;
+}
+
+.history-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .history-list-divided-by-data {
   position: relative;
-  width: 1350px;
+  width: 100%;
   margin: 0 0 15px 10px;
   display: flex;
   justify-content: flex-start;
@@ -386,6 +544,12 @@ export default {
   position: absolute;
   top: 30px;
   right: 20px;
+}
+
+.history-list .history-time {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 40px;
 }
 
 </style>

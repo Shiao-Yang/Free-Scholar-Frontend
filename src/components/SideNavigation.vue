@@ -34,7 +34,7 @@
           <span class="text">用户名用户名用户名</span>
         </router-link>
         <ul class="user-sub-menu">
-          <li class="sub-item">
+          <li class="sub-item" @click="toHome">
             <i class='bx bx-user'></i>
             <span>个人中心</span>
             <i class='bx bx-chevron-right right'></i>
@@ -44,7 +44,7 @@
             <span>账号设置</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
-          <li class="sub-item">
+          <li class="sub-item" @click="toMessageCenter">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
             <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
@@ -57,7 +57,7 @@
           </li>
           <li class="bottom-bor">
           </li>
-          <li class="sub-item log-out">
+          <li class="sub-item log-out" @click="logout">
             <i class='bx bx-log-out-circle'></i>
             <span>退出登录</span>
             <i class='bx bx-chevron-right right'></i>
@@ -85,6 +85,53 @@ export default {
     },
   },
   methods: {
+    logout() {
+      let baseInfo = JSON.parse(sessionStorage.getItem('baseInfo'))
+      let token = baseInfo.token;
+      console.log(baseInfo)
+      console.log(token)
+      this.axios({
+        headers: {
+          jwt: baseInfo.token,
+        },
+        method: "post",
+        url: 'http://139.9.134.209:8000/api/user/logout/',
+      })
+      .then(res => {
+        if(res.data.errno === 0) {
+          this.$message({
+            message: '登出成功',
+            showClose: true,
+            type: 'success',
+          })
+
+          let tmp = sessionStorage.getItem('baseInfo')
+          console.log(tmp)
+          sessionStorage.removeItem('baseInfo')
+
+
+          this.$router.push('/login&signup')
+        }
+        else {
+          this.$message({
+            message: res.data.msg,
+            showClose: true,
+            type: 'error',
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
+    toHome() {
+      let that = this;
+      that.$router.push('/home')
+    },
+    toMessageCenter() {
+      let that = this;
+      that.$router.push('/MessageManage')
+    },
     activeLink(index){
     },
     changeIsActive() {
