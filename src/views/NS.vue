@@ -119,7 +119,7 @@
                         id: uid
                     })
                 }).then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.scholarList = res.data.coworkers;
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
@@ -129,13 +129,26 @@
             },
             getBaseInfo(uid){
                 this.axios({
-                    method: 'post',
-                    url: 'http://127.0.0.1:8000/api/ScholarPortal/GetBaseInfo/',
-                    data: qs.stringify({
-                        id: uid
-                    })
+                    method: 'get',
+                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=1',
                 }).then(res => {
                     console.log(res)
+                    if(res.data.introduction!=null){
+                        this.introduction = res.data.introduction;
+                    }
+                    if(res.data.heat==null){
+                        this.heat = 0;
+                    }
+                    else {
+                        this.heat = res.data.heat
+                    }
+                    if(res.data.visitors==null){
+                        this.visitors = 0
+                    }
+                    else{
+                        this.visitors = res.data.visitors
+                    }
+
                 }).catch(err =>{
                     console.log(err)
                 })
@@ -145,7 +158,7 @@
         },
         created() {
             this.getCoworkers(this.uid)
-            // this.getBaseInfo(this.uid)
+            this.getBaseInfo(this.uid)
         }
     }
 </script>
@@ -383,7 +396,7 @@
     .image {
         position: absolute;
         padding: 15px;
-        width: 100px; height: 100px;
+        width: 70px; height: 70px;
         border-radius: 20px;
         display: inline-block
     }
