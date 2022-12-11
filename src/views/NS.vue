@@ -151,10 +151,16 @@
 </script>
 
 <style scoped>
+    .NS {
+      width: 100%;
+      min-width: 1450px;
+    }
+
     .left {
         position: relative;
         display: inline-block;
         width: 23%;
+        min-width: 330px;
         margin: 10px;
         height: 760px;
         /*background-color: #4DA5FF;*/
@@ -163,6 +169,7 @@
         position: relative;
         display: inline-block;
         width: 48%;
+        min-width: 680px;
         height: 760px;
         margin: 10px;
         /*background-color: #00CA97;*/
@@ -173,6 +180,7 @@
         position: relative;
         display: inline-block;
         width: 24%;
+        min-width: 330px;
         height: 760px;
         margin: 10px;
         /*margin-top: 0;*/
