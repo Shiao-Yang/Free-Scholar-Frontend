@@ -48,7 +48,7 @@
       </div>
     </div>
     <div class="side">
-      <div class="register-login">
+      <div class="register-login" v-if="!isLogin">
         <p>知识不分国界</p>
         <p>智慧不设围墙</p>
         <div class="btn" @click="$router.push('/login&signup')"><span>登录/注册</span></div>
@@ -72,6 +72,7 @@ export default {
   created() {
     this.getHotWord()
     this.getHotPaper()
+    this.isLogin()
   },
   mounted() {
   },
@@ -122,6 +123,14 @@ export default {
     }
   },
   methods: {
+    isLogin(){
+      if (sessionStorage.getItem('baseInfo') !== null) {
+        console.log('true111')
+        return true
+      }
+      console.log('false111')
+      return false
+    },
     search() {
       this.$store.state.input = this.input
       this.$router.push('/searchList')
