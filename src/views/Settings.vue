@@ -48,6 +48,11 @@
       </div>
     </div>
     <div class="side">
+      <div class="register-login">
+        <p>知识不分国界</p>
+        <p>智慧不设围墙</p>
+      </div>
+      <div class="trending-box">
       <p><i class='bx bxs-hot'></i>Trending</p>
       <table class="trending-table">
         <tr v-for="(item, i) in hotWord" class="trending">
@@ -55,6 +60,7 @@
           <td class="trending-name"><span @click="input=item;search()">{{item}}</span></td>
         </tr>
       </table>
+      </div>
     </div>
   </div>
 </template>
@@ -315,17 +321,37 @@ export default {
   min-width: 300px;
   padding: 10px;
   margin: 100px 0 0 20px;
+}
+.register-login {
+  width: 100%;
+  height: 200px;
+  background: url("../assets/img/settings/sky.png") no-repeat;
+  background-size: 100% 300px;
+  border-radius: 10px;
+  border: 1px;
+}
+.register-login p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 30px;
+  margin: 0;
+}
+.trending-box {
+  height: 300px;
   border-radius: 5px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
-.side>p {
+.trending-box>p {
   display: flex;
   align-items: center;
   font-size: 16px;
   font-weight: bold;
   margin: 10px 0 0 10px;
 }
-.side>p>i{
+.trending-box>p>i{
   color: #DA1E28;
   font-size: 30px;
   margin-right: 5px;

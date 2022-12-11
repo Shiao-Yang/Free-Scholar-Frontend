@@ -210,7 +210,7 @@
         <div class="result-box" v-for="(result, i) in displayResult">
           <p class="articleName"><span style="cursor: pointer" @click="">{{result.articleName}}</span></p>
           <ul class="authors-list">
-            <li class="author" v-for="author in result.author">{{author.name}}</li>
+            <li class="author" v-for="author in result.author" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</li>
           </ul>
           <p class="abstract">{{result.abstract}}</p>
           <ul class="info-list">
