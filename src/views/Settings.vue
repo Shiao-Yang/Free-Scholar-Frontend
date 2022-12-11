@@ -142,7 +142,7 @@ export default {
   position: relative;
   margin: 0 auto;
   width: 100%;
-  min-width: 1450px;
+  min-width: 1300px;
   height: 300px;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
@@ -242,7 +242,7 @@ export default {
   margin: 100px 0 0 0;
   padding: 1px;
   width: 76%;
-  min-width: 1060px;
+  min-width: 900px;
   min-height: 400px;
   border-radius: 10px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
@@ -318,7 +318,7 @@ export default {
   float: left;
   position: relative;
   width: 20%;
-  min-width: 300px;
+  min-width: 250px;
   padding: 10px;
   margin: 100px 0 0 20px;
 }
