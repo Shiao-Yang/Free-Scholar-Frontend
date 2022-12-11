@@ -5,8 +5,8 @@
                 <div class="blackBox">
                     <img :src="require('../assets/'+baseInfo.avatar)" class="image">
                     <div class="userName" style="position: absolute; text-align: center;
-                     font-size: 30px; display: inline-block; left: 85px; right: 0;
-                     top: 30px; color: white; font-weight: bold">{{this.userName}}</div>
+                     font-size: 120%; display: inline-block; left: 85px; right: 0;
+                     top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
                 <div class="option-box">
                   <div class="follow">
@@ -58,12 +58,21 @@
             </div>
             <div style="overflow: auto; position: absolute; width: 100%; height: 660px">
                 <div class="contents" v-for="(item) in paperList">
-                    <i class='bx bxs-bookmark-alt'></i>
-<!--                    <div class="title">{{item.title}}</div>-->
-                    <a :href="item.url" class="title">{{item.title}}</a>
-                    <div class="author" v-for="(tItem) in item.authors">{{tItem.name}}</div>
-                    <i class='bx bx-link'></i>
-                    <div class="citation">被引用次数: {{item.n_citation}}</div>
+                    <div style="display: flex; width: 98%; height: auto">
+                        <i class='bx bxs-bookmark-alt'></i>
+                        <a :href="item.url" class="title">{{item.title}}</a>
+                    </div>
+                    <div style="position: relative; display: flex; flex-wrap: wrap; list-style: none; line-height: 15px;
+                    margin-left: 25px; align-items: center;">
+                        <div class="author" v-for="(tItem) in item.authors">{{tItem.name}}</div>
+                        <div style="margin-left: auto">
+                            <i class='bx bx-link'></i>
+                            <div class="citation">被引用次数: {{item.n_citation}}</div>
+                        </div>
+
+                    </div>
+
+
                 </div>
             </div>
 
@@ -127,7 +136,7 @@
                         id: uid
                     })
                 }).then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.scholarList = res.data.coworkers;
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
@@ -137,23 +146,39 @@
             },
             getBaseInfo(uid){
                 this.axios({
-                    method: 'post',
-                    url: 'http://127.0.0.1:8000/api/ScholarPortal/GetBaseInfo/',
-                    data: qs.stringify({
-                        id: uid
-                    })
+                    method: 'get',
+                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + this.uid,
                 }).then(res => {
                     console.log(res)
+                    if(res.data.introduction!=null){
+                        this.introduction = res.data.introduction;
+                    }
+                    if(res.data.heat==null){
+                        this.heat = 0;
+                    }
+                    else {
+                        this.heat = res.data.heat
+                    }
+                    if(res.data.visitors==null){
+                        this.visitors = 0
+                    }
+                    else{
+                        this.visitors = res.data.visitors
+                    }
+
                 }).catch(err =>{
                     console.log(err)
                 })
 
+            },
 
-            }
         },
         created() {
+            console.log(this.$route.query.id)
+            this.uid = this.$route.query.id;
+            // console.log(this.uid)
             this.getCoworkers(this.uid)
-            // this.getBaseInfo(this.uid)
+            this.getBaseInfo(this.uid)
         }
     }
 </script>
@@ -161,14 +186,14 @@
 <style scoped>
     .NS {
       width: 100%;
-      min-width: 1450px;
+      /*min-width: 1450px;*/
     }
 
     .left {
         position: relative;
         display: inline-block;
-        width: 23%;
-        min-width: 330px;
+        width: 24%;
+        /*min-width: 330px;*/
         margin: 10px;
         height: 760px;
         /*background-color: #4DA5FF;*/
@@ -176,8 +201,8 @@
     .middle {
         position: relative;
         display: inline-block;
-        width: 48%;
-        min-width: 680px;
+        width: 45%;
+        /*min-width: 680px;*/
         height: 760px;
         margin: 10px;
         /*background-color: #00CA97;*/
@@ -188,28 +213,45 @@
         position: relative;
         display: inline-block;
         width: 24%;
-        min-width: 330px;
+        /*min-width: 330px;*/
         height: 760px;
         margin: 10px;
         /*margin-top: 0;*/
         border-radius: 5px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
     }
+    /* 设置滚动条的样式 */
+    ::-webkit-scrollbar {
+        width:10px;
+    }
+    /* 滚动槽 */
+    ::-webkit-scrollbar-track {
+        /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.3);*/
+        border-radius:10px;
+    }
+    /* 滚动条滑块 */
+    ::-webkit-scrollbar-thumb {
+        border-radius:10px;
+        background:rgba(0,0,0,0.1);
+        /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.5);*/
+    }
     .middle .title {
-        position: absolute;
+        position: relative;
         text-decoration: none;
-        margin-left: 10px;
+        display: inline-block;
+        margin-bottom: 5px;
+        margin-left: 5px;
         margin-top: 5px;
-        left: 25px;
+        /*left: 25px;*/
         font-size: 15px;
         color: #4DA5FF;
     }
     .middle .title:hover {
-        position: absolute;
+        position: relative;
         text-decoration: underline;
-        margin-left: 10px;
+        margin-left: 5px;
         margin-top: 5px;
-        left: 25px;
+        /*left: 25px;*/
         font-size: 15px;
         color: #4DA5FF;
     }
@@ -238,27 +280,31 @@
         color: #FBBD08;
     }
     .contents .bx-link {
-        position: absolute;
-        bottom: 10px;
-        right: 95px;
+        position: relative;
+        display: inline-block;
+        font-size: 13px;
+        margin-right: 5px;
     }
     .contents .citation {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        font-size: 10px;
+        position: relative;
+        display: inline-block;
+        /*align-self: cross-end;*/
+        margin-right: 10px;
+        font-size: 13px;
     }
     .middle .bxs-bookmark-alt {
-        position: absolute;
+        /*position: relative;*/
+        /*display: inline-block;*/
         font-size: 20px;
-        margin: 10px;
+        margin: 5px 5px 10px 10px;
         color: #FBBD08;
     }
     .middle .author {
-        position: relative;
-        display: inline-block;
-        margin-left: 10px;
-        top: 60px;
+        /*position: relative;*/
+        /*display: inline-block;*/
+        margin-left: 15px;
+        /*margin-bottom: 10px;*/
+        /*top: 60px;*/
         font-size: 10px;
         color: #24bf24;
     }
@@ -276,8 +322,12 @@
     }
     .middle .contents {
         position: relative;
-        height: 90px;
+        /*display: flex;*/
+        /*!*flex-wrap: wrap;*!*/
+        /*flex-direction: row;*/
+        height: auto;
         width: 95%;
+        padding-bottom: 5px;
         margin: 10px auto;
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
@@ -399,9 +449,11 @@
     }
     .image {
         position: absolute;
-        /*padding: 15px;*/
-        width: 100px; height: 100px;
-        border-radius: 10px;
+
+        padding: 15px;
+        width: 70px; height: 70px;
+        border-radius: 20px;
+
         display: inline-block
     }
 
