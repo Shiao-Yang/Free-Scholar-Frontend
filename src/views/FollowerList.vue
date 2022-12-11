@@ -67,7 +67,7 @@
       <div class="follow-list">
         <div class="follow-list-item" v-for="(item,index) in showList" :key="index">
           <div class="avatar">
-            <img :src="require('../assets/' + item.avatar)" style="max-width: 100%">
+            <img :src="url+item.avatar" style="max-width: 100%">
           </div>
           <div class="profile">
             <ul class="profile-list">
@@ -112,6 +112,7 @@ export default {
   data() {
     return {
       uid: 1,
+      url: this.$store.state.url,
       avatar: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
@@ -149,6 +150,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -157,6 +159,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -165,6 +168,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
+          scholar_id: 1,
         },
       ],
       followList:[
@@ -175,6 +179,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:01',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -183,6 +188,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:02',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -191,6 +197,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:03',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -199,6 +206,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:04',
+          scholar_id: 1,
         },
         {
           id: 1,
@@ -207,6 +215,7 @@ export default {
           institution: 'Beihang University',
           bio: 'I am 王婉',
           time: '2022-01-10 16:05',
+          scholar_id: 1,
         },
       ]
     }
@@ -224,8 +233,8 @@ export default {
       this.showList = [];
       for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
         this.showList[j] = this.followList[i]
-        this.showList[j].avatar = 'img/home/avatar1.jpg'
-        this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+        // this.showList[j].avatar = 'img/home/avatar1.jpg'
+        // this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
       }
     },
     unFocus(uid, aid) { //uid: 当前用户, aid: 被关注的用户
@@ -234,17 +243,35 @@ export default {
         aim_id: aid,
       }
 
+      console.log(params);
+
       this.axios({
-        headers: {
-          jwt: this.$store.state.token,
-        },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/unFocus',
         data: params,
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
       })
           .then(res => {
             console.log(res.data);
-            this.getFollowers(uid); //重新获取数据
+            if(res.data.errno === 0) {
+              this.$message ({
+                message: "取消成功",
+                showClose: true,
+                type: 'success',
+              })
+              this.baseInfo.follows--;
+              this.getFollows(uid); //重新获取数据
+            }
+
+            else {
+              this.$message ({
+                message: "操作失败",
+                showClose: true,
+                type: 'error',
+              })
+            }
           })
           .catch(err => {
             console.log(err);
@@ -255,10 +282,10 @@ export default {
     getFollowers(uid) {
       this.axios({
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getFollowers?user_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/relation/getFollowers',
       })
           .then(res => {
             console.log(res.data)
@@ -287,11 +314,11 @@ export default {
 
     getBaseInfo(uid) {
       this.axios({
-        headers: {
-          jwt: this.$store.state.token,
-        },
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
       })
           .then(res => {
             console.log(res.data)
