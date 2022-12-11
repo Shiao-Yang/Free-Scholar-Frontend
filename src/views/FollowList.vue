@@ -2,7 +2,7 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="require('../assets/' + baseInfo.avatar)">
+        <img :src="this.$store.state.url+baseInfo.avatar">
       </div>
       <div class="profile">
         <ul class="profile-list">
@@ -21,8 +21,8 @@
         </ul>
       </div>
       <div class="social-info">
-        <div class="social-info-item">
-          <div class="title" @click="toHome">
+        <div class="social-info-item" @click="toHome">
+          <div class="title">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
             <span class="text" style="position: relative; top: -6px;">关注</span>
           </div>
@@ -67,7 +67,7 @@
       <div class="follow-list">
         <div class="follow-list-item" v-for="(item,index) in showList" :key="index">
           <div class="avatar">
-            <img :src="require('../assets/' + item.avatar)" style="max-width: 100%">
+            <img :src="url+item.avatar" style="max-width: 100%">
           </div>
           <div class="profile">
             <ul class="profile-list">
@@ -115,6 +115,7 @@ export default {
   data() {
     return {
       uid: 1,
+      url: this.$store.state.url,
       avatar: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
@@ -235,8 +236,8 @@ export default {
       this.showList = [];
       for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
         this.showList[j] = this.followList[i]
-        this.showList[j].avatar = 'img/home/avatar1.jpg'
-        this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+        // this.showList[j].avatar = 'img/home/avatar1.jpg'
+        // this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
       }
     },
     unFocus(uid, aid) { //uid: 当前用户, aid: 被关注的用户
@@ -252,7 +253,7 @@ export default {
         url: 'http://139.9.134.209:8000/api/relation/unFocus',
         data: params,
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       })
           .then(res => {
@@ -284,10 +285,10 @@ export default {
     getFollows(uid) {
       this.axios({
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getFollows?user_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/relation/getFollows',
       })
           .then(res => {
             console.log(res.data)
@@ -317,9 +318,9 @@ export default {
     getBaseInfo(uid) {
       this.axios({
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo',
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       })
           .then(res => {

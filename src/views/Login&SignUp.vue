@@ -142,7 +142,7 @@ export default {
 
       this.axios({
         method: "post",
-        url: 'http://139.9.134.209:8000/api/user/register',
+        url: 'http://139.9.134.209:8000/api/user/register/',
         data: param,
       })
       .then(res => {
