@@ -103,6 +103,7 @@ export default {
           baseInfo.avatar = res.data.avatar
           baseInfo.token = res.data.token
           baseInfo.profile = res.data.profile
+          baseInfo.isAdmin = res.data.isAdmin
           // console.log(JSON.stringify(baseInfo))
           sessionStorage.setItem('baseInfo', JSON.stringify(baseInfo))
 
@@ -115,7 +116,12 @@ export default {
           let tmp = sessionStorage.getItem('baseInfo')
           console.log(tmp)
 
-          this.$router.push('/')
+          if(baseInfo.isAdmin === true) {
+            this.$router.push('/adminHome')
+          }
+          else {
+            this.$router.push('/')
+          }
         }
         else {
           this.$message({
