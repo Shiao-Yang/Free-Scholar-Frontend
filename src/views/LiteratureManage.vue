@@ -69,8 +69,8 @@
           </div>
         </div>
       </div>
-      <div style="position: absolute;left: 600px;top: 20px">
-        <i class='bx bx-window-close' style="font-size: 40px" @click="close"></i>
+      <div class="windows-close" style="position: absolute;left: 600px;top: 20px" title="关闭">
+        <i class='bx bx-x' style="font-size: 40px" @click="close"></i>
       </div>
     </div>
     <el-card class="box-card">
@@ -81,7 +81,7 @@
         <img src="../assets/img/LiteratureManage/statistic.png">
       </div>
     </el-card>
-    <el-card class="box-card" style="margin-top: 40px;height: 1000px">
+    <el-card class="box-card" style="margin-top: 40px;min-height: 1000px">
       <div style="font-size: 25px;color: #030303;margin-left: 20px">
         <i class='bx bxs-bookmark-alt' style="margin-right: 20px;color: #FBBD08;margin-bottom: 30px"></i>文献管理
       </div>
@@ -129,7 +129,7 @@
             </div>
           </div>
         </div>
-        <div style="position: relative;text-align: center;margin-top: 100px">
+        <div style="position: absolute;width:100%;bottom: 10px;text-align: center;margin-top: 100px">
           <div class="block">
             <el-pagination
                 layout="prev, pager, next"
@@ -403,6 +403,10 @@ export default {
 </script>
 
 <style scoped>
+.box-card {
+  width: 100%;
+  min-width: 1400px;
+}
 .table {
   position: relative;
   width: 300px;
@@ -475,14 +479,16 @@ export default {
   line-height: 30px;
 }
 .literature {
+  width: 100%;
+  justify-content: center;
   margin-top: 40px;
 }
+
 .header-search-box {
-  position: relative;
-  top: 30px;
-  left: 840px;
+  margin: 15px auto;
   width: 700px;
 }
+
 .header-search-box .search-input{
   position: relative;
   font-size: 15px;
@@ -491,9 +497,13 @@ export default {
   padding: 10px 20px 10px 20px;
   border-radius: 10px;
   border: 1px solid rgb(240,240,240);
-  border-bottom: 3px solid rgba(33,150,243,0.5);
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+  /*border-bottom: 3px solid rgba(33,150,243,0.5);*/
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);*/
   outline: none;
+}
+
+.header-search-box .search-input:focus {
+  border: 1px solid #2196f3;
 }
 .header-search-box .search-icon i{
   text-align: center;
@@ -518,11 +528,19 @@ export default {
 .divider {
   position: relative;
   margin: 0 auto;
-  width: 1300px;
+  width: 100%;
   height: 2px;
   background-color: #d4d4d4;
   text-align: center;
   font-size: 16px;
   color: rgba(101, 101, 101, 1);
+}
+
+.windows-close {
+  cursor: pointer;
+}
+
+.windows-close:hover {
+  color: #f44336;
 }
 </style>
