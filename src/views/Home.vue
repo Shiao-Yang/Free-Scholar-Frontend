@@ -279,7 +279,7 @@
               <span>
                 <input type="file" ref="pic">
               </span>
-            <span slot="footer" class="dialog-footer">
+              <span slot="footer" class="dialog-footer">
                 <el-button @click="changeAvatarVisible = false">取 消 上 传</el-button>
                 <el-button type="primary" @click="toChangeAvatar(uid); changePwdVisible = false">确 定 上 传</el-button>
               </span>
@@ -353,7 +353,7 @@ export default {
   methods: {
     toFollowerList() {
       let that = this;
-      that.$router.push('/followList');
+      that.$router.push('/followerList');
     },
     toFollowList() {
       let that = this;

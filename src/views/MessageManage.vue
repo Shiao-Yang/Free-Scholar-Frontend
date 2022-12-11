@@ -48,20 +48,27 @@
       <div class="divider-y"></div>
       <div class="sender-box">
         <div class="sender" v-for="(item, index) in dis_msg_list" :key="index" v-if="!showContent" @click="openMessage(item.mid, index)">
-        <span class="image">
-        <img :src="require('../assets/img/MessageManage/' + item.avatar)">
-        </span>
-          <span class="name">
-          {{ item.username }}
-        </span>
+          <span class="image">
+            <img :src="url+item.avatar" v-if="!isActive1">
+            <img src="../assets/img/MessageManage/systemNotice.png" v-if="isActive1">
+          </span>
+          <span class="name" v-if="!isActive1">
+            {{ item.username }}
+          </span>
+          <span class="name" v-if="isActive1">
+            系统通知
+          </span>
           <span class="content">
-          {{ item.content }}
-        </span>
+            {{ item.content }}
+          </span>
           <div class="red-point" v-if="!item.is_read && !isActive3">
             <img src="../assets/img/MessageManage/red-point.png">
           </div>
-          <div class="operation">
+          <div class="operation" style="right: 0px;">
             <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
+          </div>
+          <div class="operation" style="right: 70px;">
+            <img class="reply-img" src="../assets/img/MessageManage/reply.png" title="回复" @click="replyVisible = true;">
           </div>
           <div class="send-time">
             <div class="text">
@@ -70,14 +77,21 @@
           </div>
         </div>
         <div class="sender-baseInfo" v-if="showContent" @click="changeShowContent(event, true)">
-        <span class="image">
-        <img :src="require('../assets/img/MessageManage/' + cur_msg.avatar)">
-        </span>
-          <span class="name">
-          {{ cur_msg.username }}
-        </span>
-          <div class="operation">
-            <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(cur_msg.mid)">
+          <span class="image">
+            <img :src="url+cur_msg.avatar" v-if="!isActive1">
+            <img src="../assets/img/MessageManage/systemNotice.png" v-if="isActive1">
+          </span>
+          <span class="name" v-if="!isActive1">
+            {{ cur_msg.username }}
+          </span>
+          <span class="name" v-if="isActive1">
+            系统通知
+          </span>
+          <div class="operation" style="right: 0px;">
+            <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
+          </div>
+          <div class="operation" style="right: 70px;">
+            <img class="reply-img" src="../assets/img/MessageManage/reply.png" title="回复" @click="replyVisible = true;">
           </div>
           <div class="send-time">
             <div class="text">
@@ -90,7 +104,64 @@
             {{cur_msg.content}}
           </div>
         </div>
+        <el-dialog append-to-body title="发送私信" :visible="replyVisible">
+          <el-form :model="replyForm">
+            <el-form-item label="私信内容" label-width="80px">
+            </el-form-item>
+            <el-form-item>
+              <el-input
+                  type="textarea"
+                  maxlength="60"
+                  placeholder="请输入内容"
+                  v-model="replyForm.content">
+              </el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="replyVisible = false">取 消</el-button>
+            <el-button type="primary" @click="replyVisible = false">确 定</el-button>
+          </div>
+        </el-dialog>
       </div>
+<!--      <el-dialog-->
+<!--          title="发送私信"-->
+<!--          :visible="replyVisible"-->
+<!--          width="30%"-->
+<!--          append-to-body-->
+<!--          :center="isCenter"-->
+<!--          class = "changeAvatar">-->
+<!--        <el-form label-width="80px">-->
+<!--          <el-form-item label="个人简介">-->
+<!--            <el-input-->
+<!--                type="textarea"-->
+<!--                maxlength="60"-->
+<!--                placeholder="请输入内容"-->
+<!--                v-model="replyForm.content">-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
+<!--        <div slot="footer" class="dialog-footer">-->
+<!--          <el-button @click="replyVisible = false">取 消 上 传</el-button>-->
+<!--          <el-button type="primary" @click=" replyVisible = false">确 定 上 传</el-button>-->
+<!--        </div>-->
+<!--      </el-dialog>-->
+<!--      <el-dialog title="发送私信" :visible="replyVisible" width="35%" :center="isCenter">-->
+<!--        &lt;!&ndash;          <el-form :model="replyForm" label-width="80px">&ndash;&gt;-->
+<!--        &lt;!&ndash;            <el-form-item label="个人简介">&ndash;&gt;-->
+<!--        &lt;!&ndash;              <el-input&ndash;&gt;-->
+<!--        &lt;!&ndash;                  type="textarea"&ndash;&gt;-->
+<!--        &lt;!&ndash;                  maxlength="60"&ndash;&gt;-->
+<!--        &lt;!&ndash;                  placeholder="请输入内容"&ndash;&gt;-->
+<!--        &lt;!&ndash;                  v-model="replyForm.content">&ndash;&gt;-->
+<!--        &lt;!&ndash;              </el-input>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </el-form-item>&ndash;&gt;-->
+<!--        &lt;!&ndash;          </el-form>&ndash;&gt;-->
+<!--        &lt;!&ndash;          <div slot="footer" class="dialog-footer" style=" position: relative; top: -20px;">&ndash;&gt;-->
+<!--        &lt;!&ndash;            <el-button @click="replyVisible = false">取 消</el-button>&ndash;&gt;-->
+<!--        &lt;!&ndash;            &emsp;&emsp;&emsp;&ndash;&gt;-->
+<!--        &lt;!&ndash;            <el-button type="primary" plain @click="/*sendMsg();*/ replyVisible = false">确 定</el-button>&ndash;&gt;-->
+<!--        &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--      </el-dialog>-->
     </div>
   </div>
 </template>
@@ -101,6 +172,13 @@ export default {
   data() {
     return {
       uid: 1,
+      url: this.$store.state.url,
+      isCenter: true,
+      replyVisible: false,
+      replyForm: {
+        receiver_id: 1,
+        content: 'hello',
+      },
       isActive1: true, //true 则展示系统消息
       isActive2: false, //true 则展示收到的私信
       isActive3: false, //true 则展示发送的私信
@@ -346,13 +424,15 @@ export default {
         this.isActive2 = false;
       }
     },
-    isClickDelete(event) {
+    isClickOperation(event) {
       if(!e) {
         var e = window.event;
       }
       var targ = e.target;
       var tname= targ.className;
-      if(tname === 'delete-img') {
+      console.log(tname)
+      console.log(tname === 'delete-img' || tname === 'reply-img')
+      if(tname === 'delete-img' || tname === 'reply-img') {
         return true;
       }
       else {
@@ -363,13 +443,13 @@ export default {
       if(ignore)
         this.showContent = !this.showContent;
       else {
-        let isDelete = this.isClickDelete(event);
-        if(isDelete) { //点了删除图标
+        let isOperation = this.isClickOperation(event);
+        if(isOperation) { //点了操作图标
           if(this.showContent) { //显示具体内容时
             this.showContent = !this.showContent;
           }
         }
-        else { //没点删除图标
+        else { //没点操作图标
           this.showContent = !this.showContent;
         }
       }
@@ -403,6 +483,9 @@ export default {
       params.append("mid", mid);
 
       this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/MessageCenter/deleteMessage/',
         data: params,
@@ -436,38 +519,44 @@ export default {
     //获取系统通知
     getMsgPlm(uid) {
       this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/MessageCenter/getPlatMsg?owner_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getPlatMsg',
       })
-          .then(res => {
-            console.log(res.data)
-            this.msg_plm_list = res.data;
-            for(let i = 0; i < this.msg_plm_list.length; i++) {
-              this.msg_plm_list[i].avatar = 'user.png';
-              this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
-            }
-            this.dis_msg_list = this.msg_plm_list;
-            this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
-            // if(this.showContent) {
-            //   this.changeShowContent();
-            // }
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      .then(res => {
+        console.log(res.data)
+        this.msg_plm_list = res.data;
+        for(let i = 0; i < this.msg_plm_list.length; i++) {
+          // this.msg_plm_list[i].avatar = 'user.png';
+          this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
+        }
+        this.dis_msg_list = this.msg_plm_list;
+        this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+        // if(this.showContent) {
+        //   this.changeShowContent();
+        // }
+      })
+      .catch(err => {
+        console.log(err);
+      })
     },
 
     //获取用户收到的私信
     getMsgRec(uid, type) { //type=0,初始化时的调用
       this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec?owner_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec',
       })
           .then(res => {
             console.log(res.data)
             this.msg_rec_list = res.data;
             for(let i = 0; i < this.msg_rec_list.length; i++) {
-              this.msg_rec_list[i].avatar = 'user.png';
+              // this.msg_rec_list[i].avatar = 'user.png';
               this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
             }
             this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
@@ -490,14 +579,17 @@ export default {
     //获取用户发送的私信
     getMsgSend(uid, type) { //type=0,初始化时的调用
       this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgSend?sender_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgSend',
       })
           .then(res => {
             console.log(res.data)
             this.msg_send_list = res.data;
             for(let i = 0; i < this.msg_send_list.length; i++) {
-              this.msg_send_list[i].avatar = 'user.png';
+              // this.msg_send_list[i].avatar = 'user.png';
               this.msg_send_list[i].create_time = new Date(this.msg_send_list[i].create_time).toLocaleString('zh', {hour12: false})
             }
             this.dis_msg_list = this.msg_send_list;
@@ -519,6 +611,9 @@ export default {
       param.append("mid", mid);
 
       this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/MessageCenter/readMessage/',
         data: param,
@@ -577,7 +672,7 @@ export default {
 
   },
   created() {
-    this.getMsgRec(this.uid, 1);
+    this.getMsgRec(this.uid, 0);
   },
   mounted() {
     this.getMsgPlm(this.uid);
