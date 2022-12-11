@@ -122,7 +122,7 @@
       </div>
     </div>
     <div class="search-content-container">
-      <div id="filter">
+      <div id="filter" v-if="displayResult.length !== 0">
         <p style="left: 5px;position:relative;">筛选</p>
         <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="time_zone = !time_zone">
           时间
@@ -210,7 +210,7 @@
         <div class="result-box" v-for="(result, i) in displayResult">
           <p class="articleName"><span style="cursor: pointer" @click="">{{result.articleName}}</span></p>
           <ul class="authors-list">
-            <li class="author" v-for="author in result.author">{{author.name}}</li>
+            <li class="author" v-for="author in result.author" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</li>
           </ul>
           <p class="abstract">{{result.abstract}}</p>
           <ul class="info-list">
@@ -234,7 +234,7 @@
           </ul>
         </div>
       </div>
-      <div class="block">
+      <div class="block" v-if="displayResult.length !== 0">
         <el-pagination
             style="position: absolute;left: 40%;"
             layout="prev, pager, next, jumper"
