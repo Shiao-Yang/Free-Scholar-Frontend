@@ -10,8 +10,8 @@
                class="search-input"
                v-model="input"
                placeholder="Search resources..."
-               @keyup.enter="">
-        <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
+               @keyup.enter="search()">
+        <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search()"></i></span>
       </div>
       <div class="hotWord-box">
         <ul id="hot" class="hotWord-list">
@@ -22,6 +22,40 @@
         </ul>
       </div>
     </div>
+    <div class="content">
+      <p><i class='bx bxs-hot'></i>热点文章</p>
+      <div class="result-box" v-for="(result, i) in paper">
+        <p class="articleName"><span style="cursor: pointer" @click="">{{result.title}}</span></p>
+        <ul class="authors-list">
+          <li class="author" v-for="author in result.author">{{author.name}}</li>
+        </ul>
+        <p class="abstract">{{result.abstract}}</p>
+        <ul class="info-list">
+          <li class="info">
+            <i class='bx bxs-star' style="font-size: 15px"></i>
+            <span class="nums">{{result.collection}}</span>
+          </li>
+          <li class="info">
+            <i class='bx bxs-comment icon'></i>
+            <span class="nums">{{result.comment}}</span>
+          </li>
+          <li class="info">
+            <span>被引用次数:&nbsp</span>
+            <span class="nums">{{result.quote}}</span>
+          </li>
+        </ul>
+        <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin-top: 5px" />
+      </div>
+    </div>
+    <div class="side">
+      <p><i class='bx bxs-hot'></i>Trending</p>
+      <table class="trending-table">
+        <tr v-for="(item, i) in hotWord" class="trending">
+          <td class="trending-num" :class="{'first':i===0,'second':i===1,'third':i===2}">{{i+1}}</td>
+          <td class="trending-name"><span @click="input=item;search()">{{item}}</span></td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -31,13 +65,68 @@ export default {
   created() {
   },
   mounted() {
+    this.getHotWord()
   },
   data() {
     return {
       input: '',
+      hotWord: [
+          'AI',
+          '无机化学',
+          '计算机技术',
+          '核磁共振',
+          '蛋白质分析结构',
+          '大规模基因组测序',
+          '计算机技术',
+          '核磁共振',
+          '蛋白质分析结构',
+          '大规模基因组测序'
+      ],
+      paper: [
+        {
+          id: '',
+          title: 'aaa',
+          author: [
+            {
+              id: '111',
+              name: 'peter'
+            }
+          ],
+          abstract: '11111111111111111111111111111111111111111111',
+          collection: 1,
+          comment: 2,
+          quote: 3
+        }, {
+          id: '',
+          title: 'aaa',
+          author: [
+            {
+              id: '111',
+              name: 'peter'
+            }
+          ],
+          abstract: '11111111111111111111111111111111111111111111',
+          collection: 1,
+          comment: 2,
+          quote: 3
+        }
+      ]
     }
   },
   methods: {
+    search() {
+      this.$store.state.input = this.input
+      this.$router.push('/searchList')
+    },
+    getHotWord() {
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/publication/HotWord/'
+      })
+          .then(res=>{
+            console.log(res.data)
+          })
+    }
   }
 }
 </script>
@@ -151,5 +240,138 @@ export default {
   font-weight: bold;
   color: white;
   background: #2196f3;
+}
+.content {
+  position: relative;
+  float: left;
+  margin: 100px 0 0 0;
+  padding: 1px;
+  width: 75%;
+  min-height: 400px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+}
+.content>p {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 0 0 10px;
+}
+.content>p>i{
+  color: #DA1E28;
+  font-size: 30px;
+}
+.result-box {
+  margin: 0 0 20px 20px;
+  width: 95%;
+  padding: 10px;
+}
+
+.articleName {
+  color: #2196f3;
+  font-size: 19px;
+  margin: 0;
+}
+.authors-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  line-height: 15px;
+  align-items: center;
+}
+
+.author {
+  font-size: 15px;
+  color: #27ae60;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.author:hover {
+  color: #248F24;
+  font-weight: bold;
+}
+.abstract {
+  margin: 4px 0 8px 0;
+  font-size: 15px;
+  line-height: 18px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  cursor: pointer;
+  color: #333333;
+}
+
+.info-list {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  list-style: none;
+  height: 20px;
+  line-height: 15px;
+  align-items: center;
+}
+.info {
+  margin-right: 40px;
+}
+.info .icon {
+  font-size: 15px;
+}
+.side {
+  float: left;
+  position: relative;
+  width: 20%;
+  height: 300px;
+  margin: 100px 0 0 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+}
+.side>p {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 10px 0 0 10px;
+}
+.side>p>i{
+  color: #DA1E28;
+  font-size: 30px;
+  margin-right: 5px;
+}
+.trending-table {
+  margin-left: 30px;
+  text-align: center;
+}
+.trending-num {
+  padding-right: 40px;
+}
+.trending-num.first {
+  color: #DA1E28;
+}
+.trending-num.first + .trending-name{
+  color: #DA1E28;
+}
+.trending-num.second {
+  color: #FF9671;
+}
+.trending-num.second + .trending-name{
+  color: #FF9671;
+}
+.trending-num.third {
+  color: #2C73D2;
+}
+.trending-num.third + .trending-name{
+  color: #2C73D2;
+}
+.trending-name {
+  width: 150px;
+}
+.trending-name span{
+  cursor: pointer;
 }
 </style>
