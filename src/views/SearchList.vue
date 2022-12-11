@@ -258,6 +258,10 @@ export default {
   name: 'SearchList',
   created() {
     window.myData = this;
+    if (this.$store.state.input!=='') {
+      this.input = this.$store.state.input
+      this.search(0)
+    }
   },
   mounted() {
     let date = new Date()
