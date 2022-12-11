@@ -45,12 +45,12 @@
               <el-table-column
                   prop="name"
                   label="姓名"
-                  width="150">
+                  width="200">
               </el-table-column>
               <el-table-column
                   prop="id"
                   label="id"
-                  width="50">
+                  width="280">
               </el-table-column>
               <el-table-column
                   fixed="right"
@@ -101,7 +101,7 @@
             <div>
               <div class="title">文献id：</div>
               <div class="Information">
-                {{Literature[index].id}}
+                {{Literature[index].id | ellipsis}}
               </div>
               <div style="display: inline-block">
                 <el-button type="text" @click="open(index)">
@@ -112,19 +112,19 @@
             <div>
               <div class="title">题目：</div>
               <div class="Information">
-                {{Literature[index].name}}
+                  {{Literature[index].name | ellipsis}}
               </div>
             </div>
             <div>
               <span class="title">发表于：</span>
               <span class="Information">
-                {{Literature[index].origin}}
+                {{Literature[index].origin | ellipsis}}
               </span>
             </div>
             <div>
               <span class="title">发表时间：</span>
               <span class="Information">
-                {{Literature[index].date}}
+                {{Literature[index].date | ellipsis}}
               </span>
             </div>
           </div>
@@ -159,6 +159,31 @@ export default {
           "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "origin" : "Science",
           "date" : "2021",
+          "author" : [
+      {
+        "num" : 1,
+        "name" : "不知名",
+        "id" : 1,
+        "right" : "移除",
+      },
+      {
+        "num" : 2,
+        "name" : "不知名2",
+        "id" : 2,
+        "right" : "移除",
+      },
+      {
+        "num" : 3,
+        "name" : "不知名2",
+        "id" : 3,
+        "right" : "移除",
+      },
+      {
+        "num" : 4,
+        "name" : "不知名2",
+        "id" : 4,
+      },
+    ],
         },
         {
           "id" : 1,
@@ -370,25 +395,19 @@ export default {
       // 默认当前显示第一页
       currentPage: 0,
       input: '',
+      field: 'title',
+    }
+  },
+  filters:{
+    ellipsis(value){
+      if (!value) return '';
+      if (value.length > 20) {
+        return value.slice(0,20) + '...'
+      }
+      return value
     }
   },
   created() {
-    this.$axios({
-      method: 'get',
-      url: '',
-      data: ''
-    }).then(res =>{
-      var i = 0;
-      for (i = 0; i < res.data.length; i++){
-        this.List.push({
-          "id":res.data.id,
-          "name":res.data.title,
-          "origin":res.data.publisher,
-          "date":res.data.year,
-          "author":res.data.author
-        })
-      }
-    })
     var i = 0;
     i = this.List.length / 6;
     if (i < 1)
@@ -408,6 +427,7 @@ export default {
     open(index) {
       this.visible = true;
       this.currentInstitutional = index;
+      this.tableData = this.Literature[index].author;
     },
     close(){
       this.visible = false;
@@ -430,29 +450,45 @@ export default {
       })
     },
     search(){
-      this.List.length = 0;
-      this.$axios({
-        method: 'get',
-        url: '',
-        data: {"search":this.input},
-      }).then(res =>{
+      this.List = [];
+      let params = {
+        page: 1,
+        condition: [
+          {
+            type: "OR",
+            input: this.input,
+            field: this.field
+          }
+        ],
+        filter: [],
+      }
+      if (this.input === '') {
+        this.$message('请输入搜索内容')
+        return;
+      }
+      this.$axios( {
+        method: 'post',
+        url: this.$store.state.address+'api/publication/search/',
+        data: params
+      })
+          .then(async res =>{
         var i = 0;
-        for (i = 0; i < res.data.length; i++){
+        for (i = 0; i < res.data.hits.length; i++){
           this.List.push({
-            "id":res.data.id,
-            "name":res.data.title,
-            "origin":res.data.publisher,
-            "date":res.data.year,
-            "author":res.data.author
+            id: res.data.hits[i]._source.id,
+            name: res.data.hits[i]._source.title,
+            origin: "123",
+            date: res.data.hits[i]._source.year,
+            author: res.data.hits[i]._source.authors
           })
         }
+        var i = 0;
+        i = this.List.length / 6;
+        if (i < 1)
+           i = 1;
+        this.pageNum = i * 10;
+        this.changePage(1);
       })
-      var i = 0;
-      i = this.List.length / 6;
-      if (i < 1)
-        i = 1;
-      this.pageNum = i * 10;
-      this.changePage(1);
     },
     addAuthor(){
       this.$axios({
@@ -477,8 +513,8 @@ export default {
 <style scoped>
 .table {
   position: relative;
-  width: 300px;
-  left: 100px;
+  width: 600px;
+  left: -30px;
   top: 10px;
   border: 1px solid rgb(240,240,240);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
@@ -497,6 +533,7 @@ export default {
   word-break: break-all;
   word-wrap: break-word;
   line-height: 24px;
+
 }
 .mask {
   width: 100%;
