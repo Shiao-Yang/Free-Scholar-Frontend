@@ -2,7 +2,7 @@
   <div class="side-navigation" :class="{'active': isActive}">
     <div class="side-menu-top" v-on:click="changeIsActive">
     </div>
-    <ul class="side-navigation-list">
+    <ul class="side-navigation-list" v-if="!isAdmin">
       <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': activeIndex === 1}">
         <router-link :to="{path: '/'}" style="--clr:#f44336;" title="主页">
           <span class="icon"><i class='bx bxs-home'></i></span>
@@ -10,28 +10,115 @@
         </router-link>
       </li>
       <li class="side-navigation-item" v-on:click="activeLink(2)" :class="{'active': activeIndex === 2}">
-        <router-link :to="{path: '/'}" style="--clr:#ffa117;" title="搜索">
+        <router-link :to="{path: '/searchList'}" style="--clr:#0fc70f;" title="搜索">
           <span class="icon"><i class='bx bx-search' ></i></span>
-          <span class="text">高级检索</span>
+          <span class="text">检索页</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(8)" :class="{'active': activeIndex === 8}" v-if="isLogin">
+        <router-link :to="{path: '/collectionCover'}" style="--clr:#ffa117;" title="收藏夹">
+          <span class="icon"><i class='bx bxs-star' ></i></span>
+          <span class="text">收藏夹</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(9)" :class="{'active': activeIndex === 9}" v-if="isLogin">
+        <router-link :to="{path: '/history'}" style="--clr:#2196f3;" title="历史记录">
+          <span class="icon"><i class='bx bx-history'></i></span>
+          <span class="text">历史记录</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item user-box" v-if="isLogin">
+        <router-link to="#" :style="{'--clr':userStateClr}">
+          <i class='bx bxs-circle user-info' style=""></i>
+          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
+          <span class="text">{{ baseInfo.name }}</span>
+        </router-link>
+        <ul class="user-sub-menu">
+          <li class="sub-item" @click="toHome">
+            <i class='bx bx-user'></i>
+            <span>个人中心</span>
+            <i class='bx bx-chevron-right right'></i>
+          </li>
+          <li class="sub-item">
+            <i class='bx bxs-user-account'></i>
+            <span>账号设置</span>
+            <i class='bx bx-chevron-right right'></i>
+          </li>
+          <li class="sub-item" @click="toMessageCenter">
+            <i class='bx bx-message-rounded'></i>
+            <span>消息中心</span>
+            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
+            <i class='bx bx-chevron-right right'></i>
+          </li>
+          <li class="sub-item">
+            <i class='bx bx-group'></i>
+            <span>我的机构</span>
+            <i class='bx bx-chevron-right right'></i>
+          </li>
+          <li class="bottom-bor">
+          </li>
+          <li class="sub-item log-out" @click="logout">
+            <i class='bx bx-log-out-circle'></i>
+            <span>退出登录</span>
+            <i class='bx bx-chevron-right right'></i>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="side-navigation-list" v-else>
+      <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': activeIndex === 1}">
+        <router-link :to="{path: '/'}" style="--clr:#f44336;" title="主页">
+          <span class="icon"><i class='bx bxs-home'></i></span>
+          <span class="text">主页</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(2)" :class="{'active': activeIndex === 2}">
+        <router-link :to="{path: '/searchList'}" style="--clr:#0fc70f;" title="搜索">
+          <span class="icon"><i class='bx bx-search' ></i></span>
+          <span class="text">检索页</span>
         </router-link>
       </li>
       <li class="side-navigation-item" v-on:click="activeLink(3)" :class="{'active': activeIndex === 3}">
-        <router-link :to="{path: '/'}" style="--clr:#0fc70f;" title="主页">
-          <span class="icon"><i class='bx bxs-home'></i></span>
-          <span class="text">主页</span>
+        <router-link :to="{path: '/adminHome'}" style="--clr:#845EC2;" title="管理员主页">
+          <span class="icon"><i class='bx bxs-tachometer' ></i></span>
+          <span class="text">管理员页</span>
         </router-link>
       </li>
       <li class="side-navigation-item" v-on:click="activeLink(4)" :class="{'active': activeIndex === 4}">
-        <router-link :to="{path: '/'}" style="--clr:#2196f3;" title="主页">
-          <span class="icon"><i class='bx bxs-home'></i></span>
-          <span class="text">主页</span>
+        <router-link :to="{path: '/adminUser'}" style="--clr:#D65DB1;" title="用户管理">
+          <span class="icon"><i class='bx bxs-user-circle' ></i></span>
+          <span class="text">用户管理</span>
         </router-link>
       </li>
-      <li class="side-navigation-item user-box">
+      <li class="side-navigation-item" v-on:click="activeLink(5)" :class="{'active': activeIndex === 5}">
+        <router-link :to="{path: '/LiteratureManage'}" style="--clr:#FF6F91;" title="文献管理">
+          <span class="icon"><i class='bx bxs-book' ></i></span>
+          <span class="text">文献管理</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(7)" :class="{'active': activeIndex === 7}">
+        <router-link :to="{path: '/TransactionCenter'}" style="--clr:#FF9671;" title="事务中心">
+          <span class="icon"><i class='bx bx-task' ></i></span>
+          <span class="text">事务中心</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(8)" :class="{'active': activeIndex === 8}" v-if="isLogin">
+        <router-link :to="{path: '/collectionCover'}" style="--clr:#ffa117;" title="收藏夹">
+          <span class="icon"><i class='bx bxs-star' ></i></span>
+          <span class="text">收藏夹</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(9)" :class="{'active': activeIndex === 9}" v-if="isLogin">
+        <router-link :to="{path: '/history'}" style="--clr:#2196f3;" title="历史记录">
+          <span class="icon"><i class='bx bx-history'></i></span>
+          <span class="text">历史记录</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
           <i class='bx bxs-circle user-info' style=""></i>
-          <span class="icon avatar"><img alt="头像" src="../assets/logo.png"></span>
-          <span class="text">用户名用户名用户名</span>
+          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
+          <span class="text">{{baseInfo.name}}</span>
         </router-link>
         <ul class="user-sub-menu">
           <li class="sub-item" @click="toHome">
@@ -80,10 +167,58 @@ export default {
   },
   computed :{
     activeIndex() {
-      if(this.$route.path === '' || this.$route.path === '/' || this.$route.path === '/settings')
+      if(this.$route.path === ''
+          || this.$route.path === '/'
+          || this.$route.path.startsWith('/settings')
+      )
         return 1;
+
+      else if(this.$route.path.startsWith('/search'))
+        return 2;
+
+      else if(this.$route.path.startsWith('/adminHome'))
+        return 3;
+
+      else if(this.$route.path.startsWith('/adminUser'))
+        return 4;
+
+      else if(this.$route.path.startsWith('/LiteratureManage'))
+        return 5;
+
+      else if(this.$route.path.startsWith('/Institutional'))
+        return 6;
+
+      else if(this.$route.path.startsWith('/TransactionCenter'))
+        return 7;
+
+      else if(this.$route.path.startsWith('/collection'))
+        return 8;
+
+      else if(this.$route.path.startsWith('/history'))
+        return 9;
     },
+
+    isLogin() {
+      return sessionStorage.getItem('baseInfo') !== null;
+    },
+    isAdmin() {
+      // return (this.$route.path.startsWith('/admin')
+      //     || this.$route.path.indexOf('Manage') !== -1
+      //     || this.$route.path.indexOf('manage') !== -1
+      //     || this.$route.path.startsWith('/Institutional')
+      //     || this.$route.path.startsWith('/TransactionCenter'))
+      //     && !this.$route.path.startsWith('/MessageManage');
+      return sessionStorage.getItem('baseInfo') !== null
+            && JSON.parse(sessionStorage.getItem('baseInfo')).isAdmin;
+    },
+    baseInfo() {
+      if(sessionStorage.getItem('baseInfo') !== null)
+        return JSON.parse(sessionStorage.getItem('baseInfo'));
+      else
+        return [];
+    }
   },
+
   methods: {
     logout() {
       let baseInfo = JSON.parse(sessionStorage.getItem('baseInfo'))
