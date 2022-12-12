@@ -10,35 +10,37 @@
       </div>
 <!--      <hr style="height:3px;border:none;border-top:1px solid rgba(128, 128, 128, 0.4);margin-top: 30px" />-->
       <div class="manage-box">
-        <div class="todo">待处理<i class='bx bxs-circle'></i></div>
+        <div class="todo">待处理<i class='bx bxs-circle' v-if="userItem!==0||scholarItem!==0"></i></div>
         <div class="user-manage manage">
           <i class='bx bxs-user'></i>
           <div class="info">
             <p class="title">用户事项</p>
-            <p class="data data-todo">32</p>
+            <p class="data data-todo" v-if="userItem!==0">{{userItem}}</p>
+            <p class="data data-down" v-else>All Down</p>
           </div>
         </div>
         <div class="scholar-manage manage">
           <i class='bx bxs-objects-horizontal-left'></i>
           <div class="info">
             <p class="title">学术事项</p>
-            <p class="data data-down">All Down</p>
+            <p class="data data-todo" v-if="scholarItem!==0">{{scholarItem}}</p>
+            <p class="data data-down" v-else>All Down</p>
           </div>
         </div>
         <div class="total-manage">
           <p class="title">总计处理</p>
           <table>
             <tr>
-              <td><i class='bx bxs-user-plus'></i></td>
-              <td><span>2309</span>times</td>
+              <td><i class='bx bxs-user-plus' title="用户事项"></i></td>
+              <td><span>{{userItemAll}}</span>times</td>
             </tr>
             <tr>
-              <td><i class='bx bx-list-check' ></i></td>
-              <td><span>389</span>times</td>
+              <td><i class='bx bx-list-check' title="举报"></i></td>
+              <td><span>{{reportAll}}</span>times</td>
             </tr>
             <tr>
-              <td><i class='bx bxs-objects-horizontal-left'></i></td>
-              <td><span>28</span>times</td>
+              <td><i class='bx bxs-objects-horizontal-left' title="申诉"></i></td>
+              <td><span>{{complainAll}}</span>times</td>
             </tr>
           </table>
         </div>
@@ -86,6 +88,12 @@ export default {
   name: 'AdminHome',
   created() {
     window.myData = this;
+    this.getUserItem()
+    this.getScholarItem()
+    this.getUserItemAll()
+    this.getReportAll()
+    this.getComplainAll()
+    this.getRecentRecord()
   },
   mounted() {
 
@@ -93,6 +101,11 @@ export default {
   data() {
     return {
       input: '',
+      userItem: 0,
+      scholarItem: 0,
+      userItemAll: 0,
+      reportAll: 0,
+      complainAll: 0,
       records: [
         {
           avatar: require('../assets/YAN.jpg'),
@@ -114,16 +127,89 @@ export default {
     }
   },
   methods: {
-    changePage(val){
-      let i;
-      let length = this.results.length
-      console.log("val:"+val)
-      console.log("length:"+length)
-      this.displayResult = [];
-      for (i = (val-1) * 5; i < length && i < val * 5; i++) {
-        this.displayResult.push(this.results[i]);
-      }
+    getUserItem() {
+      this.axios({
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getUserItem',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res=>{
+            console.log('getUserItem:')
+            console.log(res.data)
+            this.userItem = res.data.num
+          })
     },
+    getScholarItem() {
+      this.axios({
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getScholarItem',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res=>{
+            console.log('getScholarItem:')
+            console.log(res.data)
+            this.scholarItem = res.data.num
+          })
+    },
+    getUserItemAll() {
+      this.axios({
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getUserItemAll',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res=>{
+            console.log('getUserItemAll:')
+            console.log(res.data)
+            this.userItemAll = res.data.num
+          })
+    },
+    getReportAll() {
+      this.axios({
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getReportAll',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res=>{
+            console.log('getReportAll:')
+            console.log(res.data)
+            this.reportAll = res.data.num
+          })
+    },
+    getComplainAll() {
+      this.axios({
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getComplainAll',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res=>{
+            console.log('getComplainAll:')
+            console.log(res.data)
+            this.complainAll = res.data.num
+          })
+    },
+    getRecentRecord() {
+      this.axios({
+        method: 'get',
+        url: this.$store.state.address+'api/adminHome/getComplainAll',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res=>{
+            console.log('getRecentRecord:')
+            console.log(res.data)
+          })
+    }
   }
 }
 </script>
@@ -254,6 +340,7 @@ export default {
 .total-manage {
   position: relative;
   margin-top: 20px;
+  width: 200px;
   float: left;
   padding: 10px 10px 30px 20px;
   margin-left: 20px;

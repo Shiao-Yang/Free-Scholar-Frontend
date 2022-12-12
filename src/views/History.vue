@@ -83,7 +83,7 @@
               <el-table-column
                   prop="title"
                   label="标题"
-                  width="1075">
+                  width="900">
               </el-table-column>
               <el-table-column
                   prop="time"
@@ -223,7 +223,7 @@ export default {
 .intro {
   position: absolute;
   width: 100%;
-  min-width: 1450px;
+  min-width: 1200px;
   height: 200px;
   box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
   display: flex;
@@ -339,7 +339,7 @@ export default {
   top: 220px;
   left: 0px;
   width: 100%;
-  min-width: 1450px;
+  min-width: 1200px;
   height: 700px;
   box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -521,7 +521,7 @@ export default {
   position: relative;
   top: 90px;
   width: 95%;
-  min-width: 1400px;
+  min-width: 1200px;
   height: 600px;
   overflow-y: auto;
 }

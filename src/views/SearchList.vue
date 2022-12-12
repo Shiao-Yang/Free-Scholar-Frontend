@@ -210,7 +210,10 @@
         <div class="result-box" v-for="(result, i) in displayResult">
           <p class="articleName"><span style="cursor: pointer" @click="">{{result.articleName}}</span></p>
           <ul class="authors-list">
-            <li class="author" v-for="author in result.author" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</li>
+            <li class="author" v-for="author in result.author">
+              <span v-if="author.id" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</span>
+              <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
+            </li>
           </ul>
           <p class="abstract">{{result.abstract}}</p>
           <ul class="info-list">
@@ -619,6 +622,9 @@ export default {
         this.$refs.box.scrollIntoView()
       }
       console.log(params)
+      if (flag === 0) {
+        this.getWord(params)
+      }
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/publication/search/',
@@ -674,6 +680,17 @@ export default {
             this.getVenueList()
             this.show_card = true;
             this.currentPage = 1;
+          })
+    },
+    getWord(para) {
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'/api/publication/GetWord/',
+        data: para
+      })
+          .then(res=>{
+            console.log('getWord:')
+            console.log(res.data)
           })
     },
     searchByYearBtn(val) {
