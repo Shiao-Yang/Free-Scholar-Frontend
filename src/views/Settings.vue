@@ -72,7 +72,6 @@ export default {
   created() {
     this.getHotWord()
     this.getHotPaper()
-    this.isLogin()
   },
   mounted() {
   },
