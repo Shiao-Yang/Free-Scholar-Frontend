@@ -1,5 +1,19 @@
 <template>
   <div class="box">
+    <div class="mask" v-if="this.visible === true"></div>
+    <div class="windows" v-if="this.visible === true">
+      <div class="newForm">
+        <el-form ref="form" label-width="120px">
+          <el-form-item label="收藏夹标题:" :model="form" style="width: 200px">
+            <el-input v-model="form.title" style="width: 340px"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="nowSubmit">
+        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button style="margin-left: 30px" @click="close">取消</el-button>
+      </div>
+    </div>
     <div class="myCollection">
       <div class="title">
         <div class="titleName">
@@ -18,7 +32,7 @@
           </div>
         </div>
         <div class="item" v-for="(item,index) in MyCreateList" :key="index">
-          <img src="../assets/Cover1.jpg" class="cover">
+          <img :src="$store.state.url+MyCreateList[index].avatar" class="cover">
           <div class="name">
             {{MyCreateList[index].title}}
           </div>
@@ -28,7 +42,7 @@
         </div>
         <div class="item">
         <div class="newCollection">
-          <i class='bx bx-plus' style="font-size: 150px;position: relative;left: 12px"></i>
+          <i class='bx bx-plus' style="font-size: 150px;position: relative;left: 12px" @click="newCollect"></i>
         </div>
         <div class="name">
           新建收藏夹
@@ -62,6 +76,10 @@ export default {
   name: "CollectionCover",
   data() {
     return {
+      form :{
+        title : '',
+      },
+      visible : false,
       name:'这是一个标题很长的收藏夹',
       MyCreateList:[
         {
@@ -90,27 +108,43 @@ export default {
     };
   },
   created() {
+    this.MyCollection = [];
+    this.MyCreateList = [];
     this.$axios({
+      headers: {
+        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+      },
       method: 'get',
-      url: '',
-      data: ''
+      url: this.$store.state.address+'api/relation/getFavorites',
+      data: '1',
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
         this.MyCreateList.push({
-
+          id : res.data[i].id,
+          title : res.data[i].title,
+          avatar : res.data[i].avatar,
+          count : res.data[i].count,
+          date : res.data[i].time,
         })
       }
     })
     this.$axios({
+      headers: {
+        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+      },
       method: 'get',
-      url: '',
-      data: ''
+      url: this.$store.state.address+'api/relation/getCollectFavorites',
+      data: '1',
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
         this.MyCollection.push({
-
+          id : res.data[i].id,
+          title : res.data[i].title,
+          avatar : res.data[i].avatar,
+          count : res.data[i].count,
+          date : res.data[i].time,
         })
       }
     })
@@ -125,6 +159,72 @@ export default {
     }
   },
   methods: {
+    getCollections(){
+      this.MyCollection = [];
+      this.MyCreateList = [];
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.MyCreateList.push({
+            id : res.data[i].id,
+            title : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+          })
+        }
+      })
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getCollectFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.MyCollection.push({
+            id : res.data[i].id,
+            title : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+          })
+        }
+      })
+    },
+    onSubmit(){
+      let params = {
+        title: this.form.title,
+      }
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/relation/newFavorites',
+        data: params,
+      }).then(res =>{
+        window.alert(res.data.msg);
+      })
+      this.form.title = '';
+      this.getCollections();
+      this.visible = false;
+    },
+    close(){
+      this.visible = false;
+    },
+    newCollect(){
+      this.visible = true;
+    },
     handleChange(val) {
       console.log(val);
     },
@@ -140,6 +240,37 @@ export default {
 </script>
 
 <style scoped>
+.nowSubmit {
+  position: relative;
+  top: 150px;
+  left: 130px;
+}
+.newForm {
+  position: relative;
+  top: 80px;
+  width: 600px;
+}
+.mask {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.windows {
+  position: fixed;
+  background-color: white;
+  width: 500px;
+  height: 350px;
+  top: 130px;
+  left: 500px;
+  z-index: 1000;
+}
 .newCollection {
   border-radius: 10px;
   width: 180px;
@@ -160,7 +291,6 @@ export default {
   margin-bottom: 10px;
 }
 .name {
-
   width: 200px;
   margin-left: 3px;
   font-size: 21px;

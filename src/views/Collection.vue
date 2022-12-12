@@ -1,5 +1,34 @@
 <template>
   <div class="box">
+    <div class="mask" v-if="this.visible === true"></div>
+    <div class="windows" v-if="this.visible === true">
+      <div class="newForm">
+        <el-form ref="form" label-width="120px">
+          <el-form-item label="收藏夹标题:" :model="form" style="width: 200px">
+            <el-input v-model="form.title" style="width: 340px"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="nowSubmit">
+        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button style="margin-left: 30px" @click="close">取消</el-button>
+      </div>
+    </div>
+    <div>
+        <el-dialog
+            title="上传头像"
+            :visible.sync="changeAvatarVisible"
+            width="30%"
+            class = "changeAvatar">
+              <span>
+                <input type="file" ref="pic">
+              </span>
+          <span slot="footer" class="dialog-footer">
+                <el-button @click="changeAvatarVisible = false">取 消 上 传</el-button>
+                <el-button type="primary" @click="toChangeAvatar(); changePwdVisible = false">确 定 上 传</el-button>
+              </span>
+        </el-dialog>
+    </div>
     <div class="myCollection">
       <div class="title">
         <div class="titleName">
@@ -19,7 +48,7 @@
                 我创建的
               </span>
               </template>
-              <div class="item" @mouseenter="onNew" @mouseleave="leaveNew" :style="NewStyle">
+              <div class="item" @mouseenter="onNew" @mouseleave="leaveNew" @click="changeAvatar" :style="NewStyle">
                 <i class="el-icon-circle-plus" style="margin-right: 5px;margin-left: 10px;"></i><b>新建收藏夹</b>
               </div>
               <div v-for="(item,index) in List" :key="index">
@@ -69,235 +98,31 @@
           </el-collapse>
         </div>
         <div class="CollectionItems">
-          <div class="CollectionItem">
+          <div class="CollectionItem" v-for="(item,index) in favorites" :key="index">
             <div class="itemTitle">
-              改进的二分法查找
+              {{favorites[index].title}}
             </div>
             <div class="author">
-              王嗨涛，朱虹-计算机工程，2006-cqvip.com
+              {{favorites[index].author}}
             </div>
             <div class="introductions">
-              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-              更加有效的查找方式，文章给出了一个称之为改进的...
+              {{favorites[index].introduction}}
             </div>
             <div style="margin-top: 7px">
             <span style="margin-right: 50px">
               <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
+              <span style="font-size: 14px">{{favorites[index].like}}</span>
             </span>
               <span style="margin-right: 50px">
               <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
+              <span style="font-size: 14px">{{favorites[index].collect}}</span>
             </span>
               <span style="margin-right: 50px">
               <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
+              <span style="font-size: 14px">{{favorites[index].comment}}</span>
             </span>
               <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-            </div>
-          </div>
-          <div class="CollectionItem">
-            <div class="itemTitle">
-              改进的二分法查找
-            </div>
-            <div class="author">
-              王嗨涛，朱虹-计算机工程，2006-cqvip.com
-            </div>
-            <div class="introductions">
-              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-              更加有效的查找方式，文章给出了一个称之为改进的...
-            </div>
-            <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-              <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-            </div>
-          </div>
-          <div class="CollectionItem">
-            <div class="itemTitle">
-              改进的二分法查找
-            </div>
-            <div class="author">
-              王嗨涛，朱虹-计算机工程，2006-cqvip.com
-            </div>
-            <div class="introductions">
-              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-              更加有效的查找方式，文章给出了一个称之为改进的...
-            </div>
-            <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-              <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-            </div>
-          </div>
-          <div class="CollectionItem">
-            <div class="itemTitle">
-              改进的二分法查找
-            </div>
-            <div class="author">
-              王嗨涛，朱虹-计算机工程，2006-cqvip.com
-            </div>
-            <div class="introductions">
-              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-              更加有效的查找方式，文章给出了一个称之为改进的...
-            </div>
-            <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-              <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-            </div>
-          </div>
-          <div class="CollectionItem">
-            <div class="itemTitle">
-              改进的二分法查找
-            </div>
-            <div class="author">
-              王嗨涛，朱虹-计算机工程，2006-cqvip.com
-            </div>
-            <div class="introductions">
-              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-              更加有效的查找方式，文章给出了一个称之为改进的...
-            </div>
-            <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-              <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-            </div>
-          </div>
-          <div class="CollectionItem">
-            <div class="itemTitle">
-              改进的二分法查找
-            </div>
-            <div class="author">
-              王嗨涛，朱虹-计算机工程，2006-cqvip.com
-            </div>
-            <div class="introductions">
-              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-              更加有效的查找方式，文章给出了一个称之为改进的...
-            </div>
-            <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-              <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-            </div>
-          </div>
-          <div class="CollectionItem">
-            <div class="itemTitle">
-              改进的二分法查找
-            </div>
-            <div class="author">
-              王嗨涛，朱虹-计算机工程，2006-cqvip.com
-            </div>
-            <div class="introductions">
-              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-              更加有效的查找方式，文章给出了一个称之为改进的...
-            </div>
-            <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-              <span style="font-size: 14px">
-              被引用次数：27
-            </span>
-            </div>
-          </div>
-          <div class="CollectionItem">
-            <div class="itemTitle">
-              改进的二分法查找
-            </div>
-            <div class="author">
-              王嗨涛，朱虹-计算机工程，2006-cqvip.com
-            </div>
-            <div class="introductions">
-              ...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法
-              更加有效的查找方式，文章给出了一个称之为改进的...
-            </div>
-            <div style="margin-top: 7px">
-            <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">53</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='el-icon-star-on' style="margin-right: 7px;color: orange"></i>
-              <span style="font-size: 14px">31</span>
-            </span>
-              <span style="margin-right: 50px">
-              <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">10</span>
-            </span>
-              <span style="font-size: 14px">
-              被引用次数：27
+              被引用次数：{{favorites[index].times}}
             </span>
             </div>
           </div>
@@ -312,6 +137,35 @@ export default {
   name: "Collection",
   data() {
     return {
+      favorites : [
+        {
+          "title": '改进的二分法查找',
+          "author": '王嗨涛，朱虹-计算机工程，2006-cqvip.com',
+          "introduction": '...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法\n' +
+              '              更加有效的查找方式，文章给出了一个称之为改进的...',
+          "like": 53,
+          "collect": 43,
+          "comment" : 10,
+          "times": 20,
+        },
+        {
+          "title": '改进的二分法查找',
+          "author": '王嗨涛，朱虹-计算机工程，2006-cqvip.com',
+          "introduction": '...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法\n' +
+              '              更加有效的查找方式，文章给出了一个称之为改进的...',
+          "like": 53,
+          "collect": 43,
+          "comment" : 10,
+          "times": 20,
+        },
+      ],
+      form :{
+        title : '',
+      },
+      changePwdVisible: false,
+      changeAvatarVisible: false,
+      visible : false,
+      visible1 : false,
       activeNames: [],
       NewStyle: '',
       List: [
@@ -383,80 +237,195 @@ export default {
     };
   },
   created() {
+    this.List = [];
+    this.List1 = [];
+    this.List2 = [];
     this.$axios({
+      headers: {
+        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+      },
       method: 'get',
-      url: '',
-      data: ''
-    }).then(res =>{
-      var i = 0;
-      for (i = 0; i < res.data.length; i++){
-        this.MyCreateList.push({
-
-        })
-      }
-    })
-    this.$axios({
-      method: 'get',
-      url: '',
-      data: ''
+      url: this.$store.state.address+'api/relation/getFavorites',
+      data: '1',
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
         this.List.push({
-
+          id : res.data[i].id,
+          name : res.data[i].title,
+          avatar : res.data[i].avatar,
+          count : res.data[i].count,
+          date : res.data[i].time,
+          isClick: 0,
+          style: ''
         })
       }
     })
     this.$axios({
+      headers: {
+        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+      },
       method: 'get',
-      url: '',
-      data: ''
-    }).then(res =>{
-      var i = 0;
-      for (i = 0; i < res.data.length; i++){
-        this.MyCreateList.push({
-
-        })
-      }
-    })
-    this.$axios({
-      method: 'get',
-      url: '',
-      data: ''
+      url: this.$store.state.address+'api/relation/getCollectFavorites',
+      data: '1',
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
         this.List1.push({
-
+          id : res.data[i].id,
+          name : res.data[i].title,
+          avatar : res.data[i].avatar,
+          count : res.data[i].count,
+          date : res.data[i].time,
+          isClick: 0,
+          style: ''
         })
       }
     })
     this.$axios({
+      headers: {
+        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+      },
       method: 'get',
-      url: '',
-      data: ''
-    }).then(res =>{
-      var i = 0;
-      for (i = 0; i < res.data.length; i++){
-        this.MyCreateList.push({
-
-        })
-      }
-    })
-    this.$axios({
-      method: 'get',
-      url: '',
-      data: ''
+      url: this.$store.state.address+'api/relation/getCollectFavorites',
+      data: '1',
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
         this.List2.push({
-
+          id : res.data[i].id,
+          name : res.data[i].title,
+          avatar : res.data[i].avatar,
+          count : res.data[i].count,
+          date : res.data[i].time,
+          isClick: 0,
+          style: ''
         })
       }
     })
   },
   methods: {
+    toChangeAvatar(){
+      let fid = this.List[0].id;
+      this.changeAvatarVisible = false;
+      let fileToUpload = this.$refs.pic.files[0];
+      let param = new FormData();  //创建表单对象
+      param.append("avatar",fileToUpload);
+      param.append("fid",fid);
+      param.forEach((value, key) => {
+        console.log(`key ${key}: value ${value}`);
+      })
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/media/set_cover/',
+        data: param,
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      }).then(res => {
+            window.alert(res.data.msg);
+      })
+
+    },
+    changeAvatar() {
+      this.visible1 = true;
+      this.changeAvatarVisible = true;
+    },
+    showFavorites() {
+
+    },
+    getCollections() {
+      this.List = [];
+      this.List1 = [];
+      this.List2 = [];
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
+      })
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getCollectFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.List1.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
+      })
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getCollectFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.List2.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
+      })
+    },
+    onSubmit(){
+      let params = {
+        title: this.form.title,
+      }
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/relation/newFavorites',
+        data: params,
+      }).then(res =>{
+        window.alert(res.data.msg);
+      })
+      this.form.title = '';
+      this.getCollections();
+      this.visible = false;
+    },
+    close(){
+      this.visible = false;
+    },
+    newCollect(){
+      this.visible = true;
+    },
     handleChange(val) {
       console.log(val);
     },
@@ -486,6 +455,7 @@ export default {
       }
       this.List[id].isClick = 1;
       this.List[id].style = 'background-color: #00AEEC;';
+      this.showFavorites();
     },
     onItem1(id) {
       this.List1[id].style = this.List1[id].style + 'border: #4DA5FF;\n' +
@@ -538,6 +508,37 @@ export default {
 </script>
 
 <style scoped>
+.nowSubmit {
+  position: relative;
+  top: 150px;
+  left: 130px;
+}
+.newForm {
+  position: relative;
+  top: 80px;
+  width: 600px;
+}
+.mask {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.windows {
+  position: fixed;
+  background-color: white;
+  width: 500px;
+  height: 350px;
+  top: 130px;
+  left: 500px;
+  z-index: 1000;
+}
 .introductions {
   color: #030303;
   font-size: 10px;

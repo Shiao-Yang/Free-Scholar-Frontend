@@ -86,14 +86,19 @@
         <i class='bx bxs-bookmark-alt' style="margin-right: 20px;color: #FBBD08;margin-bottom: 30px"></i>文献管理
       </div>
       <div class="divider"></div>
-      <div class="header-search-box">
-        <input type="text" autocomplete="off"
-               id="input"
-               class="search-input"
-               v-model="input"
-               placeholder="Search resources..."
-               @keyup.enter="">
-        <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search"></i></span>
+      <div style="display: flex">
+        <div style="width: 100px;margin-top: 15px">
+          <el-button type="primary" plain @click="newLiterature">新添文献</el-button>
+        </div>
+        <div class="header-search-box">
+          <input type="text" autocomplete="off"
+                 id="input"
+                 class="search-input"
+                 v-model="input"
+                 placeholder="Search resources..."
+                 @keyup.enter="">
+          <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search"></i></span>
+        </div>
       </div>
       <div class="literature">
         <div class="literature-box" v-for="(item,index) in Literature" :key="index">
@@ -506,6 +511,9 @@ export default {
         }
       })
     },
+    newLiterature(){
+
+    }
   }
 }
 </script>
@@ -594,7 +602,8 @@ export default {
 }
 
 .header-search-box {
-  margin: 15px auto;
+  margin-left: auto;
+  margin-top: 15px;
   width: 700px;
 }
 
