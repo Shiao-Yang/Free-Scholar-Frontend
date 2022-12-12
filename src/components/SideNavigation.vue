@@ -199,7 +199,7 @@ export default {
     },
 
     isLogin() {
-      return sessionStorage.getItem('baseInfo') !== null;
+      return this.$store.state.baseInfo.length !== 0;
     },
     isAdmin() {
       // return (this.$route.path.startsWith('/admin')
@@ -212,10 +212,7 @@ export default {
             && JSON.parse(sessionStorage.getItem('baseInfo')).isAdmin;
     },
     baseInfo() {
-      if(sessionStorage.getItem('baseInfo') !== null)
-        return JSON.parse(sessionStorage.getItem('baseInfo'));
-      else
-        return [];
+      return this.$store.state.baseInfo;
     }
   },
 
@@ -246,6 +243,7 @@ export default {
 
 
           this.$router.push('/')
+          this.$store.state.baseInfo = []
           window.location.reload()
         }
         else {

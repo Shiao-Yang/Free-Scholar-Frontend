@@ -558,6 +558,7 @@ export default {
             console.log(res.data)
 
             this.baseInfo = res.data
+            this.$store.state.baseInfo = res.data
             if(this.baseInfo.avatar === null) {
               this.baseInfo.avatar = 'img/home/no-avatar.png'
             }

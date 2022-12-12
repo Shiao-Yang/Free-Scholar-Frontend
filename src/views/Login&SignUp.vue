@@ -106,7 +106,7 @@ export default {
           baseInfo.isAdmin = res.data.isAdmin
           // console.log(JSON.stringify(baseInfo))
           sessionStorage.setItem('baseInfo', JSON.stringify(baseInfo))
-
+          this.$store.state.baseInfo = baseInfo;
           this.$message({
             message: '登陆成功',
             showClose: true,
