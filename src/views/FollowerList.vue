@@ -66,7 +66,7 @@
         </span>
       </div>
       <div class="divider"></div>
-      <div class="follow-list">
+      <div class="follow-list" v-if="showList.length !== 0">
         <div class="follow-list-item" v-for="(item,index) in showList" :key="index">
           <div class="avatar">
             <img :src="url+item.avatar" style="max-width: 100%">
@@ -107,7 +107,7 @@
           </el-dialog>
         </div>
       </div>
-      <div class="pagination">
+      <div class="pagination"  v-if="showList.length !== 0">
         <el-pagination
             background
             :page-size="3"
@@ -118,6 +118,7 @@
             :total="followList.length">
         </el-pagination>
       </div>
+      <el-empty style="position: absolute; top: 70px; left: 600px;" description="暂无关注" v-if="showList.length === 0" :image-size="200"></el-empty>
     </div>
   </div>
 </template>

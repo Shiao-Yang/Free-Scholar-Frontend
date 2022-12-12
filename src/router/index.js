@@ -12,7 +12,7 @@ import SearchDetails from "@/views/SearchDetails"
 import History from "@/views/History"
 import TransactionCenter from "@/views/TransactionCenter"
 import LoginSignUp from "@/views/Login&SignUp";
-import admitScholar from "@/views/admitScholar";
+import admitScholar from "@/views/AdmitScholar";
 
 Vue.use(VueRouter)
 
@@ -138,7 +138,7 @@ const routes = [
   {
     path: '/admitScholar',
     name: 'admitScholar',
-    component: () => import('../views/admitScholar'),
+    component: () => import('../views/AdmitScholar'),
   },
 ]
 
