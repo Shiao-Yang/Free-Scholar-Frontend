@@ -45,12 +45,12 @@
               <el-table-column
                   prop="name"
                   label="姓名"
-                  width="150">
+                  width="200">
               </el-table-column>
               <el-table-column
                   prop="id"
                   label="id"
-                  width="50">
+                  width="280">
               </el-table-column>
               <el-table-column
                   fixed="right"
@@ -86,14 +86,19 @@
         <i class='bx bxs-bookmark-alt' style="margin-right: 20px;color: #FBBD08;margin-bottom: 30px"></i>文献管理
       </div>
       <div class="divider"></div>
-      <div class="header-search-box">
-        <input type="text" autocomplete="off"
-               id="input"
-               class="search-input"
-               v-model="input"
-               placeholder="Search resources..."
-               @keyup.enter="">
-        <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
+      <div style="display: flex">
+        <div style="width: 100px;margin-top: 15px">
+          <el-button type="primary" plain @click="newLiterature">新添文献</el-button>
+        </div>
+        <div class="header-search-box">
+          <input type="text" autocomplete="off"
+                 id="input"
+                 class="search-input"
+                 v-model="input"
+                 placeholder="Search resources..."
+                 @keyup.enter="">
+          <span class="search-icon" title="搜索"><i class='bx bx-search' @click="search"></i></span>
+        </div>
       </div>
       <div class="literature">
         <div class="literature-box" v-for="(item,index) in Literature" :key="index">
@@ -101,7 +106,7 @@
             <div>
               <div class="title">文献id：</div>
               <div class="Information">
-                {{Literature[index].id}}
+                {{Literature[index].id | ellipsis}}
               </div>
               <div style="display: inline-block">
                 <el-button type="text" @click="open(index)">
@@ -112,19 +117,19 @@
             <div>
               <div class="title">题目：</div>
               <div class="Information">
-                {{Literature[index].name}}
+                  {{Literature[index].name | ellipsis}}
               </div>
             </div>
             <div>
               <span class="title">发表于：</span>
               <span class="Information">
-                {{Literature[index].origin}}
+                {{Literature[index].origin | ellipsis}}
               </span>
             </div>
             <div>
               <span class="title">发表时间：</span>
               <span class="Information">
-                {{Literature[index].date}}
+                {{Literature[index].date | ellipsis}}
               </span>
             </div>
           </div>
@@ -159,6 +164,31 @@ export default {
           "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "origin" : "Science",
           "date" : "2021",
+          "author" : [
+      {
+        "num" : 1,
+        "name" : "不知名",
+        "id" : 1,
+        "right" : "移除",
+      },
+      {
+        "num" : 2,
+        "name" : "不知名2",
+        "id" : 2,
+        "right" : "移除",
+      },
+      {
+        "num" : 3,
+        "name" : "不知名2",
+        "id" : 3,
+        "right" : "移除",
+      },
+      {
+        "num" : 4,
+        "name" : "不知名2",
+        "id" : 4,
+      },
+    ],
         },
         {
           "id" : 1,
@@ -368,7 +398,18 @@ export default {
       // 当前显示的数据
       dataShow: "",
       // 默认当前显示第一页
-      currentPage: 0
+      currentPage: 0,
+      input: '',
+      field: 'title',
+    }
+  },
+  filters:{
+    ellipsis(value){
+      if (!value) return '';
+      if (value.length > 20) {
+        return value.slice(0,20) + '...'
+      }
+      return value
     }
   },
   created() {
@@ -391,12 +432,87 @@ export default {
     open(index) {
       this.visible = true;
       this.currentInstitutional = index;
+      this.tableData = this.Literature[index].author;
     },
     close(){
       this.visible = false;
     },
     deleteRow(index, rows) {
       rows.splice(index, 1);
+      this.$axios({
+        method: 'post',
+        url: '',
+        data: qs.stringify({
+          "id":this.Literature[this.currentInstitutional].id,
+          "uid":this.Literature[this.currentInstitutional].author[index].uid,
+          "name":this.Literature[this.currentInstitutional].author[index].name
+        })
+      }).then(res =>{
+        switch (res.data.errno){
+          case 0:
+            window.alert(res.data.msg);
+        }
+      })
+    },
+    search(){
+      this.List = [];
+      let params = {
+        page: 1,
+        condition: [
+          {
+            type: "OR",
+            input: this.input,
+            field: this.field
+          }
+        ],
+        filter: [],
+      }
+      if (this.input === '') {
+        this.$message('请输入搜索内容')
+        return;
+      }
+      this.$axios( {
+        method: 'post',
+        url: this.$store.state.address+'api/publication/search/',
+        data: params
+      })
+          .then(async res =>{
+        var i = 0;
+        for (i = 0; i < res.data.hits.length; i++){
+          this.List.push({
+            id: res.data.hits[i]._source.id,
+            name: res.data.hits[i]._source.title,
+            origin: "123",
+            date: res.data.hits[i]._source.year,
+            author: res.data.hits[i]._source.authors
+          })
+        }
+        var i = 0;
+        i = this.List.length / 6;
+        if (i < 1)
+           i = 1;
+        this.pageNum = i * 10;
+        this.changePage(1);
+      })
+    },
+    addAuthor(){
+      this.$axios({
+        method: 'post',
+        url: '',
+        data: qs.stringify({
+          "id":this.Literature[this.currentInstitutional].id,
+          "uid":this.Literature[this.currentInstitutional].author[index].uid,
+          "name":this.Literature[this.currentInstitutional].author[index].name
+        })
+      }).then(res =>{
+        switch (res.data.errno){
+          case 0:
+            window.alert(res.data.msg);
+        }
+      })
+    },
+    newLiterature(){
+
     }
   }
 }
@@ -409,8 +525,8 @@ export default {
 }
 .table {
   position: relative;
-  width: 300px;
-  left: 100px;
+  width: 600px;
+  left: -30px;
   top: 10px;
   border: 1px solid rgb(240,240,240);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
@@ -429,6 +545,7 @@ export default {
   word-break: break-all;
   word-wrap: break-word;
   line-height: 24px;
+
 }
 .mask {
   width: 100%;
@@ -485,7 +602,8 @@ export default {
 }
 
 .header-search-box {
-  margin: 15px auto;
+  margin-left: auto;
+  margin-top: 15px;
   width: 700px;
 }
 

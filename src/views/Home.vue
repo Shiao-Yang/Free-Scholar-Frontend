@@ -439,11 +439,9 @@ export default {
       param.append("img",fileToUpload);
       // param.append("uid",tempthis.$store.state.userInfo.uid);
       param.append("uid",tempthis.uid);
-
       param.forEach((value, key) => {
         console.log(`key ${key}: value ${value}`);
       })
-
       this.axios({
         method: 'post',
         url: 'http://139.9.134.209:8000/api/media/set_avatar/',
@@ -458,7 +456,7 @@ export default {
           tempthis.$message({
             type: 'success',
             showClose: true,
-            message: "头像上传成功",
+            message: "封面上传成功",
           })
         }
         else {
@@ -467,7 +465,7 @@ export default {
               type: 'success',
               showClose: true,
               // message: "res.data.msg",
-              message: "头像上传失败",
+              message: "封面上传失败",
             })
           }
         }
