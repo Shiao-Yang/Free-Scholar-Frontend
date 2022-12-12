@@ -2,7 +2,7 @@
   <div class="adminHome">
     <div class="body">
       <div class="header-box">
-        <img class="avatar" src="../assets/YAN.jpg">
+        <img class="avatar" :src="$store.state.url+$store.state.baseInfo.avatar">
         <div class="welcome">
           <p class="welcome-en">Hi! Admin!</p>
           <p class="welcome-zh">欢迎回来！</p>
@@ -52,6 +52,7 @@
 
     </div>
     <div class="record">
+      <!--
       <div class="header-search-box">
         <input type="text" autocomplete="off"
                id="input"
@@ -61,11 +62,14 @@
                @keyup.enter="">
         <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
       </div>
-      <p class="remind">提醒</p>
+      -->
+      <p class="remind">最近记录</p>
+      <!--
       <p style="text-align: center">暂无提醒</p>
+      -->
       <table>
         <tr v-for="(item, i) in records" class="history">
-          <td><img :src="item.avatar" class="avatar"> </td>
+          <td><img :src="$store.state.url+item.avatar" class="avatar"> </td>
           <td class="name-box"><span>{{item.name}}</span></td>
           <td class="action-box">
             <span v-if="item.type==='report'&&item.who==='user'">提交了一条</span>
@@ -76,6 +80,7 @@
             <span v-if="item.type==='report'">举报</span>
             <span v-else-if="item.type==='complain'">申诉</span>
           </td>
+          <p>{{item.time}}</p>
         </tr>
       </table>
     </div>
@@ -107,22 +112,7 @@ export default {
       reportAll: 0,
       complainAll: 0,
       records: [
-        {
-          avatar: require('../assets/YAN.jpg'),
-          name: '王婉',
-          type: 'report',
-          who: 'user',
-        }, {
-          avatar: require('../assets/YAN.jpg'),
-          name: '王婉',
-          type: 'complain',
-          who: 'user',
-        }, {
-          avatar: require('../assets/YAN.jpg'),
-          name: 'Admin',
-          type: 'complain',
-          who: 'admin'
-        }
+
       ]
     }
   },
@@ -184,6 +174,8 @@ export default {
           })
     },
     getComplainAll() {
+      console.log('token:')
+      console.log(JSON.parse(sessionStorage.getItem('baseInfo')).token)
       this.axios({
         method: 'get',
         url: this.$store.state.address+'api/relation/getComplainAll',
@@ -200,7 +192,7 @@ export default {
     getRecentRecord() {
       this.axios({
         method: 'get',
-        url: this.$store.state.address+'api/adminHome/getComplainAll',
+        url: this.$store.state.address+'api/relation/getRecentRecord',
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
@@ -208,6 +200,34 @@ export default {
           .then(res=>{
             console.log('getRecentRecord:')
             console.log(res.data)
+            let i = 0, len = res.data.result.length;
+            for (i = 0; i < len; i++) {
+              let tmp = {
+                avatar: '',
+                name: '',
+                type: '',
+                who: '',
+                time: '',
+              }
+              tmp.avatar = res.data.result[i].avatar
+              tmp.name = res.data.result[i].name
+              let strList = res.data.result[i].time.split('T')
+              tmp.time = strList[0]+' '+strList[1]
+              if (res.data.result[i].type === 0) {
+                tmp.type = 'report'
+                tmp.who = 'user'
+              } else if (res.data.result[i].type === 1) {
+                tmp.type = 'complain'
+                tmp.who = 'user'
+              } else if (res.data.result[i].type === 2) {
+                tmp.type = 'complain'
+                tmp.who = 'admin'
+              } else if (res.data.result[i].type === 3) {
+                tmp.type = 'report'
+                tmp.who = 'admin'
+              }
+              this.records.push(tmp)
+            }
           })
     }
   }
@@ -245,6 +265,11 @@ export default {
   padding: 5px 60px 5px 10px;
   border-radius: 30px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+}
+.history p {
+  position: relative;
+  margin: 0 0 0 20px;
+  text-align: center;
 }
 .avatar {
   position: relative;
