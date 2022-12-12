@@ -12,7 +12,7 @@ import SearchDetails from "@/views/SearchDetails"
 import History from "@/views/History"
 import TransactionCenter from "@/views/TransactionCenter"
 import LoginSignUp from "@/views/Login&SignUp";
-import admitScholar from "@/views/AdmitScholar";
+// import admitScholar from "@/views/AdmitScholar";
 
 Vue.use(VueRouter)
 
@@ -135,11 +135,11 @@ const routes = [
     name: 'login&signup',
     component: () => import('../views/Login&SignUp'),
   },
-  {
-    path: '/admitScholar',
-    name: 'admitScholar',
-    component: () => import('../views/AdmitScholar'),
-  },
+  // {
+  //   path: '/admitScholar',
+  //   name: 'admitScholar',
+  //   component: () => import('../views/AdmitScholar'),
+  // },
 ]
 
 const router = new VueRouter({
