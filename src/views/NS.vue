@@ -9,15 +9,24 @@
                      top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
                 <div class="option-box">
-                  <div class="follow">
+                  <div class="follow" v-if="this.follow===0" style="color: #333333">
                     <i class="bx bxs-user-plus"></i>
-                    <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
+                    <div class="fo" style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px"
+                         @click="">关注</div>
                   </div>
-                  <div class="claim">
+                    <div class="follow" v-else style="color: #2196f3">
+                        <i class="bx bxs-user-plus"></i>
+                        <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px"
+                             @click="">已关注</div>
+                    </div>
+                  <div class="claim" v-if="this.accreditation===0" style="color: #333333">
                     <i class="bx bxs-award"></i>
-                    <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;
-                 color: #ffcb74">已认领</div>
+                    <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;">未认领</div>
                   </div>
+                    <div class="claim" v-else style="color: #ffcb74">
+                        <i class="bx bxs-award"></i>
+                        <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;">已认领</div>
+                    </div>
                   <div class="message">
                     <i class="bx bxs-chat"></i>
                     <div style="position: absolute; margin-top: 13px; left: 245px; font-size: 15px">私信</div>
@@ -117,6 +126,9 @@
                     userName: '王海涛',
                     avatar: 'YAN.jpg',
                 },
+                sort: 0, //0表示按时间排序，1表示按引用量排序
+                follow: 0, //1表示已关注，0表示未关注
+                accreditation: 0, //1表示已认证，0表示未认证
                 introduction:'这个人很懒，什么都没有写……',
                 heat: 38,
                 visitors: 23,
@@ -126,6 +138,20 @@
             }
         },
         methods: {
+            focus(uid){
+              this.$axios({
+                  method: 'post',
+                  url: this.$store.state.address + 'api/relation/focus',
+                  data: qs.stringify(({
+                    aim_id: uid
+                  }))
+              }).then(res =>{
+                  console.log(res)
+              })
+                .catch(err =>{
+                    console.log(err)
+                })
+            },
             temp(id){
                 this.uid = id;
                 this.getCoworkers(id);
@@ -150,19 +176,20 @@
                         id: uid
                     })
                 }).then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.scholarList = res.data.coworkers;
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
                     // this.coID = res.data.
                 }).catch(err => {
-                    console.log(err)
+                    // console.log(err)
                 })
             },
             getBaseInfo(uid){
                 this.axios({
                     method: 'get',
-                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + this.uid,
+                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + uid,
+                    // url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + '1',
                 }).then(res => {
                     console.log(res)
                     if(res.data.introduction!=null){
@@ -191,7 +218,7 @@
         created() {
             // console.log(this.$route.query.id)
             this.uid = this.$route.query.id;
-            // console.log(this.uid)
+            console.log(this.uid)
             this.getCoworkers(this.uid)
             // this.getBaseInfo(this.uid)
         }
@@ -387,7 +414,7 @@
         font-size: 30px;
         margin-top: 7px;
         margin-left: 15px;
-        color: #333333;
+        /*color: #333333;*/
     }
 
     .introduction .bxs-user-pin {
@@ -462,7 +489,7 @@
         font-size: 30px;
         margin-top: 7px;
         left: 105px;
-        color: #ffcb74;
+        /*color: #ffcb74;*/
     }
     .name .bxs-chat {
         position: absolute;
@@ -490,11 +517,11 @@
 
     .follow {
       transition: 0.2s;
-      color: #333333;
+      /*color: #333333;*/
       cursor: pointer;
     }
 
-    .follow:hover {
+    .follow:hover .fo{
       color: #2196f3;
     }
 
@@ -509,10 +536,10 @@
     }
 
     .message:hover {
-      color: #2196f3;
+      color: #00cc00;
     }
 
     .message:hover .bxs-chat{
-      color: #2196f3;
+      color: #00cc00;
     }
 </style>

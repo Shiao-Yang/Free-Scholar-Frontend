@@ -2,7 +2,7 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="this.$store.state.url+baseInfo.avatar">
+        <img :src="url+baseInfo.avatar">
       </div>
       <div class="profile">
         <ul class="profile-list">
@@ -12,11 +12,13 @@
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-home'></i></span>
-            <span class="text">{{baseInfo.institution.name}}</span>
+            <span class="text" v-if="baseInfo.institution !== null">{{baseInfo.institution.name}}</span>
+            <span class="text" v-if="baseInfo.institution === null">暂无</span>
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-bookmark'></i></span>
-            <span class="text">{{baseInfo.bio}}</span>
+            <span class="text" v-if="baseInfo.bio !== null">{{baseInfo.bio}}</span>
+            <span class="text" v-if="baseInfo.bio === null">暂无</span>
           </li>
         </ul>
       </div>
@@ -32,7 +34,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="baseInfo.identity===1" @click="toHome">
+        <div class="social-info-item" v-if="baseInfo.identity===2" @click="toHome">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart' ></i></span>
             <span class="text">粉丝</span>
@@ -64,7 +66,7 @@
         </span>
       </div>
       <div class="divider"></div>
-      <div class="follow-list">
+      <div class="follow-list" v-if="showList.length !== 0">
         <div class="follow-list-item" v-for="(item,index) in showList" :key="index">
           <div class="avatar">
             <img :src="url+item.avatar" style="max-width: 100%">
@@ -77,21 +79,35 @@
               </li>
               <li class="profile-list-item">
                 <span class="icon"><i class='bx bxs-bookmark'></i></span>
-                <span class="text">{{item.bio}}</span>
+                <span class="text" v-if="item.bio !== null">{{item.bio}}</span>
+                <span class="text" v-if="item.bio === null">暂无</span>
               </li>
             </ul>
           </div>
           <div class="social-info">
             <div class="social-info-item">
-              <span class="icon"><i class='bx bxs-message-rounded-dots' title="私信"></i></span>
+              <span class="icon" @click="replyVisible = true; msg_send.owner_id = item.id;"><i class='bx bxs-message-rounded-dots' title="私信"></i></span>
             </div>
           </div>
           <div class="social-info-number">
             <span class="number">关注于 : {{item.time}}</span>
           </div>
+          <el-dialog append-to-body title="发送私信" :visible="replyVisible" :center="isCenter" width="30%">
+            <el-input
+                style="z-index: 2"
+                type="textarea"
+                maxlength="500"
+                placeholder="请输入内容"
+                v-model="msg_send.content">
+            </el-input>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="replyVisible = false; msg_send.content=''">取 消</el-button>
+              <el-button type="primary" plain @click="sendMsg">确 定</el-button>
+            </div>
+          </el-dialog>
         </div>
       </div>
-      <div class="pagination">
+      <div class="pagination"  v-if="showList.length !== 0">
         <el-pagination
             background
             :page-size="3"
@@ -102,17 +118,26 @@
             :total="followList.length">
         </el-pagination>
       </div>
+      <el-empty style="position: absolute; top: 70px; left: 600px;" description="暂无关注" v-if="showList.length === 0" :image-size="200"></el-empty>
     </div>
   </div>
 </template>
 
 <script>
+import {format} from 'date-fns';
+import moment from 'moment';
+
 export default {
   name: "FollowList",
   data() {
     return {
       uid: 1,
       url: this.$store.state.url,
+      closable: true, //是否可关闭dialog
+      isCenter: true, //dialog footer 和 head 是否居中
+      isActive1: true, //true 则展示系统消息
+      isActive2: false, //true 则展示收到的私信
+      isActive3: false, //true 则展示发送的私信
       avatar: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
@@ -125,6 +150,11 @@ export default {
       followers: 15,
       currentPage: 1,
       pageSize: 3,
+      replyVisible: false,
+      msg_send: {
+        owner_id: 1,
+        content: '',
+      },
       baseInfo: {
         username:"lisi",
         avatar: 'img/home/avatar1.jpg',
@@ -237,6 +267,57 @@ export default {
         // this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
       }
     },
+
+    sendMsg() {
+      console.log(this.msg_send);
+      if(this.msg_send.content === '') {
+        this.$message({
+          type: 'error',
+          showClose: true,
+          message: '内容不能为空'
+        })
+        return;
+      }
+      let params = new FormData();
+      params.append("owner_id", this.msg_send.owner_id);
+      params.append("content", this.msg_send.content);
+
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/sendMsg/',
+        data: params,
+      })
+          .then(res => {
+            this.dis_msg_list = [];
+            // if(this.isActive1) { //当前处于系统消息列表
+            //   this.getMsgPlm(this.uid);
+            // }
+            // else if(this.isActive2) { //当前处于收到的私信列表
+            //   this.getMsgRec(this.uid);
+            // }
+            // else if(this.isActive3) { //当前处于发送的私信列表
+            //   this.getMsgSend(this.uid);
+            // }
+
+            if(res.data.errno === 0) {
+              this.$message({
+                type: 'success',
+                showClose: true,
+                message: '发送成功'
+              })
+            }
+
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      this.replyVisible = false;
+      this.msg_send.content = '';
+    },
+
     unFocus(uid, aid) { //uid: 当前用户, aid: 被关注的用户
       let params = {
         user_id: uid,
