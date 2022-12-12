@@ -70,8 +70,11 @@
           <div class="operation" v-if="!isActive1" style="right: 0px;">
             <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
           </div>
-          <div class="operation" v-if="!isActive1" style="right: 70px;">
-            <img class="reply-img" src="../assets/img/MessageManage/reply.png" title="回复" @click="replyVisible = true;">
+          <div class="operation" v-if="isActive2" style="right: 70px;">
+            <img class="reply-img" src="../assets/img/MessageManage/reply.png" title="回复" @click="replyVisible = true; msg_send.owner_id = item.sender_id;">
+          </div>
+          <div class="operation" v-if="isActive3" style="right: 70px;">
+            <img class="reply-img" src="../assets/img/MessageManage/retext.png" title="再次发送" @click="replyVisible = true; msg_send.owner_id = cur_msg.owner_id;">
           </div>
           <div class="send-time">
             <div class="text">
@@ -87,14 +90,17 @@
           <span class="name" v-if="!isActive1">
             {{ cur_msg.username }}
           </span>
-          <span class="name" v-if="!isActive1">
+          <span class="name" v-if="isActive1">
             系统通知
           </span>
           <div class="operation" style="right: 0px;">
-            <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(item.mid)">
+            <img class="delete-img" src="../assets/img/MessageManage/delete.png" title="删除" @click="deleteMsg(cur_msg.mid)">
           </div>
-          <div class="operation" v-if="!isActive1" style="right: 70px;">
-            <img class="reply-img" src="../assets/img/MessageManage/reply.png" title="回复" @click="replyVisible = true;">
+          <div class="operation" v-if="isActive2" style="right: 70px;">
+            <img class="reply-img" src="../assets/img/MessageManage/reply.png" title="回复" @click="replyVisible = true; msg_send.owner_id = cur_msg.owner_id;">
+          </div>
+          <div class="operation" v-if="isActive3" style="right: 70px;">
+            <img class="reply-img" src="../assets/img/MessageManage/retext.png" title="再次发送" @click="replyVisible = true; msg_send.owner_id = cur_msg.owner_id;">
           </div>
           <div class="send-time">
             <div class="text">
@@ -107,22 +113,17 @@
             {{cur_msg.content}}
           </div>
         </div>
-        <el-dialog append-to-body title="发送私信" :visible="replyVisible">
-          <el-form :model="replyForm">
-            <el-form-item label="私信内容" label-width="80px">
-            </el-form-item>
-            <el-form-item>
-              <el-input
-                  type="textarea"
-                  maxlength="60"
-                  placeholder="请输入内容"
-                  v-model="replyForm.content">
-              </el-input>
-            </el-form-item>
-          </el-form>
+        <el-dialog append-to-body title="发送私信" :visible="replyVisible" :center="isCenter" width="30%">
+            <el-input
+                style="z-index: 2"
+                type="textarea"
+                maxlength="500"
+                placeholder="请输入内容"
+                v-model="msg_send.content">
+            </el-input>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="replyVisible = false">取 消</el-button>
-            <el-button type="primary" @click="replyVisible = false">确 定</el-button>
+            <el-button @click="replyVisible = false; msg_send.content=''">取 消</el-button>
+            <el-button type="primary" plain @click="sendMsg">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -180,7 +181,11 @@ export default {
       replyVisible: false,
       replyForm: {
         receiver_id: 1,
-        content: 'hello',
+        content: '',
+      },
+      msg_send: {
+        owner_id: 0,
+        content: '',
       },
       isActive1: true, //true 则展示系统消息
       isActive2: false, //true 则展示收到的私信
@@ -478,6 +483,57 @@ export default {
       }
       console.log(has_new)
       return has_new;
+    },
+
+    //发送消息
+    sendMsg() {
+      console.log(this.msg_send);
+      if(this.msg_send.content === '') {
+        this.$message({
+          type: 'error',
+          showClose: true,
+          message: '内容不能为空'
+        })
+        return;
+      }
+      let params = new FormData();
+      params.append("owner_id", this.msg_send.owner_id);
+      params.append("content", this.msg_send.content);
+
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/sendMsg/',
+        data: params,
+      })
+          .then(res => {
+            this.dis_msg_list = [];
+            if(this.isActive1) { //当前处于系统消息列表
+              this.getMsgPlm(this.uid);
+            }
+            else if(this.isActive2) { //当前处于收到的私信列表
+              this.getMsgRec(this.uid);
+            }
+            else if(this.isActive3) { //当前处于发送的私信列表
+              this.getMsgSend(this.uid);
+            }
+
+            if(res.data.errno === 0) {
+              this.$message({
+                type: 'success',
+                showClose: true,
+                message: '发送成功'
+              })
+            }
+
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      this.replyVisible = false;
+      this.msg_send.content = '';
     },
 
     //删除消息
