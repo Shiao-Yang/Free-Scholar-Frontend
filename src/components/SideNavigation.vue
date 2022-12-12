@@ -115,8 +115,7 @@
 <!--        </router-link>-->
 <!--      </li>-->
       <li class="side-navigation-item user-box" v-if="isLogin">
-        <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style=""></i>
+        <router-link to="#" style="--clr: #0fc70f">
           <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
           <span class="text">{{baseInfo.username}}</span>
         </router-link>
