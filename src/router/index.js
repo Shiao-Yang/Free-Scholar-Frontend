@@ -121,6 +121,11 @@ const routes = [
     component: () => import('../views/SearchDetails.vue')
   },
   {
+    path:`/SearchDetails/:LiteratureId`,
+    name:'SearchDetailsByID',
+    component: () => import('../views/SearchDetails.vue')
+  },
+  {
     path: '/History',
     name: 'History',
     component: () => import('../views/History.vue')
