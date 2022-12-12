@@ -31,7 +31,7 @@
         <router-link to="#" :style="{'--clr':userStateClr}">
           <i class='bx bxs-circle user-info' style=""></i>
           <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
-          <span class="text">{{ baseInfo.name }}</span>
+          <span class="text">{{ baseInfo.username }}</span>
         </router-link>
         <ul class="user-sub-menu">
           <li class="sub-item" @click="toHome">
