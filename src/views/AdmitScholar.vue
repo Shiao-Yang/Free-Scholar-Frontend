@@ -103,24 +103,40 @@ export default {
   },
   methods : {
     submitInfo() {
-      // let formdata = new FormData;
-      // this.axios( {
-      //   method: "POST",
-      //   url: this.$store.state.address+"api/user/admitScholar/",
-      //   data: formdata,
-      //   headers: {
-      //     jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-      //   },
-      // }).then(res => {
-      //
-      //
-      // }).catch(err => {
-      //   console.log(err)
-      // })
-      this.currentStep = 1;
+      let self = this;
+      let formdata = new FormData;
+      formdata.append("email", self.e_mail)
+      this.axios( {
+        method: "POST",
+        url: self.$store.state.address+"api/user/sendEmail/",
+        data: formdata,
+      }).then(res => {
+        console.log(res.data)
+        if(res.data.result === 1) {
+          console.log("成功发送邮件")
+          this.currentStep = 1;
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     verify() {
-      this.currentStep = 3;
+      let self = this
+      let formdata = new FormData
+      formdata.append("code", self.verifyCode)
+      this.axios({
+        method: "POST",
+        url: self.$store.state.address+"api/user/checkCode/",
+        data: formdata,
+      }).then(res => {
+        console.log(res.data)
+        if(res.data.error === 1) {
+          console.log("验证码错误")
+        }
+        else {
+          this.currentStep = 3;
+        }
+      })
     },
   },
 }
