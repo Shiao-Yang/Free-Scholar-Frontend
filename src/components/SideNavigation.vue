@@ -284,7 +284,7 @@ export default {
 }
 
 .side-navigation {
-  position: absolute;
+  position: fixed;
   height: 100vh;
   top:0;
   left: 0;
