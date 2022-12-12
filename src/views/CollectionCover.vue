@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="item" v-for="(item,index) in MyCreateList" :key="index">
-          <img :src="$store.state.url+MyCreateList[index].avatar" class="cover">
+          <img :src="'http://139.9.134.209:8000/media/coverimgs/'+MyCreateList[index].avatar" class="cover">
           <div class="name">
             {{MyCreateList[index].title}}
           </div>
