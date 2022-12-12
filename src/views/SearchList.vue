@@ -179,43 +179,61 @@
           <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
         </p>
         <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-        <div class="item-2" v-for="item in keywords" v-if="keyword_zone">
-          <p class="filter-item">
+        <div class="item-2" v-for="(item,i) in keywords" v-if="keyword_zone">
+          <p class="filter-item" v-if="!show_1 && i < 10">
+            <span v-if="item !== keyword" style="cursor: pointer" @click="search(1,item)">{{item}}</span>
+            <span v-else style="cursor: pointer;color: #2196f3" @click="search(5)">{{item}}</span>
+          </p>
+          <p class="filter-item" v-if="show_1">
             <span v-if="item !== keyword" style="cursor: pointer" @click="search(1,item)">{{item}}</span>
             <span v-else style="cursor: pointer;color: #2196f3" @click="search(5)">{{item}}</span>
           </p>
         </div>
+        <p v-if="!show_1&&keywords.length>10" @click="show_1=true" class="show"><i class='bx bx-plus' ></i>展开</p>
+        <p v-else-if="show_1&&keywords.length>10" @click="show_1=false" class="show"><i class='bx bx-minus' ></i>收回</p>
         <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="organization_zone = !organization_zone">机构
           <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
         </p>
         <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-        <div class="item-2" v-for="item in organizations" v-if="organization_zone">
-          <p class="filter-item">
+        <div class="item-2" v-for="(item,i) in organizations" v-if="organization_zone">
+          <p class="filter-item" v-if="!show_2 && i < 10">
+            <span v-if="item !== org" style="cursor: pointer" @click="search(2,item)">{{item}}</span>
+            <span v-else style="cursor: pointer;color: #2196f3" @click="search(6)">{{item}}</span>
+          </p>
+          <p class="filter-item" v-if="show_2">
             <span v-if="item !== org" style="cursor: pointer" @click="search(2,item)">{{item}}</span>
             <span v-else style="cursor: pointer;color: #2196f3" @click="search(6)">{{item}}</span>
           </p>
         </div>
+        <p v-if="!show_2&&organizations.length>10" @click="show_2=true" class="show"><i class='bx bx-plus' ></i>展开</p>
+        <p v-else-if="show_2&&organizations.length>10" @click="show_2=false" class="show"><i class='bx bx-minus' ></i>收回</p>
         <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="journal_zone = !journal_zone">期刊
           <i class='bx bx-chevron-down' style="position: absolute;font-size: 16px;right: 10px"></i>
         </p>
         <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin: 0px" />
-        <div class="item-2" v-for="item in journals" v-if="journal_zone">
-          <p class="filter-item">
+        <div class="item-2" v-for="(item,i) in journals" v-if="journal_zone">
+          <p class="filter-item" v-if="!show_3&& i < 10">
+            <span v-if="item !== venue" style="cursor: pointer" @click="search(3,item)">{{item}}</span>
+            <span v-else style="cursor: pointer;color: #2196f3" @click="search(7)">{{item}}</span>
+          </p>
+          <p class="filter-item" v-if="show_3">
             <span v-if="item !== venue" style="cursor: pointer" @click="search(3,item)">{{item}}</span>
             <span v-else style="cursor: pointer;color: #2196f3" @click="search(7)">{{item}}</span>
           </p>
         </div>
+        <p v-if="!show_3&&journals.length>10" @click="show_3=true" class="show"><i class='bx bx-plus' ></i>展开</p>
+        <p v-else-if="show_3&&journals.length>10" @click="show_3=false" class="show"><i class='bx bx-minus' ></i>收回</p>
       </div>
       <div class="content">
         <div class="result-box" v-for="(result, i) in displayResult">
-          <p class="articleName"><span style="cursor: pointer" @click="">{{result.articleName}}</span></p>
+          <p class="articleName"><span style="cursor: pointer" @click="$router.push('/searchDetails/'+result.id)">{{result.articleName}}</span></p>
           <ul class="authors-list">
             <li class="author" v-for="author in result.author">
               <span v-if="author.id" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</span>
               <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
             </li>
           </ul>
-          <p class="abstract">{{result.abstract}}</p>
+          <p class="abstract" @click="$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
           <ul class="info-list">
             <li class="info">
               <i v-if="!result.user_collected" class='bx bxs-star'  :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
@@ -280,6 +298,9 @@ export default {
       organization_zone: true,
       journal_zone: true,
       show_card: false,
+      show_1: false,
+      show_2: false,
+      show_3: false,
       activeYear: 0,
       startTime: '',
       endTime: '',
@@ -898,6 +919,11 @@ export default {
           .then(res => {
             console.log(res.data)
             this.organizations = res.data.data
+            if (res.data.data.length > 10) {
+              this.show_2 = false
+            } else {
+              this.show_2 = true
+            }
           })
     },
     getKeyList() {
@@ -918,6 +944,11 @@ export default {
           .then(res => {
             console.log(res.data)
             this.keywords = res.data.data
+            if (res.data.data.length > 10) {
+              this.show_1 = false
+            } else {
+              this.show_1 = true
+            }
           })
     },
     getVenueList() {
@@ -938,6 +969,11 @@ export default {
           .then(res => {
             console.log(res.data)
             this.journals = res.data.data
+            if (res.data.data.length > 10) {
+              this.show_3 = false
+            } else {
+              this.show_3 = true
+            }
           })
     }
   }
@@ -1338,6 +1374,12 @@ td.active {
 }
 .filter-item{
   margin: 5px 5px;
+}
+#filter .show {
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
 }
 .content {
   position: relative;
