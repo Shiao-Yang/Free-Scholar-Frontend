@@ -622,6 +622,9 @@ export default {
         this.$refs.box.scrollIntoView()
       }
       console.log(params)
+      if (flag === 0) {
+        this.getWord(params)
+      }
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/publication/search/',
@@ -677,6 +680,17 @@ export default {
             this.getVenueList()
             this.show_card = true;
             this.currentPage = 1;
+          })
+    },
+    getWord(para) {
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'/api/publication/GetWord/',
+        data: para
+      })
+          .then(res=>{
+            console.log('getWord:')
+            console.log(res.data)
           })
     },
     searchByYearBtn(val) {

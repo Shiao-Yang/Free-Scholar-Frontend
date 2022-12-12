@@ -10,6 +10,7 @@ Vue.prototype.$axios = axios
 Vue.use(VueAxios, axios) // 安装插件
 Vue.use(ElementUI);
 
+
 Vue.config.productionTip = false
 
 new Vue({
