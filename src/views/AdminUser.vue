@@ -34,11 +34,11 @@
                class="search-input"
                v-model="input"
                placeholder="搜索用户"
-               @keyup.enter="">
-        <span class="search-icon" title="搜索"><i class='bx bx-search' @click=""></i></span>
+               @keyup.enter="getUser">
+        <span class="search-icon" title="搜索"><i class='bx bx-search' @click="getUser"></i></span>
       </div>
       <div v-for="(item, i) in displayResult" class="result-box">
-        <img class="avatar" src="../assets/YAN.jpg">
+        <img class="avatar" :src="$store.state.url+item.avatar">
         <table class="result-info">
           <tr class="name"><td class="title">姓名:</td><span>{{item.name}}&nbsp</span><i class="bx bxs-user"></i></tr>
           <tr class="e-mail"><td class="title">e-mail:</td><span>{{item.mail}}</span></tr>
@@ -76,7 +76,6 @@ export default {
   created() {
     window.myData = this;
     this.getNum()
-    this.getUser()
   },
   mounted() {
 
@@ -103,13 +102,23 @@ export default {
       }
     },
     getUser() {
+      if (this.input === '') {
+        this.$message.warning('请输入搜索值')
+        return
+      }
       this.axios( {
-        method: 'get',
+        method: 'post',
         url: this.$store.state.address+'api/relation/getUser',
+        data: {input: this.input},
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
       })
           .then(res => {
             console.log(res.data)
             let i = 0;
+            this.users = []
+            this.displayResult = []
             for (; i < res.data.length; i++) {
               this.users.push({id: res.data[i].id,
                 name: res.data[i].name,
@@ -131,6 +140,9 @@ export default {
       this.axios( {
         method: 'get',
         url: this.$store.state.address+'api/relation/getNum',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
       })
           .then(res => {
             console.log(res.data)
@@ -145,7 +157,7 @@ export default {
         url: this.$store.state.address+'api/relation/setNormal',
         data: {_id: id},
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       })
           .then(res => {
@@ -153,7 +165,7 @@ export default {
             switch (res.data.errno) {
               case 0:
                     this.displayResult[i].status = 0
-                    this.$message(res.data.msg)
+                    this.$message.success(res.data.msg)
             }
           })
     },
@@ -163,7 +175,7 @@ export default {
         url: this.$store.state.address+'api/relation/setMute',
         data: {_id: id},
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       })
           .then(res => {
@@ -171,7 +183,7 @@ export default {
             switch (res.data.errno) {
               case 0:
                 this.displayResult[i].status = 1
-                this.$message(res.data.msg)
+                this.$message.success(res.data.msg)
             }
           })
     },
@@ -181,7 +193,7 @@ export default {
         url: this.$store.state.address+'api/relation/setBan',
         data: {_id: id},
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       })
           .then(res => {
@@ -189,7 +201,7 @@ export default {
             switch (res.data.errno) {
               case 0:
                 this.displayResult[i].status = 2
-                this.$message(res.data.msg)
+                this.$message.success(res.data.msg)
             }
           })
     }
