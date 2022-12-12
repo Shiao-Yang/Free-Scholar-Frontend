@@ -6,6 +6,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import echarts from 'echarts';
 Vue.prototype.$axios = axios
 Vue.use(VueAxios, axios) // 安装插件
 Vue.use(ElementUI);
