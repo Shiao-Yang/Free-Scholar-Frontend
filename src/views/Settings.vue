@@ -16,9 +16,7 @@
       <div class="hotWord-box">
         <ul id="hot" class="hotWord-list">
           <li><span class="hotWord-text">热词推荐</span></li>
-          <li id="hot1" class="hot-item"><span class="hotWord">AI</span></li>
-          <li id="hot2" class="hot-item"><span class="hotWord">计算机技术</span></li>
-          <li id="hot3" class="hot-item"><span class="hotWord">核磁共振</span></li>
+          <li id="hot1" class="hot-item" v-for="item in hotWord_3"><span class="hotWord">{{item}}</span></li>
         </ul>
       </div>
     </div>
@@ -32,6 +30,10 @@
         <p class="abstract">{{result.abstract}}</p>
         <ul class="info-list">
           <li class="info">
+            <i class='bx bxs-like' style="font-size: 15px"></i>
+            <span class="nums">{{result.like}}</span>
+          </li>
+          <li class="info">
             <i class='bx bxs-star' style="font-size: 15px"></i>
             <span class="nums">{{result.collection}}</span>
           </li>
@@ -42,6 +44,10 @@
           <li class="info">
             <span>被引用次数:&nbsp</span>
             <span class="nums">{{result.quote}}</span>
+          </li>
+          <li class="info">
+            <span>浏览次数:&nbsp</span>
+            <span class="nums">{{result.read}}</span>
           </li>
         </ul>
         <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin-top: 5px" />
@@ -70,6 +76,7 @@
 export default {
   name: 'Settings',
   created() {
+    window.myData = this;
     this.getHotWord()
     this.getHotPaper()
   },
@@ -79,45 +86,9 @@ export default {
     return {
       input: '',
       hotWord: [
-        'AI',
-        '无机化学',
-        '计算机技术',
-        '核磁共振',
-        '蛋白质分析结构',
-        '大规模基因组测序',
-        '计算机技术',
-        '核磁共振',
-        '蛋白质分析结构',
-        '大规模基因组测序'
       ],
+      hotWord_3: [],
       paper: [
-        {
-          id: '',
-          title: 'aaa',
-          author: [
-            {
-              id: '111',
-              name: 'peter'
-            }
-          ],
-          abstract: '11111111111111111111111111111111111111111111',
-          collection: 1,
-          comment: 2,
-          quote: 3
-        }, {
-          id: '',
-          title: 'aaa',
-          author: [
-            {
-              id: '111',
-              name: 'peter'
-            }
-          ],
-          abstract: '11111111111111111111111111111111111111111111',
-          collection: 1,
-          comment: 2,
-          quote: 3
-        }
       ]
     }
   },
@@ -143,6 +114,13 @@ export default {
       })
           .then(res=>{
             console.log(res.data)
+            let i = 0,len = res.data.word.length;
+            for (; i < len; i++) {
+              this.hotWord.push(res.data.word[i].word_name)
+            }
+            for (i = 0; i < 3 && i < len; i++) {
+              this.hotWord_3.push(res.data.word[i].word_name)
+            }
           })
     },
     getHotPaper() {
@@ -153,8 +131,69 @@ export default {
           .then(res=>{
             console.log('hotPaper:')
             console.log(res.data)
+            let i = 0,len = res.data.paper.length
+            for (; i < len; i++) {
+              this.paper.push(
+                  {
+                    id: res.data.paper[i].id,
+                    title: res.data.paper[i].title,
+                    author: [
+                    ],
+                    abstract: '',
+                    like: res.data.paper[i].like_count,
+                    collection: res.data.paper[i].collect_count,
+                    comment: 0,
+                    quote: 0,
+                    read: res.data.paper[i].read_count
+                  }
+              )
+            }
+            let idList = []
+            for (i = 0; i < len; i++) {
+              idList.push(this.paper[i].id)
+            }
+            this.getPaperInfo(idList)
           })
-    }
+    },
+    getPaperInfo(idList) {
+      let para = {
+        idList: idList
+      }
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'/api/publication/getPaperByIdList/',
+        data: para
+      })
+          .then(res=> {
+            console.log(res.data)
+            let i = 0, j = 0, len1 = this.paper.length, len2 = res.data.data.length;
+            for (i = 0; i < len1; i++) {
+              for (j = 0; j < len2; j++) {
+                if (this.paper[i].id === res.data.data[j].id) {
+                  this.paper[i].author = res.data.data[j].authors
+                  this.paper[i].abstract = res.data.data[j].abstract
+                  this.paper[i].quote = res.data.data[j].n_citation
+                  this.getPaperData(this.paper[i].id,i)
+                }
+              }
+            }
+          })
+    },
+    getPaperData(id,index) { // 获得文献收藏数、评论数、是否收藏
+      let params = {
+        p_id: id,
+        u_id: 1, // 暂时为1
+      }
+      this.axios( {
+        method: "post",
+        url: this.$store.state.address+'api/searchList/PaperData/',
+        data: params
+      })
+          .then(res => {
+            //console.log(res.data)
+            this.paper[index].comment = res.data.comment_num;
+          })
+    },
   }
 }
 </script>
