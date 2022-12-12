@@ -122,15 +122,17 @@ export default {
       ]
     }
   },
-  methods: {
-    isLogin(){
+  computed: {
+    isLogin() {
       if (sessionStorage.getItem('baseInfo') !== null) {
         console.log('true111')
         return true
       }
       console.log('false111')
       return false
-    },
+    }
+  },
+  methods: {
     search() {
       this.$store.state.input = this.input
       this.$router.push('/searchList')
