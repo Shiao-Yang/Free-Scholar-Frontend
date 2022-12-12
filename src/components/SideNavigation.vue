@@ -102,48 +102,47 @@
           <span class="text">事务中心</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(8)" :class="{'active': activeIndex === 8}" v-if="isLogin">
-        <router-link :to="{path: '/collectionCover'}" style="--clr:#ffa117;" title="收藏夹">
-          <span class="icon"><i class='bx bxs-star' ></i></span>
-          <span class="text">收藏夹</span>
-        </router-link>
-      </li>
-      <li class="side-navigation-item" v-on:click="activeLink(9)" :class="{'active': activeIndex === 9}" v-if="isLogin">
-        <router-link :to="{path: '/history'}" style="--clr:#2196f3;" title="历史记录">
-          <span class="icon"><i class='bx bx-history'></i></span>
-          <span class="text">历史记录</span>
-        </router-link>
-      </li>
+<!--      <li class="side-navigation-item" v-on:click="activeLink(8)" :class="{'active': activeIndex === 8}" v-if="isLogin">-->
+<!--        <router-link :to="{path: '/collectionCover'}" style="&#45;&#45;clr:#ffa117;" title="收藏夹">-->
+<!--          <span class="icon"><i class='bx bxs-star' ></i></span>-->
+<!--          <span class="text">收藏夹</span>-->
+<!--        </router-link>-->
+<!--      </li>-->
+<!--      <li class="side-navigation-item" v-on:click="activeLink(9)" :class="{'active': activeIndex === 9}" v-if="isLogin">-->
+<!--        <router-link :to="{path: '/history'}" style="&#45;&#45;clr:#2196f3;" title="历史记录">-->
+<!--          <span class="icon"><i class='bx bx-history'></i></span>-->
+<!--          <span class="text">历史记录</span>-->
+<!--        </router-link>-->
+<!--      </li>-->
       <li class="side-navigation-item user-box" v-if="isLogin">
-        <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style=""></i>
+        <router-link to="#" style="--clr: #0fc70f">
           <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
-          <span class="text">{{baseInfo.name}}</span>
+          <span class="text">{{baseInfo.username}}</span>
         </router-link>
-        <ul class="user-sub-menu">
-          <li class="sub-item" @click="toHome">
-            <i class='bx bx-user'></i>
-            <span>个人中心</span>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
-          <li class="sub-item">
-            <i class='bx bxs-user-account'></i>
-            <span>账号设置</span>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
-          <li class="sub-item" @click="toMessageCenter">
-            <i class='bx bx-message-rounded'></i>
-            <span>消息中心</span>
-            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
-          <li class="sub-item">
-            <i class='bx bx-group'></i>
-            <span>我的机构</span>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
-          <li class="bottom-bor">
-          </li>
+        <ul class="user-sub-menu sub-menu-admin">
+<!--          <li class="sub-item" @click="toHome">-->
+<!--            <i class='bx bx-user'></i>-->
+<!--            <span>个人中心</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
+<!--          <li class="sub-item">-->
+<!--            <i class='bx bxs-user-account'></i>-->
+<!--            <span>账号设置</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
+<!--          <li class="sub-item" @click="toMessageCenter">-->
+<!--            <i class='bx bx-message-rounded'></i>-->
+<!--            <span>消息中心</span>-->
+<!--            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
+<!--          <li class="sub-item">-->
+<!--            <i class='bx bx-group'></i>-->
+<!--            <span>我的机构</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
+<!--          <li class="bottom-bor">-->
+<!--          </li>-->
           <li class="sub-item log-out" @click="logout">
             <i class='bx bx-log-out-circle'></i>
             <span>退出登录</span>
@@ -208,8 +207,7 @@ export default {
       //     || this.$route.path.startsWith('/Institutional')
       //     || this.$route.path.startsWith('/TransactionCenter'))
       //     && !this.$route.path.startsWith('/MessageManage');
-      return sessionStorage.getItem('baseInfo') !== null
-            && JSON.parse(sessionStorage.getItem('baseInfo')).isAdmin;
+      return this.$store.state.baseInfo.isAdmin !== null && this.$store.state.baseInfo.isAdmin;
     },
     baseInfo() {
       return this.$store.state.baseInfo;
@@ -540,12 +538,22 @@ export default {
   pointer-events: none;
 }
 
+.user-box .user-sub-menu.sub-menu-admin {
+  top: -20px;
+}
+
+
+
 .user-box:hover .user-sub-menu {
   top:-150px;
   right: -210px;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+.user-box:hover .user-sub-menu.sub-menu-admin {
+  top: 0;
 }
 
 .user-box .user-info {
