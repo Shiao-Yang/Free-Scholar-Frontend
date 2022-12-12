@@ -116,10 +116,13 @@ export default {
       })
           .then(res => {
             console.log(res.data)
-            let i = 0;
+            let i = 0,len = res.data.length;
             this.users = []
             this.displayResult = []
-            for (; i < res.data.length; i++) {
+            if (len === 0) {
+              this.$message('结果为空')
+            }
+            for (; i < len; i++) {
               this.users.push({id: res.data[i].id,
                 name: res.data[i].name,
                 mail: res.data[i].mail,
@@ -127,7 +130,7 @@ export default {
                 status: res.data[i].state})
             }
             i = 0;
-            for (; i < 5 && i < res.data.length; i++) {
+            for (; i < 5 && i < len; i++) {
               this.displayResult.push({id: res.data[i].id,
                 name: res.data[i].name,
                 mail: res.data[i].mail,
