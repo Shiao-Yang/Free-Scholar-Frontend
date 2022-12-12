@@ -21,7 +21,7 @@
         </div>
         <div class="option-box">
           <el-button class="option-btn" type="primary" plain @click="submitInfo()">提交</el-button>
-          <el-button class="option-btn" type="danger" plain>取消</el-button>
+          <el-button class="option-btn" type="danger" @click="$router.back()" plain>取消</el-button>
         </div>
       </div>
       <div class="verify-box" v-else-if="currentStep === 1">
@@ -41,7 +41,7 @@
         </div>
         <div class="option-box">
           <el-button class="option-btn" type="primary" plain @click="verify()">提交</el-button>
-          <el-button class="option-btn" type="danger" plain>取消</el-button>
+          <el-button class="option-btn" type="danger" @click="$router.back()" plain>取消</el-button>
         </div>
       </div>
       <div class="success-main-box" v-else-if="currentStep === 3">
@@ -54,7 +54,7 @@
           </div>
         </div>
         <div class="option-box" style="margin-top: 30px">
-          <el-button class="option-btn" type="success" plain @click="$router.go(-1)">返回</el-button>
+          <el-button class="option-btn" type="success" plain @click="$router.back()">返回</el-button>
         </div>
       </div>
     </div>
@@ -62,16 +62,16 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "AdmitScholar",
   data() {
     return {
-      currentStep: 3,
+      currentStep: 0,
       name: '',
-      e_mail: '1010495847@qq.com',
+      e_mail: '',
       verifyCode: '',
-      time: 5,
-      timer: null,
     }
   },
   computed : {
@@ -103,6 +103,20 @@ export default {
   },
   methods : {
     submitInfo() {
+      // let formdata = new FormData;
+      // this.axios( {
+      //   method: "POST",
+      //   url: this.$store.state.address+"api/user/admitScholar/",
+      //   data: formdata,
+      //   headers: {
+      //     jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+      //   },
+      // }).then(res => {
+      //
+      //
+      // }).catch(err => {
+      //   console.log(err)
+      // })
       this.currentStep = 1;
     },
     verify() {
