@@ -30,7 +30,11 @@
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
           <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
-          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
+          <span class="icon avatar">
+            <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
+                 v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
+            <img alt="头像" src="../assets/img/home/avatar.png" v-else>
+          </span>
           <span class="text">{{ baseInfo.username }}</span>
         </router-link>
         <ul class="user-sub-menu">
@@ -56,9 +60,8 @@
       </li>
       <li class="side-navigation-item user-box" v-else>
         <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
           <span class="icon avatar"><i class='bx bxs-user'></i></span>
-          <span class="text">{{ baseInfo.username }}</span>
+          <span class="text">游客</span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
           <li class="sub-item log-in" @click="login">
@@ -108,7 +111,11 @@
       </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" style="--clr: #0fc70f">
-          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
+          <span class="icon avatar">
+            <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
+                 v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
+            <img alt="头像" src="../assets/img/home/avatar.png" v-else>
+          </span>
           <span class="text">{{baseInfo.username}}</span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
