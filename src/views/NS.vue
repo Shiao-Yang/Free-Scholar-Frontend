@@ -150,7 +150,9 @@
             </span>
         </el-dialog>
     </div>
+
     </div>
+
 </template>
 
 <script>
@@ -162,7 +164,6 @@
                 textarea: '',
                 dialogVisible: false,
                 uid: '540888a2dabfae92b4247e94',
-                scholar_id: null,
                 user_id: null,
                 userName: '',
                 baseInfo: {
