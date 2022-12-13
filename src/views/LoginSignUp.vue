@@ -69,6 +69,8 @@
 </template>
 
 <script>
+import md5 from 'js-md5';
+
 export default {
   name: "LoginSignUp",
   data (){
@@ -84,11 +86,15 @@ export default {
   },
   methods: {
     login() {
+      let that = this;
+      let pwd;
+      pwd = md5(this.login_password)
+
       let param = new FormData();
       console.log(this.login_username)
-      console.log(this.login_password)
+      console.log(pwd)
       param.append('username', this.login_username);
-      param.append('password', this.login_password);
+      param.append('password', pwd);
 
       this.axios({
         method: "post",
