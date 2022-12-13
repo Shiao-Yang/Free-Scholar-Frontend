@@ -61,7 +61,8 @@
                     <span class="sub-icon" v-if="item.isClick === 0"><i class='bx bxs-folder' ></i></span>
                     <span class="sub-icon" v-else><i class='bx bxs-folder-open' ></i></span>
                     <span class="sub-text">{{ item.name }}</span>
-                    <span class="sub-edit-icon" @click="changeAvatar(item.id)"><i class='bx bx-edit-alt' ></i></span>
+                    <span class="sub-edit-icon" @click="changeAvatar(item.id)" title="编辑封面"><i class='bx bx-edit-alt' ></i></span>
+                    <span class="sub-delete-icon" title="删除收藏夹"><i class='bx bx-minus-circle'></i></span>
                   </li>
                 </div>
               </ul>
@@ -756,7 +757,23 @@ li {
   transition: all ease 0.4s;
 }
 
+.menu-item .sub-menu .sub-item .sub-delete-icon{
+  color: #f44336;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all ease 0.4s;
+}
+
+
 .menu-item .sub-menu .sub-item:hover .sub-edit-icon{
+  margin-right: 5px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.menu-item .sub-menu .sub-item:hover .sub-delete-icon {
   margin-right: 10px;
   opacity: 1;
   visibility: visible;

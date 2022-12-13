@@ -54,7 +54,7 @@
             <span style="font-size: 14px">外部链接</span>
             <span class="url-icon" ><i class='bx bx-caret-left'></i></span>
             <div class="sub-menu">
-              <div class="sub-item" v-if="this_paper[0].url === null || this_paper[0].url.length === 0">
+              <div class="sub-item" v-if="this_paper[0].url === null || this_paper[0].url === undefined || this_paper[0].url.length === 0">
                 暂无链接
               </div>
               <div class="sub-item" v-for="url in this_paper[0].url">
