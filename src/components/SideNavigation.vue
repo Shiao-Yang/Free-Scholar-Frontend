@@ -39,22 +39,22 @@
             <span>个人中心</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
-          <li class="sub-item">
-            <i class='bx bxs-user-account'></i>
-            <span>账号设置</span>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
+<!--          <li class="sub-item">-->
+<!--            <i class='bx bxs-user-account'></i>-->
+<!--            <span>账号设置</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
           <li class="sub-item" @click="toMessageCenter">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
             <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
             <i class='bx bx-chevron-right right'></i>
           </li>
-          <li class="sub-item">
-            <i class='bx bx-group'></i>
-            <span>我的机构</span>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
+<!--          <li class="sub-item">-->
+<!--            <i class='bx bx-group'></i>-->
+<!--            <span>我的机构</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
           <li class="bottom-bor">
           </li>
           <li class="sub-item log-out" @click="logout">
@@ -172,7 +172,7 @@ export default {
       )
         return 1;
 
-      else if(this.$route.path.startsWith('/search'))
+      else if(this.$route.path.startsWith('/search') || this.$route.path.startsWith('/Search'))
         return 2;
 
       else if(this.$route.path.startsWith('/adminHome'))
@@ -526,7 +526,7 @@ export default {
   position: absolute;
   width: 200px;
   right: -200px;
-  top: -200px;
+  top: -100px;
   color: #333;
   border-radius: 10px;
   z-index: 99;
@@ -545,7 +545,7 @@ export default {
 
 
 .user-box:hover .user-sub-menu {
-  top:-150px;
+  top: -75px;
   right: -210px;
   opacity: 1;
   visibility: visible;
