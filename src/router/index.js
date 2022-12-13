@@ -11,7 +11,7 @@ import messageManage from "@/views/MessageManage";
 import SearchDetails from "@/views/SearchDetails"
 import History from "@/views/History"
 import TransactionCenter from "@/views/TransactionCenter"
-import LoginSignUp from "@/views/Login&SignUp";
+import LoginSignUp from "@/views/LoginSignUp";
 // import admitScholar from "@/views/AdmitScholar";
 
 Vue.use(VueRouter)
@@ -24,11 +24,11 @@ const routes = [
   },
   {
     path: '/login&signup',
-    name: 'login&register',
+    name: 'loginRegister',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Login&SignUp.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/LoginSignUp.vue')
   },
   {
     path: '/about',
@@ -77,7 +77,7 @@ const routes = [
   },
   {
     path: '/home',
-    name: 'home',
+    name: 'userHome',
     component: () => import('../views/Home.vue')
   },
   {
@@ -137,8 +137,8 @@ const routes = [
   },
   {
     path: '/login&signup',
-    name: 'login&signup',
-    component: () => import('../views/Login&SignUp'),
+    name: 'loginsignup',
+    component: () => import('../views/LoginSignUp'),
   },
   {
     path: '/admitScholar',
