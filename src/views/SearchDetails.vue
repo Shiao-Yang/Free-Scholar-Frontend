@@ -1,54 +1,86 @@
 <template>
 
   <div class="background">
+
     <div class="leftup">
-      <div class="title">
+      <div class="title" :title="literature_title">
         {{ literature_title }}
       </div>
       <div class="author">
-        {{ author }}
+        <div class="author-list" >
+          <div class="author-item" v-for="author in authors">
+            <span class="author-name" :title="author.name" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</span>
+          </div>
+        </div>
       </div>
-      <div class="fromwhere">
-        {{ institution }}
-      </div>
+<!--      <div class="fromwhere">-->
+<!--        {{ institution }}-->
+<!--      </div>-->
       <div class="theicons">
-          <span style="margin-right: 50px">
-              <i class='el-icon-download' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">{{ number_of_download }}</span>
-            </span>
-        <span style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
+        <span class="header-icon" style="margin-right: 50px">
+              <i class='bx bxs-like' style="margin-right: 7px" @click="toLikeThisPaper"></i>
               <span style="font-size: 14px">{{ number_of_like }}</span>
             </span>
-        <span style="margin-right: 50px">
-              <i class='el-icon-star-off' style="margin-right: 7px;color: orange"></i>
+        <span class="header-icon" style="margin-right: 50px">
+              <i class='el-icon-star-off' style="margin-right: 7px;color: orange" @click="drawer = true"></i>
               <span style="font-size: 14px">{{ number_of_collect }}</span>
+              <el-drawer
+                  :visible.sync="drawer"
+                  :direction="direction"
+                  :before-close="handleClose">
+                <div style="text-align: left">
+                  <div style="color: black;position: relative;left: 40px;top: -20px">
+                  <h2>选择收藏夹</h2>
+                </div>
+                  <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item >
+                  <el-radio-group v-model="form.index">
+                    <div v-for="(item,index) in List" :key="index" style="margin-bottom: 20px">
+                      <el-radio :label="item.name"></el-radio>
+                    </div>
+                  </el-radio-group>
+                </el-form-item>
+              </el-form>
+                  <div style="position: relative;left: 170px;width: 50px">
+                <el-button type="primary" plain @click="collect">加入收藏夹</el-button>
+              </div>
+                </div>
+              </el-drawer>
             </span>
-        <span style="margin-right: 50px">
+        <span class="header-icon" style="margin-right: 50px">
               <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
               <span style="font-size: 14px">{{ number_of_comment }}</span>
             </span>
-        <span style="margin-right: 50px">
+        <span class="header-icon" :class="{'active': urlActive}" @click="changeUrlActive" style="margin-right: 50px">
             <i class='el-icon-s-promotion' style="margin-right: 7px"></i>
-              <span style="font-size: 14px"><el-link type="primary" :href=out_link_str>外部链接</el-link></span>
-            </span>
+            <span style="font-size: 14px">外部链接</span>
+            <span class="url-icon" ><i class='bx bx-caret-left'></i></span>
+            <div class="sub-menu">
+              <div class="sub-item" v-if="out_link_str === null || out_link_str === undefined || out_link_str.length === 0">
+                暂无链接
+              </div>
+              <div class="sub-item" v-for="url in out_link_str">
+                <a :href="url" :title="url" target="_blank">{{ url }}</a>
+              </div>
+            </div>
+        </span>
       </div>
-      <div class="keywords">
+      <div class="keywordsAndAbstract" >
         关键词：
-        <span style="margin-right: 20px" v-for="item in tags">
-             <el-tag>{{ item.content }}</el-tag>
+        <span style="margin-right: 20px; " v-for="item in tags">
+             <el-tag style="margin-top: 5px; ">{{ item }}</el-tag>
             </span>
-      </div>
-      <div class="abstract">
-        摘要：
-        {{ abstract }}
+        <div class="abstract">
+          摘要：
+          {{ abstract }}
+        </div>
       </div>
     </div>
     <div class="rightup">
-      <img src="../assets/logo.png" class="picture">
-      <div style="position:absolute; z-index:2;font-size: 36px;width: 100%;top:70px;text-align: center">今日访问量</div>
-      <div style="position:absolute; z-index:2;font-size: 36px;width: 100%;top:140px;text-align: center">
-        {{ number_of_today_visit }}
+      <img src="../assets/img/light.jpg" class="picture">
+      <div style="position:absolute; color: white; z-index:2;font-size: 36px;width: 100%;top:70px;text-align: center">累计访问量</div>
+      <div style="position:absolute; color: white; z-index:2;font-size: 60px;width: 100%;top:140px;text-align: center">
+        {{ number_of_read }}
       </div>
     </div>
     <div class="leftdown">
@@ -77,7 +109,7 @@
             </div>
           </div>
         </div>
-        <div v-else>
+        <div v-else style="font-size: 20px;margin-top: 20px">
           暂无评论
         </div>
       </div>
@@ -103,61 +135,56 @@
 </template>
 
 <script>
+import qs from "qs";
+
 export default {
   name: "ScholarsDetails",
   data() {
     return {
+      urlActive: false,
+      form: {
+        index: '',
+      },
+      List: [
+        {
+          "name" : '二分法',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '植物学研究',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '天文学论文合集',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '北美落叶林',
+          "style" : '',
+          "isClick" : 0,
+        }
+      ],
+      drawer: false,
+      direction: 'rtl',
+      this_paper:[],  //this_paper[0]存储着此paper的基本信息
       literature_title: "改进的二分查找法",
-      author: "王ll,朱虹",
+      literature_id:"aa11AA",
+      authors: [],
       institution: "璃月职业技术学院 母猪产后护理系",
       number_of_download: 87,
       number_of_like: 999,
       number_of_collect: 11,
       number_of_comment: 110,
       out_link_str: "http://www.baidu.com",
-      number_of_today_visit: 27,
-      tags: [
-        {
-          content: "计算机科学"
-        }, {
-          content: "母猪"
-        }, {
-          content: "西非文学"
-        }
-      ],
+      number_of_read: 27,
+      tags: [],
       abstract: "你说得对，但是对有序数列的查找算法中二分法查找（binarysearch）是最常用的。" +
           "利用二分法，在含有n个元素的有...之差的最大值的一个上界，" +
           "就可以有比二分法 更加有效的查找方式，文章给出了一个称之为改进的 祝大家翅膀更好",
-      commentList: [
-        {
-          editTime: "22-10-17",
-          userName: "YAN",
-          userAvatarUrl: "img/home/avatar1.jpg",
-          detail: "相见时难别亦难",
-          likeNum: 11
-        },
-        {
-          editTime: "22-10-19",
-          userName: "NNN",
-          userAvatarUrl: "img/home/avatar1.jpg",
-          detail: "东风无力百花残",
-          likeNum: 12
-        },
-        {
-          editTime: "22-10-17",
-          userName: "YAN",
-          userAvatarUrl: "img/home/avatar1.jpg",
-          detail: "相见时iuu难别亦难",
-          likeNum: 12
-        },
-        {
-          editTime: "22-10-19",
-          userName: "NNN",
-          userAvatarUrl: "img/home/avatar1.jpg",
-          detail: "东风无力irk百花残",
-          likeNum: 12
-        }
-      ],
+      commentList: [],
       relevant_recommended_literature: [
         {
           recommended_literature_title: "感觉画质",
@@ -169,8 +196,218 @@ export default {
           recommended_literature_author: "大力为",
           recommended_literature_link_str: ""
         }
-      ]
+      ],
     }
+  },
+  mounted() {
+    this.toGetPaperById();
+  },
+  created() {
+    this.List = [];
+    if(sessionStorage.getItem('baseInfo') === null
+        || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+        || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+      this.$axios({
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
+      })
+    }
+    else{
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
+      })
+    }
+
+  },
+  methods:{
+    handleClose(done) {
+        done();
+    },
+    collect(){
+      var i = 0;
+      for (i = 0;i < this.List.length; i++){
+        if (this.List[i].name === this.form.index)
+          break;
+      }
+      let params = new FormData();
+      params.append("paper_id", this.literature_id);
+      params.append("favorites_id", this.List[i].id);
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/publication/CollectPaper/',
+        data: params,
+      }).then(res =>{
+        if (res.data.message !== undefined)
+          this.$message.success(res.data.message);
+        else
+          this.$message.error(res.data.msg);
+        this.drawer = false;
+      })
+      this.handleClose();
+    },
+    toGetPaperById:function (){
+      const tempthis = this;
+      //tempthis.literature_id = "55d06634696322190568b85f";
+      //这里，实际用的时候是↓
+      tempthis.literature_id = tempthis.$route.params.LiteratureId
+      let formData = new FormData();
+      formData.append('id',tempthis.literature_id)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/getPaperById/',
+        data: formData
+      })
+          .then(res => {
+            tempthis.this_paper[0] = res.data.paper
+            console.log(tempthis.this_paper[0])
+            console.log('authors')
+            console.log(tempthis.this_paper[0].authors)
+            tempthis.toLoadData()
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+    toLoadData:function (){
+      const tempthis = this;
+      //标题
+      tempthis.literature_title = tempthis.this_paper[0].title
+      tempthis.toReadThisPaper(tempthis.literature_id,tempthis.literature_title)
+
+      //作者名字
+      tempthis.authors=tempthis.this_paper[0].authors
+
+      //机构  存疑  目前逻辑是一作的第一个机构，这显然不符合实际
+      //tempthis.institution = tempthis.this_paper[0].authors[0].org.split(",")[0]
+
+      //外部链接
+      tempthis.out_link_str = tempthis.this_paper[0].url
+
+      //关键词
+      for(let i = 0;i<tempthis.this_paper[0].keywords.length;i++){
+        tempthis.tags[i]= tempthis.this_paper[0].keywords[i]
+      }
+
+      //摘要
+      tempthis.abstract = tempthis.this_paper[0].abstract
+    },
+    toReadThisPaper:function (paperId,paperName){
+      const tempthis = this;
+     /* let formData = new FormData();
+      formData.append('paper_id',paperId)
+      formData.append('paper_name',paperName)*/
+      let params = {
+        paper_id:paperId,
+        paper_name:paperName
+      }
+      console.log('params:')
+      console.log(params)
+      if(sessionStorage.getItem('baseInfo') === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+        this.axios({
+          method: 'post',
+          url: 'http://139.9.134.209:8000/api/publication/ReadPaper/',
+          data: params
+          /*   data: formData
+             data: qs.stringify(params)*/
+        })
+            .then(res => {
+              console.log("otherPaperData:")
+              console.log(res)
+              tempthis.this_paper[1]=res.data;
+              tempthis.number_of_like = tempthis.this_paper[1].like_count;
+              tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
+              tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
+              tempthis.number_of_read = tempthis.this_paper[1].read_count;
+            })
+            .catch(err => {
+              console.log(err);
+            })
+      }
+      else {
+        this.axios({
+          headers: {
+            jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+          },
+          method: 'post',
+          url: 'http://139.9.134.209:8000/api/publication/ReadPaper/',
+          data: params
+          /*   data: formData
+             data: qs.stringify(params)*/
+        })
+            .then(res => {
+              console.log("otherPaperData:")
+              console.log(res)
+              tempthis.this_paper[1]=res.data;
+              tempthis.number_of_like = tempthis.this_paper[1].like_count;
+              tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
+              tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
+              tempthis.number_of_read = tempthis.this_paper[1].read_count;
+            })
+            .catch(err => {
+              console.log(err);
+            })
+      }
+    },
+    toLikeThisPaper(){
+      const tempthis = this;
+      let formData = new FormData();
+      formData.append('paper_id',tempthis.literature_id);
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: 'https://139.9.134.209:8000/api/publication/LikePaper/',
+        data: formData
+      })
+          .then(res => {
+            console.log('like:')
+            console.log(res)
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+    changeUrlActive() {
+      this.urlActive = !this.urlActive
+    },
   }
 }
 </script>
@@ -178,57 +415,79 @@ export default {
 <style scoped>
 
 .leftup {
-  position: absolute;
+  position: relative;
+  display: inline-block;
   height: 350px;
-  width: 900px;
+  /*width: 900px;*/
+  width: 72%;
   left: 0;
   right: 0;
-  /*margin: 0 auto;*/
+  margin: 10px;
   background-color: white;
   border-radius: 10px;
-  margin-top: 0px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  /*margin-top: 0px;*/
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
   overflow: auto;
 }
 
 .rightup {
   position: absolute;
   height: 275px;
-  width: 275px;
-  left: 925px;
-  right: 0;
-  /*margin: 0 auto;*/
+  display: inline-block;
+  /*width: 275px;*/
+  width: 24%;
+  margin: 10px;
   background-color: white;
   border-radius: 10px;
-  margin-top: 0px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  /*margin-top: 0px;*/
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);*/
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 
 .leftdown {
-  position: absolute;
+  position: relative;
+  display: inline-block;
   height: 275px;
-  width: 900px;
-  top: 325px;
-  left: 0;
-  right: 0;
+  /*width: 900px;*/
+  width: 72%;
+  /*top: 50px;*/
   background-color: white;
   border-radius: 10px;
-  margin-top: 50px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  margin: 10px;
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);*/
   overflow: auto;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 
 .rightdown {
   position: absolute;
   height: 350px;
-  width: 275px;
-  top: 250px;
-  left: 925px;
-  right: 0;
+  display: inline-block;
+  /*width: 275px;*/
+  width: 24%;
+  margin: 10px;
+  /*left: 925px;*/
+  top: 300px;
   background-color: white;
   border-radius: 10px;
-  margin-top: 50px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  /*margin-top: 50px;*/
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+}
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width:10px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.3);*/
+  border-radius:10px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius:10px;
+  background:rgba(0,0,0,0.1);
+  /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.5);*/
 }
 
 .Image {
@@ -237,7 +496,9 @@ export default {
 }
 
 .background {
-  position: absolute;
+  width: 88%;
+  margin: 0 auto;
+  position: relative;
 }
 
 .cover {
@@ -251,23 +512,32 @@ export default {
 }
 
 .leftup .title {
-  position: absolute;
+  width: 95%;
+  height: 50px;
+  overflow: hidden;
+  margin-top: 20px;
+  margin-left: 20px;
+  /*position: absolute;*/
   font-size: 35px;
   left: 20px;
   top: 20px;
 }
 
 .leftdown .title {
-  position: absolute;
+  position: relative;
   font-size: 35px;
-  left: 20px;
-  top: 20px;
+  /*left: 20px;*/
+  /*top: 20px;*/
+  margin: 20px;
 }
 
 .rightup .picture {
-  position: absolute;
-  height: 275px;
-  width: 275px;
+  position: relative;
+  /*height: 275px;*/
+  /*width: 275px;*/
+  height:100%;
+  width: 100%;
+  border-radius: 10px;
 }
 
 .rightdown .title {
@@ -286,41 +556,43 @@ export default {
 }
 
 .theicons {
-  position: absolute;
   color: #030303;
   font-size: 15px;
-  top: 120px;
-  left: 20px;
+  /*top: 120px;*/
+  margin-left: 20px;
 }
 
-.keywords {
-  position: absolute;
+.keywordsAndAbstract {
+  /*position: absolute;*/
   color: #030303;
   font-size: 15px;
   top: 155px;
-  left: 20px;
+  margin-left: 20px;
 }
 
 .abstract {
-  position: absolute;
+  position: relative;
   color: #030303;
   font-size: 10px;
-  top: 190px;
-  left: 20px;
+  top:10px;
+  text-overflow: ellipsis;
 }
 
 .leftup .author {
-  position: absolute;
+  /*position: absolute;*/
   color: #248F24;
   font-size: 15px;
-  top: 70px;
-  left: 20px;
+  margin-left: 20px;
+  width: 95%;
+  overflow: scroll;
+  /*top: 70px;*/
+  /*left: 20px;*/
 }
 
 .replys {
   font-size: 15px;
   overflow: auto;
-  width: 850px;
+  width: 100%;
 }
 
 .recommendations {
@@ -357,4 +629,92 @@ export default {
 #likeTheComment :hover{
   cursor: pointer
 }
+
+.header-icon {
+  position: relative;
+  height: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s;
+}
+.header-icon:hover {
+  color: #2196f3;
+}
+
+.header-icon .url-icon {
+  display: inline-block;
+  margin-top: 10px;
+  height: 20px;
+  font-size: 16px;
+  line-height: 20px;
+  transition: 0.2s;
+}
+
+.header-icon.active .url-icon {
+  transform: rotate(-90deg);
+}
+
+.header-icon .sub-menu {
+  position: absolute;
+  left: -250px;
+  z-index: 1000;
+  width: 600px;
+  overflow: hidden;
+  text-align: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  transition: 0.3s all ease;
+  opacity: 0;
+  padding: 5px;
+  pointer-events: none;
+
+}
+
+.header-icon.active .sub-menu {
+  margin-top: 10px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.header-icon .sub-menu .sub-item {
+  width: 95%;
+  margin: 10px auto;
+  background-color: transparent;
+  border-radius: 10px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.header-icon .sub-menu .sub-item:hover {
+  background-color: #00B7FC;
+}
+
+.header-icon .sub-menu .sub-item a {
+  color: black;
+  text-decoration: none;
+}
+
+.header-icon .sub-menu .sub-item:hover a {
+  color: white;
+}
+
+.leftup .author-list {
+  width: 100%;
+  line-height: 25px;
+}
+
+.leftup .author-list .author-item {
+  display: inline-block;
+  margin-right: 5px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.leftup .author-list .author-item:hover {
+  color: #248F24;
+  font-weight: bold;
+}
+
 </style>
