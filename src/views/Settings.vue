@@ -118,9 +118,6 @@ export default {
         method: 'post',
         url: this.$store.state.address+'api/publication/ReadPaper/',
         data: para,
-        headers: {
-          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-        },
       })
           .then(res=>{
             console.log('readPaper:')
