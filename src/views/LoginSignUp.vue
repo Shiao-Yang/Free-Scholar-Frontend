@@ -70,7 +70,7 @@
 
 <script>
 export default {
-  name: "Login&SignUp",
+  name: "LoginSignUp",
   data (){
     return {
       loginMode: true,
