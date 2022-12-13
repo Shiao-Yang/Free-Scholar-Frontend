@@ -39,27 +39,31 @@
             <span>个人中心</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
-<!--          <li class="sub-item">-->
-<!--            <i class='bx bxs-user-account'></i>-->
-<!--            <span>账号设置</span>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
           <li class="sub-item" @click="toMessageCenter">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
             <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
             <i class='bx bx-chevron-right right'></i>
           </li>
-<!--          <li class="sub-item">-->
-<!--            <i class='bx bx-group'></i>-->
-<!--            <span>我的机构</span>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
           <li class="bottom-bor">
           </li>
           <li class="sub-item log-out" @click="logout">
             <i class='bx bx-log-out-circle'></i>
             <span>退出登录</span>
+            <i class='bx bx-chevron-right right'></i>
+          </li>
+        </ul>
+      </li>
+      <li class="side-navigation-item user-box" v-else>
+        <router-link to="#" :style="{'--clr':userStateClr}">
+          <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
+          <span class="icon avatar"><i class='bx bxs-user'></i></span>
+          <span class="text">{{ baseInfo.username }}</span>
+        </router-link>
+        <ul class="user-sub-menu sub-menu-admin">
+          <li class="sub-item log-in" @click="login">
+            <i class='bx bx-log-in-circle'></i>
+            <span>登录/注册</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
         </ul>
@@ -102,47 +106,12 @@
           <span class="text">事务中心</span>
         </router-link>
       </li>
-<!--      <li class="side-navigation-item" v-on:click="activeLink(8)" :class="{'active': activeIndex === 8}" v-if="isLogin">-->
-<!--        <router-link :to="{path: '/collectionCover'}" style="&#45;&#45;clr:#ffa117;" title="收藏夹">-->
-<!--          <span class="icon"><i class='bx bxs-star' ></i></span>-->
-<!--          <span class="text">收藏夹</span>-->
-<!--        </router-link>-->
-<!--      </li>-->
-<!--      <li class="side-navigation-item" v-on:click="activeLink(9)" :class="{'active': activeIndex === 9}" v-if="isLogin">-->
-<!--        <router-link :to="{path: '/history'}" style="&#45;&#45;clr:#2196f3;" title="历史记录">-->
-<!--          <span class="icon"><i class='bx bx-history'></i></span>-->
-<!--          <span class="text">历史记录</span>-->
-<!--        </router-link>-->
-<!--      </li>-->
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" style="--clr: #0fc70f">
           <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
           <span class="text">{{baseInfo.username}}</span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
-<!--          <li class="sub-item" @click="toHome">-->
-<!--            <i class='bx bx-user'></i>-->
-<!--            <span>个人中心</span>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
-<!--          <li class="sub-item">-->
-<!--            <i class='bx bxs-user-account'></i>-->
-<!--            <span>账号设置</span>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
-<!--          <li class="sub-item" @click="toMessageCenter">-->
-<!--            <i class='bx bx-message-rounded'></i>-->
-<!--            <span>消息中心</span>-->
-<!--            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
-<!--          <li class="sub-item">-->
-<!--            <i class='bx bx-group'></i>-->
-<!--            <span>我的机构</span>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
-<!--          <li class="bottom-bor">-->
-<!--          </li>-->
           <li class="sub-item log-out" @click="logout">
             <i class='bx bx-log-out-circle'></i>
             <span>退出登录</span>
@@ -219,10 +188,28 @@ export default {
         return '#f44336';
       else
         return '#0fc70f';
+    },
+  },
+  watch: {
+    baseInfo : {
+      handler(newVal, oldVal) {
+        if(newVal !== null
+            && newVal !== undefined
+            && newVal.uid !== null
+            && newVal.uid !== undefined) {
+          this.getMsgRec(newVal.uid, 0);
+        }
+
+      },
+      deep: true,
     }
   },
-
   methods: {
+    login() {
+      this.$router.push({
+        path: '/login&signup'
+      })
+    },
     logout() {
       let baseInfo = JSON.parse(sessionStorage.getItem('baseInfo'))
       let token = baseInfo.token;
@@ -281,7 +268,6 @@ export default {
 
     getMsgRec(uid, type) { //type=0,初始化时的调用
       let that = this;
-
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -367,14 +353,14 @@ export default {
   },
 
   created() {
-    this.getMsgRec(this.uid, 0);
+    // this.getMsgRec(this.uid, 0);
   },
   mounted() {
-    this.getMsgPlm(this.uid);
-    console.log(this.msg_plm_has_new)
-    console.log(this.msg_rec_has_new)
-    this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
-    console.log(this.dis_msg_list)
+    // this.getMsgPlm(this.uid);
+    // console.log(this.msg_plm_has_new)
+    // console.log(this.msg_rec_has_new)
+    // this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    // console.log(this.dis_msg_list)
   },
 }
 </script>
@@ -717,6 +703,12 @@ export default {
 .user-box .user-sub-menu .log-out:hover{
   border-radius: 10px;
   background-color: #ed5a65;
+  color: #fff;
+}
+
+.user-box .user-sub-menu .log-in:hover {
+  border-radius: 10px;
+  background-color: #00E6B8;
   color: #fff;
 }
 </style>
