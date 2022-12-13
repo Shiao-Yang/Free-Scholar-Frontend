@@ -17,6 +17,7 @@
   left:115px;
   transition: 0.5s;
   margin-top: 20px;
+  font-family: "Poppins", sans-serif;
 }
 
 .app-container.login {

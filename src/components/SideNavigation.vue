@@ -30,8 +30,15 @@
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
           <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
-          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
-          <span class="text">{{ baseInfo.username }}</span>
+          <span class="icon avatar">
+            <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
+                 v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
+            <i title="头像错误" class='bx bxs-user' v-else></i>
+          </span>
+          <span class="text">
+            <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
+            <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
+          </span>
         </router-link>
         <ul class="user-sub-menu" @click="toHome">
           <li class="sub-item">
@@ -56,9 +63,8 @@
       </li>
       <li class="side-navigation-item user-box" v-else>
         <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
           <span class="icon avatar"><i class='bx bxs-user'></i></span>
-          <span class="text">{{ baseInfo.username }}</span>
+          <span class="text">游客</span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
           <li class="sub-item log-in" @click="login">
@@ -108,12 +114,19 @@
       </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" style="--clr: #0fc70f">
-          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
-          <span class="text">{{baseInfo.username}}</span>
+          <span class="icon avatar">
+            <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
+                 v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
+            <i title="头像错误" class='bx bx-log-in-circle' v-else></i>
+          </span>
+          <span class="text">
+            <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
+            <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
+          </span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
           <li class="sub-item log-out" @click="logout">
-            <i class='bx bx-log-out-circle'></i>
+            <i class='bx bxs-user'></i>
             <span>退出登录</span>
             <i class='bx bx-chevron-right right'></i>
           </li>

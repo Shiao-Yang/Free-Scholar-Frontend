@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import cryptoJSObj from  '@/assets/js/cryp.js'
+import md5 from 'js-md5';
 
 export default {
   name: "LoginSignUp",
@@ -87,18 +87,12 @@ export default {
   methods: {
     login() {
       let that = this;
-      that.login_password = cryptoJSObj.encryptFunc(this.login_password)
+      let pwd;
+      // pwd = md5(this.login_password)
 
       let param = new FormData();
       console.log(this.login_username)
-      console.log(this.login_password)
-
-      // let encrypt = CryptoJS.AES.encrypt(message, CryptoJS.enc.Utf8.parse(this.login_password), {
-      //   mode: CryptoJS.mode.ECB,
-      //   padding: CryptoJS.pad.Pkcs7,
-      // }).toString();
-      // console.log(encrypt);
-
+      console.log(pwd)
       param.append('username', this.login_username);
       param.append('password', this.login_password);
 
@@ -149,6 +143,10 @@ export default {
     },
     register() {
       let param = new FormData();
+      let pwd1, pwd2;
+      // pwd1 = md5(this.register_password1)
+      // pwd2 = md5(this.register_password2)
+
       console.log(this.register_username)
       console.log(this.register_mail)
       console.log(this.register_password1)

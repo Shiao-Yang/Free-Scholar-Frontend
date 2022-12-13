@@ -17,7 +17,7 @@ export default new Vuex.Store({
     url: 'http://139.9.134.209:8000/media/avatars/',
     input: '',
     msg_plm_has_new: 0,
-    msg_rec_has_new: 1,
+    msg_rec_has_new: 0,
   },
   getters: {
   },
