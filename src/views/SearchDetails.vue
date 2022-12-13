@@ -18,8 +18,28 @@
               <span style="font-size: 14px">{{ number_of_like }}</span>
             </span>
         <span class="header-icon" style="margin-right: 50px">
-              <i class='el-icon-star-off' style="margin-right: 7px;color: orange"></i>
+              <i class='el-icon-star-off' style="margin-right: 7px;color: orange" @click="drawer = true"></i>
               <span style="font-size: 14px">{{ number_of_collect }}</span>
+              <el-drawer
+                  :visible.sync="drawer"
+                  :direction="direction"
+                  :before-close="handleClose">
+                <div style="color: black;position: relative;left: 40px;top: -20px">
+                  <h2>选择收藏夹</h2>
+                </div>
+              <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item >
+                  <el-radio-group v-model="form.index">
+                    <div v-for="(item,index) in List" :key="index" style="margin-bottom: 20px">
+                      <el-radio :label="item.name"></el-radio>
+                    </div>
+                  </el-radio-group>
+                </el-form-item>
+              </el-form>
+              <div style="position: relative;left: 170px;width: 50px">
+                <el-button type="primary" plain @click="collect">加入收藏夹</el-button>
+              </div>
+              </el-drawer>
             </span>
         <span class="header-icon" style="margin-right: 50px">
               <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
@@ -107,6 +127,33 @@ export default {
   name: "ScholarsDetails",
   data() {
     return {
+      form: {
+        index: '',
+      },
+      List: [
+        {
+          "name" : '二分法',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '植物学研究',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '天文学论文合集',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '北美落叶林',
+          "style" : '',
+          "isClick" : 0,
+        }
+      ],
+      drawer: false,
+      direction: 'rtl',
       this_paper:[],  //this_paper[0]存储着此paper的基本信息
       literature_title: "改进的二分查找法",
       literature_id:"aa11AA",
@@ -140,7 +187,59 @@ export default {
   mounted() {
     this.toGetPaperById();
   },
+  created() {
+    this.List = [];
+    this.$axios({
+      headers: {
+        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+      },
+      method: 'get',
+      url: this.$store.state.address+'api/relation/getFavorites',
+      data: '1',
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.List.push({
+          id : res.data[i].id,
+          name : res.data[i].title,
+          avatar : res.data[i].avatar,
+          count : res.data[i].count,
+          date : res.data[i].time,
+          isClick: 0,
+          style: ''
+        })
+      }
+    })
+  },
   methods:{
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+    },
+    collect(){
+      var i = 0;
+      for (i = 0;i < this.List.length; i++){
+        if (this.List[i].name === this.form.index)
+          break;
+      }
+      let params = new FormData();
+      params.append("paper_id", this.literature_id);
+      params.append("favorites_id", this.List[i].id);
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/publication/CollectPaper/',
+        data: params,
+      }).then(res =>{
+        window.alert(res.data.message);
+        console.log(res);
+      })
+    },
     toGetPaperById:function (){
       const tempthis = this;
       //tempthis.literature_id = "55d06634696322190568b85f";
@@ -225,7 +324,7 @@ export default {
     toLikeThisPaper(){
       const tempthis = this;
       let formData = new FormData();
-      formData.append('paper_id',tempthis.literature_id)
+      formData.append('paper_id',tempthis.literature_id);
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
