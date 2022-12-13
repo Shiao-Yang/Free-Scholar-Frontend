@@ -57,10 +57,15 @@
               <span class="header-icon"><i class='bx bxs-hot'></i></span>
               <span class="header-text">热词统计</span>
             </div>
+            <div class="dashboard-header-btn" :class="{'active': chartType === 3}" @click="changeChartType(3)">
+              <span class="header-icon"><i class='bx bxs-dashboard' ></i></span>
+              <span class="header-text">任务统计</span>
+            </div>
           </div>
           <div class="main-chart-box">
             <div ref="userChart" class="chart-item" v-show="chartType === 1"></div>
             <div ref="hotChart" class="chart-item" v-show="chartType === 2"></div>
+            <div ref="taskChart" class="chart-item" v-show="chartType === 3"></div>
           </div>
         </div>
 <!--        <img src="../assets/img/adminHome/data.jpg">-->
@@ -105,6 +110,8 @@
 
 <script>
 const echarts = require('echarts')
+const format = require('date-fns/format')
+const subDays = require('date-fns/subDays')
 export default {
   name: 'AdminHome',
   created() {
@@ -121,6 +128,7 @@ export default {
       this.screenWidth = document.documentElement.clientWidth;
     })
     this.initCharts();
+    this.changeChartType(1)
   },
   data() {
     return {
@@ -177,10 +185,13 @@ export default {
           }
         ]
       },
+      adminNum: 0,
+      userNum: 0,
+      scholarNum: 0,
       hotChart: null,
       hotChartOption: {
         title: {
-          text: '热词搜索统计图',
+          text: '热词搜索频率统计图',
           left: 'center',
         },
         xAxis: {
@@ -191,6 +202,33 @@ export default {
           {
             type: 'bar',
             data: [78, 63, 55, 44, 32, 28, 25]
+          }
+        ]
+      },
+      taskChart: null,
+      taskChartOption: {
+        title: {
+          text: '七天工作状态统计图',
+          left: 'center',
+        },
+        xAxis: {
+          data: ['2022/12/7', '2022/12/8', '2022/12/9',
+                  '2022/12/10', '2022/12/11', '2022/12/12',
+                  '2022/12/13',
+          ],
+        },
+        yAxis: {},
+        series: [
+          {
+            data: [10, 5, 3, 8, 3, 16, 25],
+            type: 'line',
+            label: {
+              show: true,
+              position: 'bottom',
+              textStyle: {
+                fontSize: 20
+              }
+            }
           }
         ]
       }
@@ -310,8 +348,31 @@ export default {
             }
           })
     },
+    getNum(userOption) {
+      this.axios( {
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getNum',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res => {
+            console.log(res.data)
+            userOption.series[0].data = [
+              { value: res.data.scholarNum, name: '认证学者' },
+              { value: res.data.userNum, name: '普通用户' },
+              { value: res.data.adminNum, name: '管理员' },
+            ]
+            this.userChart.setOption(userOption)
+            this.adminNum = res.data.adminNum
+            this.scholarNum = res.data.scholarNum
+            this.userNum = res.data.userNum
+          })
+    },
     changeChartType(index) {
       let self = this
+      if(index === this.chartType)
+        return ;
       this.chartType = index;
       switch (index) {
         case 1:
@@ -322,29 +383,35 @@ export default {
           setTimeout(function (){
             self.hotChart.resize();
           }, 10)
+        case 3:
+          setTimeout(function (){
+            self.taskChart.resize();
+          }, 10)
       }
     },
     initCharts() {
       this.userChart = echarts.init(this.$refs.userChart);
       this.hotChart = echarts.init(this.$refs.hotChart);
+      this.taskChart = echarts.init(this.$refs.taskChart)
+      this.getNum()
       window.addEventListener("resize", ()=> {
         this.userChart.resize()
         this.hotChart.resize()
+        this.taskChart.resize()
       });
       this.setOptions();
     },
     setOptions() {
       let userOption = this.userChartOption;
       let hotOption = this.hotChartOption;
-      userOption.series[0].data = [
-        { value: 23, name: '认证学者' },
-        { value: 23, name: '普通用户' },
-        { value: 100, name: '管理员' },
-      ]
+      let taskOption = this.taskChartOption
+      this.getNum(userOption);
       hotOption.xAxis.data = ['人工智能', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
       hotOption.series[0].data = [99, 63, 55, 44, 32, 28, 25];
-      this.userChart.setOption(userOption)
       this.hotChart.setOption(hotOption)
+      this.hotChartOption = hotOption
+      this.taskChart.setOption(taskOption)
+      this.taskChartOption = taskOption
     }
   },
   watch: {
