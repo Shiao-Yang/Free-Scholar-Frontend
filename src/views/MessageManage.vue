@@ -45,7 +45,7 @@
         </span>
         </div>
       </div>
-      <div class="divider-y"></div>
+<!--      <div class="divider-y"></div>-->
       <div class="sender-box">
         <div class="sender" v-for="(item, index) in dis_msg_list" :key="index" v-if="!showContent" @click="openMessage(item.mid, index)">
           <span class="image">
@@ -775,7 +775,7 @@ export default {
   margin: 20px auto;
   height: 730px;
   width: 100%;
-  min-width: 1300px;
+  /*min-width: 1300px;*/
   border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
@@ -795,11 +795,12 @@ export default {
   display: inline-block;
   /*background-color: #0fc70f;*/
   position: relative;
-  height: 580px;
+  height: 655px;
   width: 20%;
-  min-width: 300px;
+  border-right: 1px solid #d4d4d4;
+  /*min-width: 300px;*/
   overflow: hidden;
-  margin-left: 10px;
+  padding: 10px;
 }
 
 .source-box:hover {
@@ -1036,7 +1037,6 @@ export default {
   position: absolute;
   top: 15px;
   right: 10px;
-  width: 150px;
 }
 
 .divider-y {
