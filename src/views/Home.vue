@@ -100,8 +100,8 @@
         </div>
         <div class="source-item" :class="{'active' : isActive2}" @click="toNS" v-if="baseInfo.author_id !== null">
           <span class="image">
-<!--            <img src="../assets/img/home/avatar.png">-->
-            <i class='bx bx-user-circle'></i>
+            <img src="../assets/img/home/scholar-home.png">
+<!--            <i class='bx bx-user-circle'></i>-->
           </span>
           <span class="name">
             学者门户
