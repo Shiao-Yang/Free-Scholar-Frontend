@@ -174,7 +174,10 @@ export default {
         url: this.$store.state.address+'api/relation/newFavorites',
         data: params,
       }).then(res =>{
-        this.$message.success(res.data.msg);
+        if(res.data.error === 0)
+          this.$message.success('创建成功');
+        else
+          this.$message.error(res.data.msg);
       })
       this.form.title = '';
       this.visible = false;

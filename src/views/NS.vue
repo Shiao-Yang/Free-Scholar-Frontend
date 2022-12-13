@@ -17,7 +17,7 @@
                         <i class="bx bxs-user-plus"></i>
                         <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">已关注</div>
                     </div>
-                  <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer" title="立即认领">
+                  <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer" title="立即认领" @click="toAdmitScholar">
                     <i class="bx bxs-award"></i>
                     <div class="cl" style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;" >未认领</div>
                   </a>
@@ -261,6 +261,16 @@
 
             },
 
+          toAdmitScholar() {
+            this.$router.push({
+              path: '/admitScholar',
+              query: {
+                author_id: this.uid,
+                scholar_id: this.baseInfo.scholar_id,
+              }
+            })
+          },
+
           sendMsg() {
             console.log(this.msg_send);
             if(this.msg_send.content === '') {
@@ -314,7 +324,7 @@
         },
         created() {
             // console.log(this.$route.query.id)
-            this.uid = this.$route.query.author_id;
+            this.uid = this.$route.query.id;
             // this.user_id = this.$route.query.user_id;
             // this.scholar_id = this.$route.query.scholar_id;
             console.log(this.uid)
