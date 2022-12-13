@@ -2,7 +2,7 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="require('../assets/' + baseInfo.avatar)">
+        <img :src="this.$store.state.url+baseInfo.avatar">
       </div>
       <div class="profile">
         <ul class="profile-list">
@@ -21,8 +21,8 @@
         </ul>
       </div>
       <div class="social-info">
-        <div class="social-info-item">
-          <div class="title" @click="toFollowList">
+        <div class="social-info-item" @click="toFollowList">
+          <div class="title">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i class='bx bxs-user-plus' ></i></span>
             <span class="text" style="position: relative; top: -6px;">关注</span>
           </div>
@@ -268,7 +268,7 @@
         </div>
         <div class="show-box" v-if="isActive3">
           <div class="user-avatar">
-            <img :src="require('../assets/' + baseInfo.avatar)">
+            <img :src="this.$store.state.url+baseInfo.avatar">
           </div>
           <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; left: 50px; bottom: 10px;" @click="changeAvatarVisible = true">更换头像</el-button>
           <el-dialog
@@ -281,7 +281,7 @@
               </span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="changeAvatarVisible = false">取 消 上 传</el-button>
-                <el-button type="primary" @click="toChangeAvatar(uid)">确 定 上 传</el-button>
+                <el-button type="primary" @click="toChangeAvatar(uid); changePwdVisible = false">确 定 上 传</el-button>
               </span>
           </el-dialog>
         </div>
@@ -353,7 +353,7 @@ export default {
   methods: {
     toFollowerList() {
       let that = this;
-      that.$router.push('/followList');
+      that.$router.push('/followerList');
     },
     toFollowList() {
       let that = this;
@@ -392,7 +392,7 @@ export default {
       console.log(param)
       this.axios({
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/changePwd',
@@ -428,7 +428,7 @@ export default {
       }
     },
     toChangeAvatar(){
-      this.changeAvatarVissible = false;
+      this.changeAvatarVisible = false;
       const tempthis = this;
       let fileToUpload = this.$refs.pic.files[0];
       //console.log(fileToUpload)
@@ -443,38 +443,40 @@ export default {
 
       this.axios({
         method: 'post',
-        url: 'http://139.9.134.209:8000/api/relation/editInfo/aaa',
+        url: 'http://139.9.134.209:8000/api/relation/set_avatar/',
         data: param,
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       })
-          .then(res => {
-            console.log(res.data)
-            if(res.data.errno===0) {
-              tempthis.$message({
-                type: 'success',
-                showClose: true,
-                message: "头像上传成功",
-              })
-            }
-            else {
-              if(res.data.errno===0) {
-                tempthis.$message({
-                  type: 'success',
-                  showClose: true,
-                  // message: "res.data.msg",
-                  message: "头像上传失败",
-                })
-              }
-            }
-            tempthis.getBaseInfo(tempthis.uid);
-            console.log(this.baseInfo)
+      .then(res => {
+        console.log(res.data)
+        if(res.data.errno===0) {
+          tempthis.$message({
+            type: 'success',
+            showClose: true,
+            message: "头像上传成功",
+          })
+        }
+        else {
+          if(res.data.errno===0) {
+            tempthis.$message({
+              type: 'success',
+              showClose: true,
+              // message: "res.data.msg",
+              message: "头像上传失败",
+            })
+          }
+        }
+        // this.changeAvatarVissible = false;
+        tempthis.getBaseInfo(tempthis.uid);
+        this.$refs.pic.files[0] = null;
+        console.log(this.baseInfo)
 
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      })
+      .catch(err => {
+        console.log(err);
+      })
 
     },
     changeInfo(uid) {
@@ -496,7 +498,7 @@ export default {
       console.log(param)
       this.axios({
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
         method: 'post',
         url: 'http://139.9.134.209:8000/api/relation/editInfo',
@@ -541,11 +543,12 @@ export default {
       }
     },
     getBaseInfo(uid) {
+      // let token = JSON.parse(sessionStorage.getItem('baseInfo')).token
       this.axios({
         method: 'get',
-        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo?user_id=' + uid,
+        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo',
         headers: {
-          jwt: this.$store.state.token,
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       })
       .then(res => {
@@ -660,7 +663,7 @@ export default {
 }
 
 .social-info .social-info-item:hover {
-  color: #2196f3;
+  color: #009EFA;
 }
 
 .social-info .social-info-item .title {

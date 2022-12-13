@@ -2,7 +2,7 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="require('../assets/' + baseInfo.avatar)">
+        <img :src="this.$store.state.url+baseInfo.avatar">
       </div>
       <div class="profile">
         <ul class="profile-list">
