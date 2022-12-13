@@ -4,7 +4,7 @@
       <el-steps :active="currentStep" align-center finish-status="success">
         <el-step :title="status1" icon="el-icon-edit" description="填写验证信息" ></el-step>
         <el-step :title="status2" icon="el-icon-s-promotion" description="验证身份"></el-step>
-        <el-step :title="status3" icon="el-icon-circle-check" description="验证完成"></el-step>
+        <el-step :title="status3" icon="el-icon-circle-check" description="成功发送申请"></el-step>
       </el-steps>
     </div>
     <div class="main-container">
@@ -36,6 +36,11 @@
             <div class="input-item">
               <span class="input-label">验证码</span>
               <input class="input-box" type="text" v-model="verifyCode">
+              <span>
+                <el-button :loading="loading" :class="{'disabled-style':getCodeBtnDisable}" :disabled="getCodeBtnDisable" type="primary" style="width: 120px; height:30px;text-align: center; position: relative; left: 20px;" @click="submitInfo">
+                  {{codeBtnWord}}
+                </el-button>
+              </span>
             </div>
           </div>
         </div>
@@ -72,6 +77,17 @@ export default {
       name: '',
       e_mail: '',
       verifyCode: '',
+      author_id: 'a',
+      number: 60,
+      time: null,
+      getCodeBtnDisable: false,
+      // loading: true,
+      codeBtnWord: '获取验证码', // 获取验证码按钮文字
+      waitTime: 61, // 获取验证码按钮失效时间
+      phone: {
+        phone: '',
+        code: ''
+      },
     }
   },
   computed : {
@@ -102,19 +118,56 @@ export default {
     }
   },
   methods : {
+    phoneTimer() {
+      const that = this
+      that.waitTime--
+      that.getCodeBtnDisable = true
+      this.codeBtnWord = `${this.waitTime}s 后重新获取`
+      console.log('获取时间的值2：' + this.waitTime)
+      const timer = setInterval(function() {
+        if (that.waitTime > 1) {
+          that.waitTime--
+          that.codeBtnWord = `${that.waitTime}s 后重新获取`
+          // this.loading = true;
+        } else {
+          clearInterval(timer)
+          that.codeBtnWord = '获取验证码'
+          that.getCodeBtnDisable = false
+          that.waitTime = 61
+          // this.loading = false;
+        }
+      }, 1000)
+    },
+
     submitInfo() {
       let self = this;
-      let formdata = new FormData;
+      let formdata = new FormData();
       formdata.append("email", self.e_mail)
       this.axios( {
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
         method: "POST",
-        url: self.$store.state.address+"api/user/sendEmail/",
+        url: self.$store.state.address+"api/user/admitScholar/",
         data: formdata,
       }).then(res => {
         console.log(res.data)
         if(res.data.result === 1) {
-          console.log("成功发送邮件")
+          // console.log("成功发送邮件")
+          this.$message({
+            message: '成功发送邮件',
+            showClose: true,
+            type: 'success',
+          })
           this.currentStep = 1;
+          this.phoneTimer();
+        }
+        else {
+          this.$message({
+            message: res.data.msg,
+            showClose: true,
+            type: 'error',
+          })
         }
       }).catch(err => {
         console.log(err)
@@ -125,20 +178,85 @@ export default {
       let formdata = new FormData
       formdata.append("code", self.verifyCode)
       this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
         method: "POST",
         url: self.$store.state.address+"api/user/checkCode/",
         data: formdata,
       }).then(res => {
         console.log(res.data)
         if(res.data.error === 1) {
-          console.log("验证码错误")
+          this.$message({
+            message: '验证码错误',
+            showClose: true,
+            type: 'error',
+          })
         }
         else {
+          this.$message({
+            message: '验证码正确',
+            showClose: true,
+            type: 'success',
+          })
           this.currentStep = 3;
         }
       })
     },
+
+
+
+    start() {
+      this.time=setInterval(function(){
+        this.number--;
+      },1000)
+      if(this.number === 0) {
+        clearInterval(this.time)
+      }
+    },
+
+    stop() {
+      // if(this.time === 0) {
+      //   clearInterval(this.time)
+      // }
+    },
+
+    admitScholar() {
+      let self = this
+      let formdata = new FormData
+      formdata.append("name", self.name)
+      formdata.append("email", self.e_mail)
+      formdata.append("author_id", self.author_id)
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: "POST",
+        url: self.$store.state.address+"api/user/admitScholar/",
+        data: formdata,
+      }).then(res => {
+        console.log(res.data)
+        if(res.data.error === 0) {
+          this.$message({
+            message: '申请成功',
+            showClose: true,
+            type: 'success',
+          })
+        }
+        else {
+          this.$message({
+            message: res.data.msg,
+            showClose: true,
+            type: 'error',
+          })
+        }
+      })
+    },
   },
+
+  created() {
+    this.author_id = $route.author_id;
+  }
 }
 </script>
 
@@ -155,10 +273,11 @@ export default {
 
 .step-box {
   width: 100%;
-  margin-top: 50px;
+  margin-top: 150px;
 }
 
 .main-container {
+  margin-top: 100px;
   width: 100%;
 }
 
@@ -209,7 +328,9 @@ export default {
 }
 
 .option-btn {
-  width: 100px;
+  /*border: solid red;*/
+  width: 120px;
+  height: 40px;
   margin-right: 40px;
 }
 
