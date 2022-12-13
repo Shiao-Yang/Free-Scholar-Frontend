@@ -86,10 +86,14 @@
         <div class="CollectionItems">
           <div class="CollectionItem" v-for="(item,index) in favorites" :key="index">
             <div class="itemTitle">
-              {{favorites[index].title}}<span style="float: right" @click="deletefrom(item.id)"><i class="el-icon-delete"></i></span>
+              <router-link :to="'SearchDetails/'+item.id" class="a">{{favorites[index].title}}</router-link><span style="float: right" @click="deletefrom(item.id)"><i class="el-icon-delete"></i></span>
             </div>
             <div class="author">
-              {{favorites[index].author}}
+              <span v-for="(item,index1) in favorites[index].authors" :key="index1" style="margin-right: 8px;">
+                <router-link :to="'NS?id='+item.id" style=" color: #248F24;font-weight :bold;font-size: 10px">
+                  {{favorites[index].authors[index1].name}}
+                </router-link>
+              </span>
             </div>
             <div class="introductions">
               {{favorites[index].introduction | ellipsis}}
@@ -128,28 +132,7 @@ export default {
       activeMenu1: false,
       activeMenu2: false,
       // favorites: [],
-      favorites : [
-        {
-          "title": '改进的二分法查找',
-          "author": '王嗨涛，朱虹-计算机工程，2006-cqvip.com',
-          "introduction": '...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法\n' +
-              '              更加有效的查找方式，文章给出了一个称之为改进的...',
-          "like": 53,
-          "collect": 43,
-          "comment" : 10,
-          "times": 20,
-        },
-        {
-          "title": '改进的二分法查找',
-          "author": '王嗨涛，朱虹-计算机工程，2006-cqvip.com',
-          "introduction": '...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法\n' +
-              '              更加有效的查找方式，文章给出了一个称之为改进的...',
-          "like": 53,
-          "collect": 43,
-          "comment" : 10,
-          "times": 20,
-        },
-      ],
+      favorites : [],
       form :{
         title : '',
       },
@@ -160,72 +143,9 @@ export default {
       visible1 : false,
       activeNames: [],
       NewStyle: '',
-      List: [
-        {
-          "name" : '二分法',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '植物学研究',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '天文学论文合集',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '北美落叶林',
-          "style" : '',
-          "isClick" : 0,
-        }
-        ],
-      List1: [
-        {
-          "name" : '二分法',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '植物学研究',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '天文学论文合集',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '北美落叶林',
-          "style" : '',
-          "isClick" : 0,
-        }
-      ],
-      List2: [
-        {
-          "name" : '二分法',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '植物学研究',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '天文学论文合集',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '北美落叶林',
-          "style" : '',
-          "isClick" : 0,
-        }
-      ],
+      List: [],
+      List1: [],
+      List2: [],
     };
   },
   created() {
@@ -413,12 +333,11 @@ export default {
             title: res.data[i].paper._source.title,
             id: res.data[i].paper._source.id,
             authors: res.data[i].paper._source.authors,
-            author: res.data[i].paper._source.authors[0].name +  res.data[i].paper._source.authors[0].org,
             introduction: res.data[i].paper._source.abstract,
             like: res.data[i].like_count,
             collect: res.data[i].collect_count,
-            "comment" : 10,
-            times: res.data[i].read_count,
+            "comment" : 1,
+            times: res.data[i].paper._source.n_citation,
           })
         }
       }).catch(err => {
@@ -601,6 +520,14 @@ export default {
 </script>
 
 <style scoped>
+
+author-name {
+
+}
+a {
+  text-decoration: none;
+  color: #4DA5FF;
+}
 ul {
   list-style: none;
 }
