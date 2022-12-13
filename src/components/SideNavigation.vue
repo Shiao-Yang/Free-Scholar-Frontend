@@ -35,7 +35,10 @@
                  v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
             <img alt="头像" src="../assets/img/home/avatar.png" v-else>
           </span>
-          <span class="text">{{ baseInfo.username }}</span>
+          <span class="text">
+            <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
+            <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
+          </span>
         </router-link>
         <ul class="user-sub-menu">
           <li class="sub-item" @click="toHome">
@@ -116,7 +119,10 @@
                  v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
             <img alt="头像" src="../assets/img/home/avatar.png" v-else>
           </span>
-          <span class="text">{{baseInfo.username}}</span>
+          <span class="text">
+            <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
+            <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
+          </span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
           <li class="sub-item log-out" @click="logout">
