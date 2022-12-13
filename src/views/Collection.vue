@@ -173,7 +173,10 @@ export default {
             isClick: 1,
             style: ''
           })
-          this.showFavorites(i)
+          if (this.List.length >= 0){
+            this.nowCollectionid = this.List[0].id;
+          }
+          this.showFavorites(i);
         }
         else {
           this.List.push({
@@ -305,7 +308,6 @@ export default {
         data: params,
       }).then(res =>{
         this.$message.success(res.data.message);
-        this.getCollections();
         this.showFavorites(this.nowlistid);
       })
     },
