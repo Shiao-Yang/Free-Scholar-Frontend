@@ -401,7 +401,6 @@ export default {
   position: relative;
   width: 20%;
   min-width: 250px;
-  padding: 10px;
   margin: 100px 0 0 20px;
 }
 .register-login {
