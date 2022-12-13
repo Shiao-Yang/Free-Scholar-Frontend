@@ -410,6 +410,8 @@
           },
 
           sendMsg() {
+            this.msg_send.owner_id = this.baseInfo.user_id
+
             console.log(this.msg_send);
             if(this.msg_send.content === '') {
               this.$message({

@@ -673,9 +673,9 @@ export default {
             // if(this.showContent) {
             //   this.changeShowContent();
             // }
-            if(type === 0) {
-              this.dis_msg_list = this.msg_plm_list;
-            }
+            // if(type === 0) {
+            //   this.dis_msg_list = this.msg_plm_list;
+            // }
           })
           .catch(err => {
             console.log(err);
