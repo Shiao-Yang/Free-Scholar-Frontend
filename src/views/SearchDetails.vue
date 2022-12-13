@@ -8,7 +8,7 @@
       </div>
       <div class="author">
         <div class="author-list" >
-          <div class="author-item" v-for="author in this_paper[0].authors">
+          <div class="author-item" v-for="author in authors">
             <span class="author-name" :title="author.name" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</span>
           </div>
         </div>
@@ -56,10 +56,10 @@
             <span style="font-size: 14px">外部链接</span>
             <span class="url-icon" ><i class='bx bx-caret-left'></i></span>
             <div class="sub-menu">
-              <div class="sub-item" v-if="this_paper[0].url === null || this_paper[0].url === undefined || this_paper[0].url.length === 0">
+              <div class="sub-item" v-if="out_link_str === null || out_link_str === undefined || out_link_str.length === 0">
                 暂无链接
               </div>
-              <div class="sub-item" v-for="url in this_paper[0].url">
+              <div class="sub-item" v-for="url in out_link_str">
                 <a :href="url" :title="url" target="_blank">{{ url }}</a>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default {
       this_paper:[],  //this_paper[0]存储着此paper的基本信息
       literature_title: "改进的二分查找法",
       literature_id:"aa11AA",
-      author: "王ll,朱虹",
+      authors: [],
       institution: "璃月职业技术学院 母猪产后护理系",
       number_of_download: 87,
       number_of_like: 999,
@@ -204,27 +204,52 @@ export default {
   },
   created() {
     this.List = [];
-    this.$axios({
-      headers: {
-        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-      },
-      method: 'get',
-      url: this.$store.state.address+'api/relation/getFavorites',
-      data: '1',
-    }).then(res =>{
-      var i = 0;
-      for (i = 0; i < res.data.length; i++){
-        this.List.push({
-          id : res.data[i].id,
-          name : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-          isClick: 0,
-          style: ''
-        })
-      }
-    })
+    if(sessionStorage.getItem('baseInfo') === null
+        || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+        || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+      this.$axios({
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
+      })
+    }
+    else{
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
+      })
+    }
+
   },
   methods:{
     handleClose(done) {
@@ -270,6 +295,8 @@ export default {
           .then(res => {
             tempthis.this_paper[0] = res.data.paper
             console.log(tempthis.this_paper[0])
+            console.log('authors')
+            console.log(tempthis.this_paper[0].authors)
             tempthis.toLoadData()
           })
           .catch(err => {
@@ -283,16 +310,13 @@ export default {
       tempthis.toReadThisPaper(tempthis.literature_id,tempthis.literature_title)
 
       //作者名字
-      tempthis.author=tempthis.this_paper[0].authors[0].name
-      for(let i = 1;i<tempthis.this_paper[0].authors.length;i++){
-        tempthis.author = tempthis.author +", "+tempthis.this_paper[0].authors[i].name
-      }
+      tempthis.authors=tempthis.this_paper[0].authors
 
       //机构  存疑  目前逻辑是一作的第一个机构，这显然不符合实际
       //tempthis.institution = tempthis.this_paper[0].authors[0].org.split(",")[0]
 
-      // //外部链接
-      // tempthis.out_link_str = tempthis.this_paper[0].url[0]
+      //外部链接
+      tempthis.out_link_str = tempthis.this_paper[0].url
 
       //关键词
       for(let i = 0;i<tempthis.this_paper[0].keywords.length;i++){
@@ -313,28 +337,53 @@ export default {
       }
       console.log('params:')
       console.log(params)
-      this.axios({
-        headers: {
-          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-        },
-        method: 'post',
-        url: 'http://139.9.134.209:8000/api/publication/ReadPaper/',
-        data: params
-     /*   data: formData
-        data: qs.stringify(params)*/
-      })
-          .then(res => {
-            console.log("otherPaperData:")
-            console.log(res)
-            tempthis.this_paper[1]=res.data;
-            tempthis.number_of_like = tempthis.this_paper[1].like_count;
-            tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
-            tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
-            tempthis.number_of_read = tempthis.this_paper[1].read_count;
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      if(sessionStorage.getItem('baseInfo') === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+        this.axios({
+          method: 'post',
+          url: 'http://139.9.134.209:8000/api/publication/ReadPaper/',
+          data: params
+          /*   data: formData
+             data: qs.stringify(params)*/
+        })
+            .then(res => {
+              console.log("otherPaperData:")
+              console.log(res)
+              tempthis.this_paper[1]=res.data;
+              tempthis.number_of_like = tempthis.this_paper[1].like_count;
+              tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
+              tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
+              tempthis.number_of_read = tempthis.this_paper[1].read_count;
+            })
+            .catch(err => {
+              console.log(err);
+            })
+      }
+      else {
+        this.axios({
+          headers: {
+            jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+          },
+          method: 'post',
+          url: 'http://139.9.134.209:8000/api/publication/ReadPaper/',
+          data: params
+          /*   data: formData
+             data: qs.stringify(params)*/
+        })
+            .then(res => {
+              console.log("otherPaperData:")
+              console.log(res)
+              tempthis.this_paper[1]=res.data;
+              tempthis.number_of_like = tempthis.this_paper[1].like_count;
+              tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
+              tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
+              tempthis.number_of_read = tempthis.this_paper[1].read_count;
+            })
+            .catch(err => {
+              console.log(err);
+            })
+      }
     },
     toLikeThisPaper(){
       const tempthis = this;
