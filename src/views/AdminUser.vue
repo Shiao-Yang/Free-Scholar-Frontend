@@ -165,6 +165,9 @@ export default {
         xAxis: {
           data: ['AI', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
         },
+        tooltip: {
+          trigger: 'item',
+        },
         yAxis: {},
         series: [
           {
@@ -176,7 +179,7 @@ export default {
       taskChart: null,
       taskChartOption: {
         title: {
-          text: '七天工作状态统计图',
+          text: '七天处理工作统计图',
           left: 'center',
         },
         xAxis: {
@@ -186,6 +189,9 @@ export default {
           ],
         },
         yAxis: {},
+        tooltip: {
+          trigger: 'item',
+        },
         series: [
           {
             data: [10, 5, 3, 8, 3, 16, 25],

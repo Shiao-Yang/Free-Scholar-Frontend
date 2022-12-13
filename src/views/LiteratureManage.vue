@@ -510,6 +510,9 @@ export default {
       currentPage: 0,
       input: '',
       field: 'title',
+      adminNum: 0,
+      userNum: 0,
+      scholarNum: 0,
       // 数据可视化相关数据
       chartType: 0,
       userChart: null,
@@ -563,6 +566,9 @@ export default {
         xAxis: {
           data: ['AI', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
         },
+        tooltip: {
+          trigger: 'item',
+        },
         yAxis: {},
         series: [
           {
@@ -574,7 +580,7 @@ export default {
       taskChart: null,
       taskChartOption: {
         title: {
-          text: '七天工作状态统计图',
+          text: '七天处理工作统计图',
           left: 'center',
         },
         xAxis: {
@@ -584,6 +590,9 @@ export default {
           ],
         },
         yAxis: {},
+        tooltip: {
+          trigger: 'item',
+        },
         series: [
           {
             data: [10, 5, 3, 8, 3, 16, 25],
