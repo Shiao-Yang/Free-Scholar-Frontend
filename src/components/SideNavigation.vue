@@ -33,7 +33,7 @@
           <span class="icon avatar">
             <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
                  v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
-            <img alt="头像" src="../assets/img/home/avatar.png" v-else>
+            <i title="头像错误" class='bx bxs-user' v-else></i>
           </span>
           <span class="text">
             <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
@@ -117,7 +117,7 @@
           <span class="icon avatar">
             <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
                  v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
-            <img alt="头像" src="../assets/img/home/avatar.png" v-else>
+            <i title="头像错误" class='bx bx-log-in-circle' v-else></i>
           </span>
           <span class="text">
             <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
@@ -126,7 +126,7 @@
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
           <li class="sub-item log-out" @click="logout">
-            <i class='bx bx-log-out-circle'></i>
+            <i class='bx bxs-user'></i>
             <span>退出登录</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
