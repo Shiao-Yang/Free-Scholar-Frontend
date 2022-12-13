@@ -409,6 +409,53 @@
             })
           },
 
+          getMsgRec(uid, type) { //type=0,初始化时的调用
+            let that = this;
+
+            this.axios({
+              headers: {
+                jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+              },
+              method: 'get',
+              url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec',
+            })
+                .then(res => {
+                  console.log(res.data)
+                  this.msg_rec_list = res.data;
+                  for(let i = 0; i < this.msg_rec_list.length; i++) {
+                    // this.msg_rec_list[i].avatar = 'user.png';
+                    this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
+                  }
+                  that.msg_rec_list = this.msg_rec_list.sort(this.sortData);
+                  this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+                  that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+                  this.dis_msg_list = this.msg_rec_list;
+
+                  console.log(this.dis_msg_list)
+                  // if(this.showContent) {
+                  //   this.changeShowContent();
+                  // }
+                  console.log(this.showContent)
+
+                  // this.dis_msg_list = this.msg_plm_list;
+
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+          },
+
+          cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
+            let has_new = 0;
+            for(let i = 0; i < msg_list.length; i++) {
+              if(!msg_list[i].is_read) { //有未读消息就+1
+                has_new++;
+              }
+            }
+            console.log(has_new);
+            return has_new;
+          },
+
           sendMsg() {
             this.msg_send.owner_id = this.baseInfo.user_id
 
@@ -435,15 +482,10 @@
             })
                 .then(res => {
                   this.dis_msg_list = [];
-                  // if(this.isActive1) { //当前处于系统消息列表
-                  //   this.getMsgPlm(this.uid);
-                  // }
-                  // else if(this.isActive2) { //当前处于收到的私信列表
-                  //   this.getMsgRec(this.uid);
-                  // }
-                  // else if(this.isActive3) { //当前处于发送的私信列表
-                  //   this.getMsgSend(this.uid);
-                  // }
+
+                  this.getMsgRec(this.uid);
+
+                  this.getMsgSend(this.uid);
 
                   if(res.data.errno === 0) {
                     this.$message({

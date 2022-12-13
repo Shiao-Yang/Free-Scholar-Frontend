@@ -510,15 +510,17 @@ export default {
       })
           .then(res => {
             this.dis_msg_list = [];
-            if(this.isActive1) { //当前处于系统消息列表
-              this.getMsgPlm(this.uid);
-            }
-            else if(this.isActive2) { //当前处于收到的私信列表
+
+            // this.getMsgPlm(this.uid);
+            if(this.isActive2) {
               this.getMsgRec(this.uid);
+
             }
-            else if(this.isActive3) { //当前处于发送的私信列表
+            if(this.isActive3) {
               this.getMsgSend(this.uid);
             }
+
+
 
             if(res.data.errno === 0) {
               this.$message({
@@ -642,6 +644,9 @@ export default {
             console.log(this.showContent)
 
             // this.dis_msg_list = this.msg_plm_list;
+            if(type === 0) {
+              this.dis_msg_list = this.msg_rec_list;
+            }
 
           })
           .catch(err => {

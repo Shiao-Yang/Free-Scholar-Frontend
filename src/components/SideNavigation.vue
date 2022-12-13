@@ -296,6 +296,7 @@ export default {
               this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
             }
             that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+
             this.dis_msg_list = this.msg_rec_list;
 
             console.log(this.dis_msg_list)
@@ -366,14 +367,17 @@ export default {
   },
 
   created() {
-    // this.getMsgRec(this.uid, 0);
+    this.getMsgRec(this.uid);
   },
   mounted() {
-    // this.getMsgPlm(this.uid);
-    // console.log(this.msg_plm_has_new)
-    // console.log(this.msg_rec_has_new)
+    this.getMsgPlm(this.uid);
+    console.log(this.msg_plm_has_new)
+    console.log(this.msg_rec_has_new)
     // this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
-    // console.log(this.dis_msg_list)
+    console.log(this.dis_msg_list)
+
+    console.log(this.$store.state.msg_rec_has_new)
+    console.log(this.$store.state.msg_plm_has_new)
   },
 }
 </script>
