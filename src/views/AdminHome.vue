@@ -46,8 +46,24 @@
         </div>
       </div>
       <div class="chart">
-        <p class="statistics">仪表盘</p>
-        <img src="../assets/img/adminHome/data.jpg">
+        <div class="header"><p class="statistics">仪表盘</p></div>
+        <div class="dashboard-container">
+          <div class="dashboard-header">
+            <div class="dashboard-header-btn" :class="{'active': chartType === 1}" @click="changeChartType(1)">
+              <span class="header-icon "><i class='bx bxs-user-detail'></i></span>
+              <span class="header-text">用户统计</span>
+            </div>
+            <div class="dashboard-header-btn" :class="{'active': chartType === 2}" @click="changeChartType(2)">
+              <span class="header-icon"><i class='bx bxs-hot'></i></span>
+              <span class="header-text">热词统计</span>
+            </div>
+          </div>
+          <div class="main-chart-box">
+            <div ref="userChart" class="chart-item" v-show="chartType === 1"></div>
+            <div ref="hotChart" class="chart-item" v-show="chartType === 2"></div>
+          </div>
+        </div>
+<!--        <img src="../assets/img/adminHome/data.jpg">-->
       </div>
 
     </div>
@@ -88,7 +104,7 @@
 </template>
 
 <script>
-
+const echarts = require('echarts')
 export default {
   name: 'AdminHome',
   created() {
@@ -101,7 +117,10 @@ export default {
     this.getRecentRecord()
   },
   mounted() {
-
+    window.addEventListener('resize',function(){
+      this.screenWidth = document.documentElement.clientWidth;
+    })
+    this.initCharts();
   },
   data() {
     return {
@@ -113,7 +132,68 @@ export default {
       complainAll: 0,
       records: [
 
-      ]
+      ],
+      screenWidth: document.documentElement.clientWidth,
+      chartType: 0,
+      userChart: null,
+      userChartOption: {
+
+        title: {
+          text: '用户统计图',
+          left: 'center'
+        },
+        legend: {
+          orient: 'vertical',
+          x: 'left',
+          data: ['认证学者', '普通用户', '管理员']
+        },
+        tooltip: {
+          trigger: 'item',
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
+            labelLine: {
+              show: false
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '30',
+                fontWeight: 'bold'
+              }
+            },
+            data: [
+              { value: 10, name: '认证学者' },
+              { value: 23, name: '普通用户' },
+              { value: 1, name: '管理员' },
+            ]
+          }
+        ]
+      },
+      hotChart: null,
+      hotChartOption: {
+        title: {
+          text: '热词搜索统计图',
+          left: 'center',
+        },
+        xAxis: {
+          data: ['AI', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
+        },
+        yAxis: {},
+        series: [
+          {
+            type: 'bar',
+            data: [78, 63, 55, 44, 32, 28, 25]
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -229,7 +309,45 @@ export default {
               this.records.push(tmp)
             }
           })
+    },
+    changeChartType(index) {
+      let self = this
+      this.chartType = index;
+      switch (index) {
+        case 1:
+          setTimeout(function (){
+            self.userChart.resize();
+          }, 10)
+        case 2:
+          setTimeout(function (){
+            self.hotChart.resize();
+          }, 10)
+      }
+    },
+    initCharts() {
+      this.userChart = echarts.init(this.$refs.userChart);
+      this.hotChart = echarts.init(this.$refs.hotChart);
+      window.addEventListener("resize", ()=> {
+        this.userChart.resize()
+        this.hotChart.resize()
+      });
+      this.setOptions();
+    },
+    setOptions() {
+      let userOption = this.userChartOption;
+      let hotOption = this.hotChartOption;
+      userOption.series[0].data = [
+        { value: 23, name: '认证学者' },
+        { value: 23, name: '普通用户' },
+        { value: 100, name: '管理员' },
+      ]
+      hotOption.xAxis.data = ['人工智能', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
+      hotOption.series[0].data = [99, 63, 55, 44, 32, 28, 25];
+      this.userChart.setOption(userOption)
+      this.hotChart.setOption(hotOption)
     }
+  },
+  watch: {
   }
 }
 </script>
@@ -402,6 +520,11 @@ export default {
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
 }
+.header {
+  height: 40px;
+  line-height: 40px;
+}
+
 .statistics {
   position: relative;
   font-weight: bold;
@@ -488,5 +611,61 @@ export default {
 .type-box span {
   font-weight: bold;
   font-size: 18px;
+}
+
+.dashboard-container {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.dashboard-container .dashboard-header {
+  display: flex;
+  width: 100%;
+  margin-left: 20px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.dashboard-header-btn {
+  margin-right: 30px;
+  font-size: 20px;
+  padding: 5px;
+  cursor: pointer;
+  transition: 0.2s all ease;
+}
+
+.dashboard-header-btn:hover {
+  font-weight: 500;
+  color: #0f62fe;
+  border-bottom: 2px solid #2196f3;
+}
+
+.dashboard-header-btn.active {
+  font-weight: bold;
+  border-bottom: 4px solid #2196f3;
+  color: #0f62fe;
+}
+
+.dashboard-header-btn .header-icon {
+  display: inline-block;
+  line-height: 30px;
+  min-width: 30px;
+}
+
+.dashboard-header-btn .header-text {
+  line-height: 30px;
+  height: 30px;
+}
+
+.main-chart-box {
+  width: 95%;
+  margin: 30px auto auto;
+}
+
+.chart-item {
+  width: 95%;
+  height: 500px;
+  transition: 1s all ease;
 }
 </style>

@@ -1108,6 +1108,7 @@ export default {
 }
 
 .sender-box .sender-baseInfo .operation img{
+  /*border: solid red;*/
   margin: 15px 35px 15px 35px;
   height: 30px;
   width: 30px;
@@ -1123,10 +1124,11 @@ export default {
 }
 
 .sender-box .sender-baseInfo .send-time{
+  /*border: solid red;*/
   display: inline-block;
   position: absolute;
   bottom: 15px;
-  right: 100px;
+  right: 150px;
   height: 25px;
   width: 200px;
 }
@@ -1134,7 +1136,7 @@ export default {
 .sender-box .sender-baseInfo .send-time .text{
   position: absolute;
   top: 0px;
-  left: 30px;
+  right: 0px;
   width: 150px;
 }
 
@@ -1157,13 +1159,17 @@ export default {
 }
 
 .content-box .text-area {
+  /*border: solid red;*/
   width: 850px;
+  max-width: 850px;
+  height: 400px;
   position: relative;
   margin: 20px 50px 20px 50px;
   line-height: 25px;
   text-indent: 32px;
   word-spacing: 10px;
   letter-spacing: 0px;
+  word-wrap:normal;
 }
 
 .message-container {

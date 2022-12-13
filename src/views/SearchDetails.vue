@@ -109,6 +109,7 @@ export default {
   data() {
     return {
       literature_title: "改进的二分查找法",
+      literature_id:"aa11AA",
       author: "王ll,朱虹",
       institution: "璃月职业技术学院 母猪产后护理系",
       number_of_download: 87,
@@ -171,6 +172,19 @@ export default {
           recommended_literature_link_str: ""
         }
       ]
+    }
+  },
+  mounted() {
+    this.toGetliteratureById();
+  },
+  methods:{
+    toGetliteratureById:function (){
+      const tempthis = this;
+      let param;
+      param = {
+        literature_id : tempthis.$route.params.LiteratureId,
+      }
+      console.log(param)
     }
   }
 }

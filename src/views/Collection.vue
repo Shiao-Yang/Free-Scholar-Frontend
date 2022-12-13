@@ -51,7 +51,7 @@
                 <span class="menu-arrow"><i class='bx bxs-chevron-left' ></i></span>
               </div>
               <ul class="sub-menu">
-                <li class="sub-item">
+                <li class="sub-item" @click="newCollect">
                   <span class="sub-icon"><i class='bx bx-plus-circle'></i></span>
                   <span class="sub-text">新建收藏夹</span>
                   <span class="sub-edit-icon"></span>
@@ -61,7 +61,7 @@
                     <span class="sub-icon" v-if="item.isClick === 0"><i class='bx bxs-folder' ></i></span>
                     <span class="sub-icon" v-else><i class='bx bxs-folder-open' ></i></span>
                     <span class="sub-text">{{ item.name }}</span>
-                    <span class="sub-edit-icon"><i class='bx bx-edit-alt' ></i></span>
+                    <span class="sub-edit-icon" @click="changeAvatar(item.id)"><i class='bx bx-edit-alt' ></i></span>
                   </li>
                 </div>
               </ul>
@@ -147,7 +147,7 @@
               {{favorites[index].author}}
             </div>
             <div class="introductions">
-              {{favorites[index].introduction}}
+              {{favorites[index].introduction | ellipsis}}
             </div>
             <div style="margin-top: 7px">
             <span style="margin-right: 50px">
@@ -205,6 +205,7 @@ export default {
       form :{
         title : '',
       },
+      currentfid : 0,
       changePwdVisible: false,
       changeAvatarVisible: false,
       visible : false,
@@ -347,13 +348,22 @@ export default {
       }
     })
   },
+  filters:{
+    ellipsis(value){
+      if (!value) return '';
+      if (value.length > 500) {
+        return value.slice(0,500) + '...'
+      }
+      return value
+    }
+  },
   methods: {
     toChangeAvatar(){
-      let fid = this.List[0].id;
+      let fid = this.currentfid;
       this.changeAvatarVisible = false;
       let fileToUpload = this.$refs.pic.files[0];
       let param = new FormData();  //创建表单对象
-      param.append("avatar",fileToUpload);
+      param.append("img",fileToUpload);
       param.append("fid",fid);
       param.forEach((value, key) => {
         console.log(`key ${key}: value ${value}`);
@@ -370,12 +380,37 @@ export default {
       })
 
     },
-    changeAvatar() {
+    changeAvatar(index) {
       this.visible1 = true;
       this.changeAvatarVisible = true;
+      this.currentfid = index;
     },
-    showFavorites() {
-
+    showFavorites(id) {
+      this.favorites = [];
+      let params = {
+        favorites_id: this.List[id].id,
+      }
+      this.$axios({
+        method: 'get',
+        url: this.$store.state.address+'api/relation/showFavorites?favorites_id='+this.List[id].id,
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.favorites.push({
+            title: res.data[i].paper._source.title,
+            id: res.data[i].paper._source.id,
+            authors: res.data[i].paper._source.authors,
+            author: res.data[i].paper._source.authors[0].name +  res.data[i].paper._source.authors[0].org,
+            introduction: res.data[i].paper._source.abstract,
+            like: res.data[i].like_count,
+            collect: res.data[i].collect_count,
+            "comment" : 10,
+            times: res.data[i].read_count,
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+      })
     },
     getCollections() {
       this.List = [];
@@ -498,7 +533,7 @@ export default {
       }
       this.List[id].isClick = 1;
       this.List[id].style = 'background-color: #00AEEC;';
-      this.showFavorites();
+      this.showFavorites(id);
     },
     onItem1(id) {
       this.List1[id].style = this.List1[id].style + 'border: #4DA5FF;\n' +
@@ -591,14 +626,17 @@ li {
 .introductions {
   color: #030303;
   font-size: 10px;
+  width: 900px;
 }
 .author {
   color: #248F24;
   font-size: 10px;
+  width: 900px;
 }
 .itemTitle {
   color: #4DA5FF;
   font-size: 22px;
+  width: 900px;
 }
 
 .CollectionItem {
