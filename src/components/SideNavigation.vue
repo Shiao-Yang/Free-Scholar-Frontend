@@ -29,7 +29,7 @@
       </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style="" v-if="$store.state.msg_plm_has_new > 0 || $store.state.msg_rec_has_new > 0"></i>
+          <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
           <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
           <span class="text">{{ baseInfo.username }}</span>
         </router-link>
@@ -47,7 +47,7 @@
           <li class="sub-item" @click="toMessageCenter">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
-            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;" v-if="$store.state.msg_plm_has_new > 0 || $store.state.msg_rec_has_new > 0"></i>
+            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
             <i class='bx bx-chevron-right right'></i>
           </li>
 <!--          <li class="sub-item">-->
