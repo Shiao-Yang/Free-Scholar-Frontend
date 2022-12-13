@@ -148,7 +148,7 @@ export default {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
         method: "POST",
-        url: self.$store.state.address+"api/user/admitScholar/",
+        url: self.$store.state.address+"api/user/sendEmail/",
         data: formdata,
       }).then(res => {
         console.log(res.data)
@@ -199,7 +199,11 @@ export default {
             showClose: true,
             type: 'success',
           })
-          this.currentStep = 3;
+
+          setTimeout(() => {
+            this.currentStep = 3;
+            this.admitScholar();
+          }, 1000 )
         }
       })
     },
@@ -236,7 +240,7 @@ export default {
         data: formdata,
       }).then(res => {
         console.log(res.data)
-        if(res.data.error === 0) {
+        if(res.data.errno === 0) {
           this.$message({
             message: '申请成功',
             showClose: true,
@@ -255,7 +259,8 @@ export default {
   },
 
   created() {
-    this.author_id = $route.author_id;
+    this.author_id = this.$route.query.author_id
+    this.scholar_id = this.$route.query.scholar_id
   }
 }
 </script>

@@ -25,7 +25,7 @@
                         <i class="bx bxs-award"></i>
                         <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;">已认领</div>
                     </div>
-                  <div class="message">
+                  <div class="message" @click="replyVisible = true;">
                     <i class="bx bxs-chat"></i>
                     <div style="position: absolute; margin-top: 13px; left: 245px; font-size: 15px">私信</div>
                   </div>
@@ -111,6 +111,19 @@
             </div>
 
         </div>
+        <el-dialog append-to-body title="发送私信" :visible="replyVisible" :center="isCenter" width="30%">
+          <el-input
+              style="z-index: 2"
+              type="textarea"
+              maxlength="500"
+              placeholder="请输入内容"
+              v-model="msg_send.content">
+          </el-input>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="replyVisible = false; msg_send.content=''">取 消</el-button>
+            <el-button type="primary" plain @click="sendMsg">确 定</el-button>
+          </div>
+        </el-dialog>
         <div class="question-btn">
           <div class="question-icon" title="举报冒领"><i class='bx bxs-error-circle' ></i></div>
           <div class="question-sub-item">
@@ -127,10 +140,14 @@
         data() {
             return {
                 uid: '540888a2dabfae92b4247e94',
+                scholar_id: null,
+                user_id: null,
                 userName: '',
                 baseInfo: {
                     userName: '王海涛',
                     avatar: 'YAN.jpg',
+                    user_id: null,
+                    scholar_id: null,
                 },
                 sort: 0, //0表示按时间排序，1表示按引用量排序
                 follow: 0, //1表示已关注，0表示未关注
@@ -140,7 +157,12 @@
                 visitors: 23,
                 paperList: [],
                 scholarList: [],
-
+                replyVisible: false,
+                isCenter: true,
+                msg_send: {
+                  owner_id: 1,
+                  content: '',
+                },
             }
         },
         methods: {
@@ -202,7 +224,7 @@
             getBaseInfo(uid){
                 this.axios({
                     method: 'get',
-                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?author_id=' + uid,
+                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo?author_id=' + uid,
                     // url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + '1',
                 }).then(res => {
                     console.log(res)
@@ -226,6 +248,12 @@
                     else{
                         this.visitors = res.data.visitors
                     }
+                    if(res.data.scholar_id !== null){
+                      this.baseInfo.scholar_id = res.data.scholar_id
+                    }
+                    if(res.data.user_id !== null){
+                      this.baseInfo.user_id = res.data.user_id
+                    }
 
                 }).catch(err =>{
                     console.log(err)
@@ -233,10 +261,62 @@
 
             },
 
+          sendMsg() {
+            console.log(this.msg_send);
+            if(this.msg_send.content === '') {
+              this.$message({
+                type: 'error',
+                showClose: true,
+                message: '内容不能为空'
+              })
+              return;
+            }
+            let params = new FormData();
+            params.append("owner_id", this.msg_send.owner_id);
+            params.append("content", this.msg_send.content);
+
+            this.axios({
+              headers: {
+                jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+              },
+              method: 'post',
+              url: 'http://139.9.134.209:8000/api/MessageCenter/sendMsg/',
+              data: params,
+            })
+                .then(res => {
+                  this.dis_msg_list = [];
+                  // if(this.isActive1) { //当前处于系统消息列表
+                  //   this.getMsgPlm(this.uid);
+                  // }
+                  // else if(this.isActive2) { //当前处于收到的私信列表
+                  //   this.getMsgRec(this.uid);
+                  // }
+                  // else if(this.isActive3) { //当前处于发送的私信列表
+                  //   this.getMsgSend(this.uid);
+                  // }
+
+                  if(res.data.errno === 0) {
+                    this.$message({
+                      type: 'success',
+                      showClose: true,
+                      message: '发送成功'
+                    })
+                  }
+
+                })
+                .catch(err => {
+                  console.log(err)
+                })
+            this.replyVisible = false;
+            this.msg_send.content = '';
+          },
+
         },
         created() {
             // console.log(this.$route.query.id)
-            this.uid = this.$route.query.id;
+            this.uid = this.$route.query.author_id;
+            // this.user_id = this.$route.query.user_id;
+            // this.scholar_id = this.$route.query.scholar_id;
             console.log(this.uid)
             this.getCoworkers(this.uid)
             this.getBaseInfo(this.uid)
