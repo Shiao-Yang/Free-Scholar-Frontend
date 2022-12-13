@@ -73,6 +73,82 @@
         <i class='bx bx-x' style="font-size: 40px" @click="close"></i>
       </div>
     </div>
+    <div class="mask" v-if="this.visible1 === true"></div>
+    <div class="windows" v-if="this.visible1 === true">
+      <el-form ref="form" :model="form" label-width="100px" style="width: 620px;position: relative;top: 60px">
+        <div v-if="this.active === 0">
+          <el-form-item label="title">
+            <el-input v-model="form.title"></el-input>
+          </el-form-item>
+          <el-form-item label="year">
+            <el-input v-model="form.year"></el-input>
+          </el-form-item>
+          <el-form-item label="n_citation">
+            <el-input v-model="form.n_citation"></el-input>
+          </el-form-item>
+          <el-form-item label="lang">
+            <el-input v-model="form.lang"></el-input>
+          </el-form-item>
+          <el-form-item label="doi">
+            <el-input v-model="form.doi"></el-input>
+          </el-form-item>
+          <el-form-item label="issn">
+            <el-input v-model="form.issn"></el-input>
+          </el-form-item>
+        </div>
+        <div v-if="this.active === 1">
+          <el-form-item label="venue_raw">
+            <el-input v-model="form.raw"></el-input>
+          </el-form-item>
+          <el-form-item label="venue_id">
+            <el-input v-model="form.id"></el-input>
+          </el-form-item>
+          <el-form-item label="keywords">
+            <el-input v-model="form.keywords"></el-input>
+          </el-form-item>
+          <el-form-item label="pdf">
+            <el-input v-model="form.pdf"></el-input>
+          </el-form-item>
+          <el-form-item label="url">
+            <el-input v-model="form.url"></el-input>
+          </el-form-item>
+          <el-form-item label="abstract" prop="desc">
+            <el-input type="textarea" v-model="form.abstract"></el-input>
+          </el-form-item>
+        </div>
+        <div v-if="this.active === 2|| this.active === 3">
+          <el-form-item
+              v-for="(domain, index) in dynamicValidateForm.domains"
+              :label="'作者' + index"
+              :key="domain.key"
+              :prop="'domains.' + index + '.value'"
+              :rules="{required: true, message: '作者不能为空', trigger: 'blur'}"
+              style="width: 700px"
+          >
+            <el-input v-model="domain.value" style="width: 135px;margin-right: 10px"></el-input>
+            <el-input v-model="domain.org" style="width: 135px;margin-right: 10px"></el-input>
+            <el-input v-model="domain.id" style="width: 135px;margin-right: 10px"></el-input>
+            <el-button @click.prevent="removeDomain(domain)">删除</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('dynamicValidateForm')">提交</el-button>
+            <el-button @click="addDomain">新增作者</el-button>
+          </el-form-item>
+        </div>
+      </el-form>
+      <div style="width: 500px;position: relative;left: 100px;top: 100px">
+        <el-steps :active="active" finish-status="success">
+          <el-step title="步骤 1"></el-step>
+          <el-step title="步骤 2"></el-step>
+          <el-step title="步骤 3"></el-step>
+        </el-steps>
+        <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
+        <el-button style="margin-top: 12px;margin-left: 300px" @click="upload" v-if="this.active === 3">提交</el-button>
+      </div>
+      <div class="windows-close" style="position: absolute;left: 600px;top: 20px" title="关闭">
+        <i class='bx bx-x' style="font-size: 40px" @click="closenew"></i>
+      </div>
+    </div>
     <el-card class="box-card">
       <div style="font-size: 25px;color: #030303;margin-left: 20px">
         数据统计
@@ -156,7 +232,20 @@ export default {
   name: "LiteratureManage",
   data (){
     return {
+      dynamicValidateForm: {
+        domains: [{
+          value: '请输入姓名',
+          org: '请输入机构',
+          id: '请输入id',
+        }],
+        email: ''
+      },
+      form:{
+
+      },
+      active : 0,
       visible : false,
+      visible1 : false,
       currentInstitutional : 0,
       List : [
         {
@@ -512,13 +601,60 @@ export default {
       })
     },
     newLiterature(){
+      this.visible1 = true;
+    },
+    closenew(){
+      this.visible1 = false;
+    },
+    upload(){
 
+    },
+    next() {
+      if (this.active++ > 2) this.active = 0;
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    removeDomain(item) {
+      var index = this.dynamicValidateForm.domains.indexOf(item)
+      if (index !== -1) {
+        this.dynamicValidateForm.domains.splice(index, 1)
+      }
+    },
+    addDomain() {
+      this.dynamicValidateForm.domains.push({
+        value: '请输入姓名',
+        org: '请输入机构',
+        id: '请输入id',
+        key: Date.now()
+      });
     }
   }
 }
 </script>
 
 <style scoped>
+.mask {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.windows {
+  position: fixed;
+  background-color: white;
+  width: 500px;
+  height: 350px;
+  top: 130px;
+  left: 500px;
+  z-index: 1000;
+}
 .box-card {
   width: 100%;
   min-width: 1400px;
