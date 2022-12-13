@@ -258,7 +258,7 @@ export default {
   font-size: 18px;
   font-weight: bold;
   min-width: 550px;
-  height: 30px;
+  line-height: 30px;
   padding: 10px 20px 10px 20px;
   border-radius: 10px;
   border: none;
