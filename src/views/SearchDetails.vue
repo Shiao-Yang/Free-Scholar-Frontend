@@ -9,21 +9,37 @@
       <div class="author">
         {{ author }}
       </div>
-      <div class="fromwhere">
-        {{ institution }}
-      </div>
+<!--      <div class="fromwhere">-->
+<!--        {{ institution }}-->
+<!--      </div>-->
       <div class="theicons">
-          <span class="header-icon" style="margin-right: 50px">
-              <i class='el-icon-download' style="margin-right: 7px"></i>
-              <span style="font-size: 14px">{{ number_of_download }}</span>
-            </span>
         <span class="header-icon" style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px"></i>
+              <i class='bx bxs-like' style="margin-right: 7px" @click="toLikeThisPaper"></i>
               <span style="font-size: 14px">{{ number_of_like }}</span>
             </span>
         <span class="header-icon" style="margin-right: 50px">
-              <i class='el-icon-star-off' style="margin-right: 7px;color: orange"></i>
+              <i class='el-icon-star-off' style="margin-right: 7px;color: orange" @click="drawer = true"></i>
               <span style="font-size: 14px">{{ number_of_collect }}</span>
+              <el-drawer
+                  :visible.sync="drawer"
+                  :direction="direction"
+                  :before-close="handleClose">
+                <div style="color: black;position: relative;left: 40px;top: -20px">
+                  <h2>选择收藏夹</h2>
+                </div>
+              <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item >
+                  <el-radio-group v-model="form.index">
+                    <div v-for="(item,index) in List" :key="index" style="margin-bottom: 20px">
+                      <el-radio :label="item.name"></el-radio>
+                    </div>
+                  </el-radio-group>
+                </el-form-item>
+              </el-form>
+              <div style="position: relative;left: 170px;width: 50px">
+                <el-button type="primary" plain @click="collect">加入收藏夹</el-button>
+              </div>
+              </el-drawer>
             </span>
         <span class="header-icon" style="margin-right: 50px">
               <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
@@ -35,22 +51,22 @@
             <div class="sub-menu"></div>
         </span>
       </div>
-      <div class="keywords">
+      <div class="keywordsAndAbstract" >
         关键词：
-        <span style="margin-right: 20px" v-for="item in tags">
-             <el-tag>{{ item.content }}</el-tag>
+        <span style="margin-right: 20px; " v-for="item in tags">
+             <el-tag style="margin-top: 5px; ">{{ item }}</el-tag>
             </span>
-      </div>
-      <div class="abstract">
-        摘要：
-        {{ abstract }}
+        <div class="abstract">
+          摘要：
+          {{ abstract }}
+        </div>
       </div>
     </div>
     <div class="rightup">
       <img src="../assets/img/light.jpg" class="picture">
-      <div style="position:absolute; color: white; z-index:2;font-size: 36px;width: 100%;top:70px;text-align: center">今日访问量</div>
+      <div style="position:absolute; color: white; z-index:2;font-size: 36px;width: 100%;top:70px;text-align: center">累计访问量</div>
       <div style="position:absolute; color: white; z-index:2;font-size: 60px;width: 100%;top:140px;text-align: center">
-        {{ number_of_today_visit }}
+        {{ number_of_read }}
       </div>
     </div>
     <div class="leftdown">
@@ -79,7 +95,7 @@
             </div>
           </div>
         </div>
-        <div v-else>
+        <div v-else style="font-size: 20px;margin-top: 20px">
           暂无评论
         </div>
       </div>
@@ -105,10 +121,40 @@
 </template>
 
 <script>
+import qs from "qs";
+
 export default {
   name: "ScholarsDetails",
   data() {
     return {
+      form: {
+        index: '',
+      },
+      List: [
+        {
+          "name" : '二分法',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '植物学研究',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '天文学论文合集',
+          "style" : '',
+          "isClick" : 0,
+        },
+        {
+          "name" : '北美落叶林',
+          "style" : '',
+          "isClick" : 0,
+        }
+      ],
+      drawer: false,
+      direction: 'rtl',
+      this_paper:[],  //this_paper[0]存储着此paper的基本信息
       literature_title: "改进的二分查找法",
       literature_id:"aa11AA",
       author: "王ll,朱虹",
@@ -118,49 +164,12 @@ export default {
       number_of_collect: 11,
       number_of_comment: 110,
       out_link_str: "http://www.baidu.com",
-      number_of_today_visit: 27,
-      tags: [
-        {
-          content: "计算机科学"
-        }, {
-          content: "母猪"
-        }, {
-          content: "西非文学"
-        }
-      ],
+      number_of_read: 27,
+      tags: [],
       abstract: "你说得对，但是对有序数列的查找算法中二分法查找（binarysearch）是最常用的。" +
           "利用二分法，在含有n个元素的有...之差的最大值的一个上界，" +
           "就可以有比二分法 更加有效的查找方式，文章给出了一个称之为改进的 祝大家翅膀更好",
-      commentList: [
-        {
-          editTime: "22-10-17",
-          userName: "YAN",
-          userAvatarUrl: "img/home/avatar1.jpg",
-          detail: "相见时难别亦难",
-          likeNum: 11
-        },
-        {
-          editTime: "22-10-19",
-          userName: "NNN",
-          userAvatarUrl: "img/home/avatar1.jpg",
-          detail: "东风无力百花残",
-          likeNum: 12
-        },
-        {
-          editTime: "22-10-17",
-          userName: "YAN",
-          userAvatarUrl: "img/home/avatar1.jpg",
-          detail: "相见时iuu难别亦难",
-          likeNum: 12
-        },
-        {
-          editTime: "22-10-19",
-          userName: "NNN",
-          userAvatarUrl: "img/home/avatar1.jpg",
-          detail: "东风无力irk百花残",
-          likeNum: 12
-        }
-      ],
+      commentList: [],
       relevant_recommended_literature: [
         {
           recommended_literature_title: "感觉画质",
@@ -176,16 +185,161 @@ export default {
     }
   },
   mounted() {
-    this.toGetliteratureById();
+    this.toGetPaperById();
+  },
+  created() {
+    this.List = [];
+    this.$axios({
+      headers: {
+        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+      },
+      method: 'get',
+      url: this.$store.state.address+'api/relation/getFavorites',
+      data: '1',
+    }).then(res =>{
+      var i = 0;
+      for (i = 0; i < res.data.length; i++){
+        this.List.push({
+          id : res.data[i].id,
+          name : res.data[i].title,
+          avatar : res.data[i].avatar,
+          count : res.data[i].count,
+          date : res.data[i].time,
+          isClick: 0,
+          style: ''
+        })
+      }
+    })
   },
   methods:{
-    toGetliteratureById:function (){
-      const tempthis = this;
-      let param;
-      param = {
-        literature_id : tempthis.$route.params.LiteratureId,
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+    },
+    collect(){
+      var i = 0;
+      for (i = 0;i < this.List.length; i++){
+        if (this.List[i].name === this.form.index)
+          break;
       }
-      console.log(param)
+      let params = new FormData();
+      params.append("paper_id", this.literature_id);
+      params.append("favorites_id", this.List[i].id);
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/publication/CollectPaper/',
+        data: params,
+      }).then(res =>{
+        window.alert(res.data.message);
+        console.log(res);
+      })
+    },
+    toGetPaperById:function (){
+      const tempthis = this;
+      //tempthis.literature_id = "55d06634696322190568b85f";
+      //这里，实际用的时候是↓
+      tempthis.literature_id = tempthis.$route.params.LiteratureId
+      let formData = new FormData();
+      formData.append('id',tempthis.literature_id)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/getPaperById/',
+        data: formData
+      })
+          .then(res => {
+            tempthis.this_paper[0] = res.data.paper
+            console.log(tempthis.this_paper[0])
+            tempthis.toLoadData()
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+    toLoadData:function (){
+      const tempthis = this;
+      //标题
+      tempthis.literature_title = tempthis.this_paper[0].title
+      tempthis.toReadThisPaper(tempthis.literature_id,tempthis.literature_title)
+
+      //作者名字
+      tempthis.author=tempthis.this_paper[0].authors[0].name
+      for(let i = 1;i<tempthis.this_paper[0].authors.length;i++){
+        tempthis.author = tempthis.author +", "+tempthis.this_paper[0].authors[i].name
+      }
+
+      //机构  存疑  目前逻辑是一作的第一个机构，这显然不符合实际
+      //tempthis.institution = tempthis.this_paper[0].authors[0].org.split(",")[0]
+
+      //外部链接
+      tempthis.out_link_str = tempthis.this_paper[0].url[0]
+
+      //关键词
+      for(let i = 0;i<tempthis.this_paper[0].keywords.length;i++){
+        tempthis.tags[i]= tempthis.this_paper[0].keywords[i]
+      }
+
+      //摘要
+      tempthis.abstract = tempthis.this_paper[0].abstract
+    },
+    toReadThisPaper:function (paperId,paperName){
+      const tempthis = this;
+     /* let formData = new FormData();
+      formData.append('paper_id',paperId)
+      formData.append('paper_name',paperName)*/
+      let params = {
+        paper_id:paperId,
+        paper_name:paperName
+      }
+      console.log('params:')
+      console.log(params)
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/ReadPaper/',
+        data: params
+     /*   data: formData
+        data: qs.stringify(params)*/
+      })
+          .then(res => {
+            console.log("otherPaperData:")
+            console.log(res)
+            tempthis.this_paper[1]=res.data;
+            tempthis.number_of_like = tempthis.this_paper[1].like_count;
+            tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
+            tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
+            tempthis.number_of_read = tempthis.this_paper[1].read_count;
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+    toLikeThisPaper(){
+      const tempthis = this;
+      let formData = new FormData();
+      formData.append('paper_id',tempthis.literature_id);
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: 'https://139.9.134.209:8000/api/publication/LikePaper/',
+        data: formData
+      })
+          .then(res => {
+            console.log('like:')
+            console.log(res)
+          })
+          .catch(err => {
+            console.log(err);
+          })
     }
   }
 }
@@ -337,7 +491,7 @@ export default {
   left: 20px;
 }
 
-.keywords {
+.keywordsAndAbstract {
   position: absolute;
   color: #030303;
   font-size: 15px;
@@ -346,11 +500,11 @@ export default {
 }
 
 .abstract {
-  position: absolute;
+  position: relative;
   color: #030303;
   font-size: 10px;
-  top: 190px;
-  left: 20px;
+  top:10px;
+  text-overflow: ellipsis;
 }
 
 .leftup .author {

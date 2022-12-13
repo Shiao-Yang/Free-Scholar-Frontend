@@ -9,20 +9,18 @@
                      top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
                 <div class="option-box">
-                  <div class="follow" v-if="this.follow===0" style="color: #333333">
+                  <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(uid)">
                     <i class="bx bxs-user-plus"></i>
-                    <div class="fo" style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px"
-                         @click="">关注</div>
+                    <div class="fo" style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
                   </div>
-                    <div class="follow" v-else style="color: #2196f3">
+                    <div class="follow" v-else style="color: #2196f3" @click="focus(uid)">
                         <i class="bx bxs-user-plus"></i>
-                        <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px"
-                             @click="">已关注</div>
+                        <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">已关注</div>
                     </div>
-                  <div class="claim" v-if="this.accreditation===0" style="color: #333333">
+                  <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer" title="立即认领">
                     <i class="bx bxs-award"></i>
-                    <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;">未认领</div>
-                  </div>
+                    <div class="cl" style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;" >未认领</div>
+                  </a>
                     <div class="claim" v-else style="color: #ffcb74">
                         <i class="bx bxs-award"></i>
                         <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;">已认领</div>
@@ -62,8 +60,12 @@
             </div>
             <div style="position: relative; height: 30px">
                 <div style="position: absolute; left: 20px">排序方式：</div>
-                <button class="sort" @click="sortByTime(0)">按发表时间排序</button>
-                <button class="sort" style="left: 220px" @click="sortByTime(1)">按引用量排序</button>
+                <button class="sort" @click="sortByTime(0)" v-if="sort===0" style="color: white;
+                background: #2196f3;">按发表时间排序</button>
+                <button class="sort" @click="sortByTime(0)" v-else >按发表时间排序</button>
+                <button class="sort" style="left: 220px" @click="sortByTime(1)" v-if="sort===0">按引用量排序</button>
+                <button class="sort" @click="sortByTime(1)" v-else style="left: 220px; color: white;
+                background: #2196f3;">按引用量排序</button>
             </div>
             <div style="overflow: auto; position: absolute; width: 100%; height: 660px">
                 <div class="contents" v-for="(item) in paperList">
@@ -143,12 +145,17 @@
         },
         methods: {
             focus(uid){
+              console.log("token: "+JSON.parse(sessionStorage.getItem('baseInfo')).token)
+              let formData = new FormData();
+              formData.append('aim_id', uid);
+              this.follow = 1;
               this.$axios({
                   method: 'post',
                   url: this.$store.state.address + 'api/relation/focus',
-                  data: qs.stringify(({
-                    aim_id: uid
-                  }))
+                  data: formData,
+                  headers: {
+                      jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                  }
               }).then(res =>{
                   console.log(res)
               })
@@ -161,6 +168,8 @@
                 this.getCoworkers(id);
             },
             sortByTime(n){
+                // console.log('uid: '+this.uid)
+                this.sort = n;
                 if(n==0){
                     this.paperList.sort(function (a, b) {
                         return b.year - a.year;
@@ -185,6 +194,7 @@
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
                     // this.coID = res.data.
+                    this.sortByTime(0)
                 }).catch(err => {
                     // console.log(err)
                 })
@@ -192,13 +202,18 @@
             getBaseInfo(uid){
                 this.axios({
                     method: 'get',
-                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + uid,
+                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?author_id=' + uid,
                     // url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + '1',
                 }).then(res => {
                     console.log(res)
                     if(res.data.introduction!=null){
                         this.introduction = res.data.introduction;
                     }
+                    if(res.data.errno===1){
+                        this.accreditation = 0;
+                    }
+                    else
+                        this.accreditation = 1;
                     if(res.data.heat==null){
                         this.heat = 0;
                     }
@@ -224,8 +239,9 @@
             this.uid = this.$route.query.id;
             console.log(this.uid)
             this.getCoworkers(this.uid)
-            // this.getBaseInfo(this.uid)
-        }
+            this.getBaseInfo(this.uid)
+        },
+
     }
 </script>
 
@@ -373,15 +389,16 @@
         border: 1px solid #0f62fe;
         left: 100px;
         transition: .5s;
+        /*border-radius: 5px;*/
     }
     .middle .sort:hover {
         color: white;
         background: #2196f3;
     }
-    .middle .sort:focus {
-        color: white;
-        background: #2196f3;
-    }
+    /*.middle .sort:focus {*/
+    /*    color: white;*/
+    /*    background: #2196f3;*/
+    /*}*/
     .middle .contents {
         position: relative;
         /*display: flex;*/
@@ -394,6 +411,7 @@
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
     }
+
     .left .name {
         position: relative;
         background-color: white;
@@ -532,9 +550,20 @@
     .follow:hover .bxs-user-plus{
       color: #2196f3;
     }
-
+    .name .claim {
+        transition: 0.2s;
+    }
+    .name .claim:hover {
+        color: #ffcb74;
+    }
+    .claim:hover .bxs-award{
+        color: #ffcb74;
+    }
+    .claim:hover .cl {
+        color: #ffcb74;
+    }
     .message {
-      transition: 0.2s;
+      /*transition: 0.2s;*/
       color: #333333;
       cursor: pointer;
     }
