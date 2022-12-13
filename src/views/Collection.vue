@@ -16,7 +16,7 @@
     </div>
     <div>
         <el-dialog
-            title="上传头像"
+            title="上传封面"
             :visible.sync="changeAvatarVisible"
             width="30%"
             class = "changeAvatar">
@@ -74,69 +74,14 @@
                 </div>
                 <span class="menu-arrow"><i class='bx bxs-chevron-left' ></i></span>
               </div>
-              <ul class="sub-menu">
-                <li class="sub-item">
-                  <span class="sub-text"></span>
-                  <span class="sub-edit-icon"></span>
-                </li>
-              </ul>
+<!--              <ul class="sub-menu">-->
+<!--                <li class="sub-item">-->
+<!--                  <span class="sub-text"></span>-->
+<!--                  <span class="sub-edit-icon"></span>-->
+<!--                </li>-->
+<!--              </ul>-->
             </li>
           </ul>
-<!--          <el-collapse v-model="activeNames" @change="handleChange">-->
-<!--            <el-collapse-item name="1">-->
-<!--              <template slot="title">-->
-<!--              <span style="font-size: 18px;margin-left: 20px">-->
-<!--                我创建的-->
-<!--              </span>-->
-<!--              </template>-->
-<!--              <div class="item" @mouseenter="onNew" @mouseleave="leaveNew" :style="NewStyle">-->
-<!--                <i class="el-icon-circle-plus" style="margin-right: 5px;margin-left: 10px;"></i><b>新建收藏夹</b>-->
-<!--              </div>-->
-<!--              <div v-for="(item,index) in List" :key="index">-->
-<!--                <div class="item" @mouseenter="onItem(index)" @mouseleave="leaveItem(index)" @click="clickItem(index)" :style="List[index].style">-->
-<!--                  <div v-if="List[index].isClick === 0">-->
-<!--                    <i class="bx bxs-folder" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List[index].name}}</b>-->
-<!--                  </div>-->
-<!--                  <div v-if="List[index].isClick === 1">-->
-<!--                    <i class="bx bxs-folder-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List[index].name}}</b>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </el-collapse-item>-->
-<!--            <el-collapse-item name="2">-->
-<!--              <template slot="title">-->
-<!--              <span style="font-size: 18px;margin-left: 20px">-->
-<!--                我的订阅与收藏-->
-<!--              </span>-->
-<!--              </template>-->
-<!--              <div v-for="(item,index) in List1" :key="index">-->
-<!--                <div class="item" @mouseenter="onItem1(index)" @mouseleave="leaveItem1(index)" @click="click1Item(index)" :style="List1[index].style">-->
-<!--                  <div v-if="List1[index].isClick === 0">-->
-<!--                    <i class="bx bxs-book-alt" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List1[index].name}}</b>-->
-<!--                    <span style="float: right;margin-right: 20px">-->
-<!--                    32-->
-<!--                  </span>-->
-<!--                  </div>-->
-<!--                  <div v-if="List1[index].isClick === 1">-->
-<!--                    <i class="bx bxs-book-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List1[index].name}}</b>-->
-<!--                    <span style="float: right;margin-right: 20px;color: white">-->
-<!--                    32-->
-<!--                  </span>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div v-for="(item,index) in List2" :key="index">-->
-<!--                <div class="item" @mouseenter="onItem2(index)" @mouseleave="leaveItem2(index)" @click="click2Item(index)" :style="List2[index].style">-->
-<!--                  <div v-if="List2[index].isClick === 0">-->
-<!--                    <i class="bx bxs-folder" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List2[index].name}}</b>-->
-<!--                  </div>-->
-<!--                  <div v-if="List2[index].isClick === 1">-->
-<!--                    <i class="bx bxs-folder-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List2[index].name}}</b>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </el-collapse-item>-->
-<!--          </el-collapse>-->
         </div>
         <div class="CollectionItems">
           <div class="CollectionItem" v-for="(item,index) in favorites" :key="index">
@@ -180,6 +125,7 @@ export default {
     return {
       activeMenu1: false,
       activeMenu2: false,
+      // favorites: [],
       favorites : [
         {
           "title": '改进的二分法查找',
@@ -294,15 +240,29 @@ export default {
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
-        this.List.push({
-          id : res.data[i].id,
-          name : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-          isClick: 0,
-          style: ''
-        })
+        if(this.$route.params.selected === 1 && this.$route.params.index === i) {
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 1,
+            style: ''
+          })
+          this.showFavorites(i)
+        }
+        else {
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
       }
     })
     this.$axios({
@@ -315,15 +275,28 @@ export default {
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
-        this.List1.push({
-          id : res.data[i].id,
-          name : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-          isClick: 0,
-          style: ''
-        })
+        if(this.$route.params.selected === 2 && this.$route.params.index === i) {
+          this.List1.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 1,
+            style: ''
+          })
+        }
+        else {
+          this.List1.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
       }
     })
     this.$axios({
@@ -336,17 +309,39 @@ export default {
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
-        this.List2.push({
-          id : res.data[i].id,
-          name : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-          isClick: 0,
-          style: ''
-        })
+        if(this.$route.params.selected === 3 && this.$route.params.index === i) {
+          this.List2.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 1,
+            style: ''
+          })
+        }
+        else {
+          this.List2.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
       }
     })
+    if(this.$route.params.selected === 1) {
+      this.activeMenu1 = true;
+    }
+
+    else if(this.$route.params.selected === 2) {
+      this.activeMenu2 = true;
+    }
+  },
+  mounted() {
   },
   filters:{
     ellipsis(value){

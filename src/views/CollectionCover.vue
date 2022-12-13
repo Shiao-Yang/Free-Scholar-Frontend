@@ -31,16 +31,16 @@
             <span class="sub-title">我创建的</span>
           </div>
         </div>
-        <div class="item" v-for="(item,index) in MyCreateList" :key="index">
-          <img :src="'http://139.9.134.209:8000/media/coverimgs/'+MyCreateList[index].avatar" class="cover">
+        <div class="item" v-for="(item,index) in MyCreateList" :key="index" :title="item.title" @click="toCollection(1, index)">
+          <img :src="'http://139.9.134.209:8000/media/coverimgs/'+item.avatar" class="cover">
           <div class="name">
-            {{MyCreateList[index].title}}
+            {{item.title}}
           </div>
           <div class="date">
-            创建于{{MyCreateList[index].date}}
+            创建于{{item.date}}
           </div>
         </div>
-        <div class="item">
+        <div class="item" title="新建">
         <div class="newCollection">
           <i class='bx bx-plus' style="font-size: 150px;position: relative;left: 12px" @click="newCollect"></i>
         </div>
@@ -195,7 +195,17 @@ export default {
     leaveItem() {
       this.itemStyle = '';
     },
-
+    toCollection(ListNum, index) {
+      this.$router.push(
+          {
+            name: 'Collection',
+            params: {
+              selected: ListNum,
+              index: index,
+            }
+          }
+      );
+    },
   }
 }
 </script>
@@ -266,7 +276,9 @@ export default {
 .item {
   display: inline-block;
   margin-left: 20px;
+  cursor: pointer;
 }
+
 .Mytitle {
   position: relative;
   height: 40px;
