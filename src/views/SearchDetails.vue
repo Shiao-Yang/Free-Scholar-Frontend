@@ -47,7 +47,8 @@
             </span>
         <span class="header-icon" style="margin-right: 50px">
             <i class='el-icon-s-promotion' style="margin-right: 7px"></i>
-            <span style="font-size: 14px"><el-link type="primary" :href=out_link_str>外部链接</el-link></span>
+            <span style="font-size: 14px"><el-link type="primary">外部链接</el-link></span>
+            <span class="url-icon"><i class='bx bx-caret-left'></i></span>
             <div class="sub-menu"></div>
         </span>
       </div>
@@ -445,7 +446,12 @@ export default {
 }
 
 .leftup .title {
-  position: absolute;
+  width: 95%;
+  height: 50px;
+  overflow: hidden;
+  margin-top: 20px;
+  margin-left: 20px;
+  /*position: absolute;*/
   font-size: 35px;
   left: 20px;
   top: 20px;
@@ -557,9 +563,16 @@ export default {
 }
 
 .header-icon {
+  height: 20px;
+  line-height: 20px;
   cursor: pointer;
 }
 .header-icon:hover {
   color: #2196f3;
 }
+
+.header-icon .url-icon {
+
+}
+
 </style>
