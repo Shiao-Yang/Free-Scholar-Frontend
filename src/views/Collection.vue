@@ -62,7 +62,7 @@
                     <span class="sub-icon" v-else><i class='bx bxs-folder-open' ></i></span>
                     <span class="sub-text">{{ item.name }}</span>
                     <span class="sub-edit-icon" @click="changeAvatar(item.id)" title="编辑封面"><i class='bx bx-edit-alt' ></i></span>
-                    <span class="sub-delete-icon" title="删除收藏夹"><i class='bx bx-minus-circle'></i></span>
+                    <span class="sub-delete-icon" title="删除收藏夹" @click="deletecollect(item.id)"><i class='bx bx-minus-circle'></i></span>
                   </li>
                 </div>
               </ul>
@@ -278,7 +278,7 @@ export default {
   methods: {
     deletecollect(id){
       let params = new FormData();
-      params.append("favorites_id", this.List[id]);
+      params.append("favorites_id", id);
       this.$axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -287,7 +287,8 @@ export default {
         url: this.$store.state.address+'api/relation/deleteFavorites',
         data: params,
       }).then(res =>{
-        this.$message.success(res.data.message);
+        this.$message.success(res.data.msg);
+        this.getCollections();
         this.showFavorites(this.nowlistid);
       })
     },
