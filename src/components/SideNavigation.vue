@@ -40,8 +40,8 @@
             <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
           </span>
         </router-link>
-        <ul class="user-sub-menu" @click="toHome">
-          <li class="sub-item">
+        <ul class="user-sub-menu">
+          <li class="sub-item" @click="toHome">
             <i class='bx bx-user'></i>
             <span>个人中心</span>
             <i class='bx bx-chevron-right right'></i>
