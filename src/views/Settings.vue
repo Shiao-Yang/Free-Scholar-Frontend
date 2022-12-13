@@ -118,9 +118,6 @@ export default {
         method: 'post',
         url: this.$store.state.address+'api/publication/ReadPaper/',
         data: para,
-        headers: {
-          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-        },
       })
           .then(res=>{
             console.log('readPaper:')
@@ -261,7 +258,7 @@ export default {
   font-size: 18px;
   font-weight: bold;
   min-width: 550px;
-  height: 30px;
+  line-height: 30px;
   padding: 10px 20px 10px 20px;
   border-radius: 10px;
   border: none;
@@ -404,7 +401,6 @@ export default {
   position: relative;
   width: 20%;
   min-width: 250px;
-  padding: 10px;
   margin: 100px 0 0 20px;
 }
 .register-login {

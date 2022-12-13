@@ -1,3 +1,196 @@
+<template>
+  <div class="container" :class="{'sign-up-mode': !loginMode}">
+    <div class="forms-container">
+      <div class="signin-signup">
+        <form class="sign-in-form">
+          <h2 class="login-title">登录</h2>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input type="text" v-model="login_username" placeholder="用户名" />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input type="password" v-model="login_password" placeholder="密码" @keyup.enter="login"/>
+          </div>
+          <el-button style="position: relative; top: 10px;" type="primary" plain round @click="login">立即登录</el-button>
+          <!--<input type="submit" value="立即登录" class="btn solid" @click="login"/>-->
+        </form>
+        <form action="#" class="sign-up-form">
+          <h2 class="login-title">注册</h2>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input type="text" v-model="register_username" placeholder="用户名" />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-envelope"></i>
+            <input type="email" v-model="register_mail" placeholder="邮箱" />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input type="password" v-model="register_password1" placeholder="密码" />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input type="password" v-model="register_password2" placeholder="确认密码" />
+          </div>
+          <el-button style="position: relative;" type="primary" plain round @click="register">立即注册</el-button>
+          <!--<input class="btn" value="立即注册" @click="register"/>-->
+        </form>
+      </div>
+    </div>
+
+    <div class="panels-container">
+      <div class="panel left-panel">
+        <div class="content">
+          <h3>加入我们</h3>
+          <p>
+            加入我们，成为本站的一份子。
+          </p>
+          <button class="btn transparent" id="sign-up-btn" @click="loginMode = false">
+            去注册
+          </button>
+        </div>
+        <img src="../assets/img/log.svg" class="image" alt="" />
+      </div>
+      <div class="panel right-panel">
+        <div class="content">
+          <h3>已有帐号？</h3>
+          <p>
+            立即登录已有帐号，享受独家权益。
+          </p>
+          <button class="btn transparent" id="sign-in-btn" @click="loginMode = true">
+            去登录
+          </button>
+        </div>
+        <img src="../assets/img/register.svg" class="image" alt="" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import md5 from 'js-md5';
+
+export default {
+  name: "LoginSignUp",
+  data (){
+    return {
+      loginMode: true,
+      login_username: '',
+      login_password: '',
+      register_username: '',
+      register_password1: '',
+      register_password2: '',
+      register_mail: '',
+    }
+  },
+  methods: {
+    login() {
+      let that = this;
+      let pwd;
+      // pwd = md5(this.login_password)
+
+      let param = new FormData();
+      console.log(this.login_username)
+      console.log(pwd)
+      param.append('username', this.login_username);
+      param.append('password', this.login_password);
+
+      this.axios({
+        method: "post",
+        url: 'http://139.9.134.209:8000/api/user/login/',
+        data: param,
+      })
+      .then(res => {
+        if(res.data.errno === 0) {
+          let baseInfo = {}
+          baseInfo.name = res.data.name
+          baseInfo.mail = res.data.email
+          baseInfo.avatar = res.data.avatar
+          baseInfo.token = res.data.token
+          baseInfo.profile = res.data.profile
+          baseInfo.isAdmin = res.data.isAdmin
+          // console.log(JSON.stringify(baseInfo))
+          sessionStorage.setItem('baseInfo', JSON.stringify(baseInfo))
+          this.$store.state.baseInfo = baseInfo;
+          this.$message({
+            message: '登陆成功',
+            showClose: true,
+            type: 'success',
+          })
+
+          let tmp = sessionStorage.getItem('baseInfo')
+          console.log(tmp)
+
+          if(baseInfo.isAdmin === true) {
+            this.$router.push('/adminHome')
+          }
+          else {
+            this.$router.push('/')
+          }
+        }
+        else {
+          this.$message({
+            message: res.data.msg,
+            showClose: true,
+            type: 'error',
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
+    register() {
+      let param = new FormData();
+      let pwd1, pwd2;
+      // pwd1 = md5(this.register_password1)
+      // pwd2 = md5(this.register_password2)
+
+      console.log(this.register_username)
+      console.log(this.register_mail)
+      console.log(this.register_password1)
+      console.log(this.register_password2)
+      param.append('username', this.register_username);
+      param.append('email', this.register_mail);
+      param.append('password1', this.register_password1);
+      param.append('password2', this.register_password2);
+
+      this.axios({
+        method: "post",
+        url: 'http://139.9.134.209:8000/api/user/register/',
+        data: param,
+      })
+      .then(res => {
+        if(res.data.errno === 0) {
+
+          this.$message({
+            message: '注册成功',
+            showClose: true,
+            type: 'success',
+          })
+
+          this.loginMode = true;
+        }
+        else {
+          this.$message({
+            message: res.data.msg,
+            showClose: true,
+            type: 'error',
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
+  },
+  mounted() {
+  }
+}
+</script>
+
+<style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
 
 * {
@@ -33,7 +226,7 @@ input {
   transform: translate(-50%, -50%);
   left: 75%;
   width: 50%;
-  transition: 1s 0.7s ease-in-out;
+  transition: 0.5s 0.35s ease-in-out;
   display: grid;
   grid-template-columns: 1fr;
   z-index: 5;
@@ -60,7 +253,7 @@ form.sign-in-form {
   z-index: 2;
 }
 
-.title {
+.login-title {
   font-size: 2.2rem;
   color: #444;
   margin-bottom: 10px;
@@ -147,6 +340,12 @@ form.sign-in-form {
   transition: 0.5s;
 }
 
+.sign-in-form .btn input::placeholder{
+  border: solid red;
+  position: relative;
+  left: 20px;
+}
+
 .btn:hover {
   background-color: #4d84e2;
 }
@@ -169,7 +368,7 @@ form.sign-in-form {
   right: 48%;
   transform: translateY(-50%);
   background-image: linear-gradient(-45deg, #4481eb 0%, #04befe 100%);
-  transition: 1.8s ease-in-out;
+  transition: 0.9s ease-in-out;
   border-radius: 50%;
   z-index: 6;
 }
@@ -177,7 +376,7 @@ form.sign-in-form {
 .image {
   width: 100%;
   transition: transform 1.1s ease-in-out;
-  transition-delay: 0.4s;
+  transition-delay: 0.2s;
 }
 
 .panel {
@@ -398,3 +597,4 @@ form.sign-in-form {
     left: 50%;
   }
 }
+</style>

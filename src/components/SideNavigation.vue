@@ -29,9 +29,16 @@
       </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style=""></i>
-          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
-          <span class="text">{{ baseInfo.username }}</span>
+          <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
+          <span class="icon avatar">
+            <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
+                 v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
+            <i title="头像错误" class='bx bxs-user' v-else></i>
+          </span>
+          <span class="text">
+            <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
+            <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
+          </span>
         </router-link>
         <ul class="user-sub-menu">
           <li class="sub-item" @click="toHome">
@@ -39,20 +46,10 @@
             <span>个人中心</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
-          <li class="sub-item">
-            <i class='bx bxs-user-account'></i>
-            <span>账号设置</span>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
           <li class="sub-item" @click="toMessageCenter">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
-            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
-          <li class="sub-item">
-            <i class='bx bx-group'></i>
-            <span>我的机构</span>
+            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
             <i class='bx bx-chevron-right right'></i>
           </li>
           <li class="bottom-bor">
@@ -60,6 +57,19 @@
           <li class="sub-item log-out" @click="logout">
             <i class='bx bx-log-out-circle'></i>
             <span>退出登录</span>
+            <i class='bx bx-chevron-right right'></i>
+          </li>
+        </ul>
+      </li>
+      <li class="side-navigation-item user-box" v-else>
+        <router-link to="#" :style="{'--clr':userStateClr}">
+          <span class="icon avatar"><i class='bx bxs-user'></i></span>
+          <span class="text">游客</span>
+        </router-link>
+        <ul class="user-sub-menu sub-menu-admin">
+          <li class="sub-item log-in" @click="login">
+            <i class='bx bx-log-in-circle'></i>
+            <span>登录/注册</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
         </ul>
@@ -102,49 +112,21 @@
           <span class="text">事务中心</span>
         </router-link>
       </li>
-<!--      <li class="side-navigation-item" v-on:click="activeLink(8)" :class="{'active': activeIndex === 8}" v-if="isLogin">-->
-<!--        <router-link :to="{path: '/collectionCover'}" style="&#45;&#45;clr:#ffa117;" title="收藏夹">-->
-<!--          <span class="icon"><i class='bx bxs-star' ></i></span>-->
-<!--          <span class="text">收藏夹</span>-->
-<!--        </router-link>-->
-<!--      </li>-->
-<!--      <li class="side-navigation-item" v-on:click="activeLink(9)" :class="{'active': activeIndex === 9}" v-if="isLogin">-->
-<!--        <router-link :to="{path: '/history'}" style="&#45;&#45;clr:#2196f3;" title="历史记录">-->
-<!--          <span class="icon"><i class='bx bx-history'></i></span>-->
-<!--          <span class="text">历史记录</span>-->
-<!--        </router-link>-->
-<!--      </li>-->
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" style="--clr: #0fc70f">
-          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
-          <span class="text">{{baseInfo.username}}</span>
+          <span class="icon avatar">
+            <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
+                 v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
+            <i title="头像错误" class='bx bx-log-in-circle' v-else></i>
+          </span>
+          <span class="text">
+            <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
+            <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
+          </span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
-<!--          <li class="sub-item" @click="toHome">-->
-<!--            <i class='bx bx-user'></i>-->
-<!--            <span>个人中心</span>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
-<!--          <li class="sub-item">-->
-<!--            <i class='bx bxs-user-account'></i>-->
-<!--            <span>账号设置</span>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
-<!--          <li class="sub-item" @click="toMessageCenter">-->
-<!--            <i class='bx bx-message-rounded'></i>-->
-<!--            <span>消息中心</span>-->
-<!--            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
-<!--          <li class="sub-item">-->
-<!--            <i class='bx bx-group'></i>-->
-<!--            <span>我的机构</span>-->
-<!--            <i class='bx bx-chevron-right right'></i>-->
-<!--          </li>-->
-<!--          <li class="bottom-bor">-->
-<!--          </li>-->
           <li class="sub-item log-out" @click="logout">
-            <i class='bx bx-log-out-circle'></i>
+            <i class='bx bxs-user'></i>
             <span>退出登录</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
@@ -161,7 +143,9 @@ export default {
     return {
       isActive: false,
       index: 0,
-      userStateClr: '#f44336',
+      // userStateClr: '#f44336',
+      msg_plm_has_new: 0, //新的系统消息的数量
+      msg_rec_has_new: 0, //新的私信的数量
     }
   },
   computed :{
@@ -172,7 +156,7 @@ export default {
       )
         return 1;
 
-      else if(this.$route.path.startsWith('/search'))
+      else if(this.$route.path.startsWith('/search') || this.$route.path.startsWith('/Search'))
         return 2;
 
       else if(this.$route.path.startsWith('/adminHome'))
@@ -211,10 +195,34 @@ export default {
     },
     baseInfo() {
       return this.$store.state.baseInfo;
+    },
+    userStateClr() {
+      if(this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0)
+        return '#f44336';
+      else
+        return '#0fc70f';
+    },
+  },
+  watch: {
+    baseInfo : {
+      handler(newVal, oldVal) {
+        if(newVal !== null
+            && newVal !== undefined
+            && newVal.uid !== null
+            && newVal.uid !== undefined) {
+          this.getMsgRec(newVal.uid, 0);
+        }
+
+      },
+      deep: true,
     }
   },
-
   methods: {
+    login() {
+      this.$router.push({
+        path: '/login&signup'
+      })
+    },
     logout() {
       let baseInfo = JSON.parse(sessionStorage.getItem('baseInfo'))
       let token = baseInfo.token;
@@ -270,6 +278,102 @@ export default {
       this.isActive = !this.isActive;
       this.$emit('getActive', this.isActive);
     },
+
+    getMsgRec(uid, type) { //type=0,初始化时的调用
+      let that = this;
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec',
+      })
+          .then(res => {
+            console.log(res.data)
+            this.msg_rec_list = res.data;
+            for(let i = 0; i < this.msg_rec_list.length; i++) {
+              // this.msg_rec_list[i].avatar = 'user.png';
+              this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+            this.dis_msg_list = this.msg_rec_list;
+
+            console.log(this.dis_msg_list)
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+            console.log(this.showContent)
+            if(type === 0) {
+              this.dis_msg_list = this.msg_plm_list;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+
+    getMsgPlm(uid) {
+      let that = this;
+
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getPlatMsg',
+      })
+          .then(res => {
+            console.log(res.data)
+
+            this.msg_plm_list = res.data;
+            for(let i = 0; i < this.msg_plm_list.length; i++) {
+              // this.msg_plm_list[i].avatar = 'user.png';
+              this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.dis_msg_list = this.msg_plm_list;
+            that.$store.state.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+
+    cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
+      let has_new = 0;
+      for(let i = 0; i < msg_list.length; i++) {
+        if(!msg_list[i].is_read) { //有未读消息就+1
+          has_new++;
+        }
+      }
+      console.log(has_new);
+      return has_new;
+    },
+    cal_msg_plm(msg_list) { //计算系统消息是否有未读消息
+      let has_new = 0;
+      console.log("in cal_msg_plm")
+      for(let i = 0; i < msg_list.length; i++) {
+        console.log(msg_list[i].is_read)
+        if(!msg_list[i].is_read) { //有未读消息就+1
+          has_new++;
+        }
+      }
+      console.log(has_new)
+      return has_new;
+    },
+  },
+
+  created() {
+    // this.getMsgRec(this.uid, 0);
+  },
+  mounted() {
+    // this.getMsgPlm(this.uid);
+    // console.log(this.msg_plm_has_new)
+    // console.log(this.msg_rec_has_new)
+    // this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    // console.log(this.dis_msg_list)
   },
 }
 </script>
@@ -526,7 +630,7 @@ export default {
   position: absolute;
   width: 200px;
   right: -200px;
-  top: -200px;
+  top: -100px;
   color: #333;
   border-radius: 10px;
   z-index: 99;
@@ -545,7 +649,7 @@ export default {
 
 
 .user-box:hover .user-sub-menu {
-  top:-150px;
+  top: -75px;
   right: -210px;
   opacity: 1;
   visibility: visible;
@@ -612,6 +716,12 @@ export default {
 .user-box .user-sub-menu .log-out:hover{
   border-radius: 10px;
   background-color: #ed5a65;
+  color: #fff;
+}
+
+.user-box .user-sub-menu .log-in:hover {
+  border-radius: 10px;
+  background-color: #00E6B8;
   color: #fff;
 }
 </style>

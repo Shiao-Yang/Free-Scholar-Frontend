@@ -16,7 +16,7 @@
     </div>
     <div>
         <el-dialog
-            title="上传头像"
+            title="上传封面"
             :visible.sync="changeAvatarVisible"
             width="30%"
             class = "changeAvatar">
@@ -61,7 +61,8 @@
                     <span class="sub-icon" v-if="item.isClick === 0"><i class='bx bxs-folder' ></i></span>
                     <span class="sub-icon" v-else><i class='bx bxs-folder-open' ></i></span>
                     <span class="sub-text">{{ item.name }}</span>
-                    <span class="sub-edit-icon" @click="changeAvatar(item.id)"><i class='bx bx-edit-alt' ></i></span>
+                    <span class="sub-edit-icon" @click="changeAvatar(item.id)" title="编辑封面"><i class='bx bx-edit-alt' ></i></span>
+                    <span class="sub-delete-icon" title="删除收藏夹" @click="deletecollect(item.id)"><i class='bx bx-minus-circle'></i></span>
                   </li>
                 </div>
               </ul>
@@ -74,77 +75,26 @@
                 </div>
                 <span class="menu-arrow"><i class='bx bxs-chevron-left' ></i></span>
               </div>
-              <ul class="sub-menu">
-                <li class="sub-item">
-                  <span class="sub-text"></span>
-                  <span class="sub-edit-icon"></span>
-                </li>
-              </ul>
+<!--              <ul class="sub-menu">-->
+<!--                <li class="sub-item">-->
+<!--                  <span class="sub-text"></span>-->
+<!--                  <span class="sub-edit-icon"></span>-->
+<!--                </li>-->
+<!--              </ul>-->
             </li>
           </ul>
-<!--          <el-collapse v-model="activeNames" @change="handleChange">-->
-<!--            <el-collapse-item name="1">-->
-<!--              <template slot="title">-->
-<!--              <span style="font-size: 18px;margin-left: 20px">-->
-<!--                我创建的-->
-<!--              </span>-->
-<!--              </template>-->
-<!--              <div class="item" @mouseenter="onNew" @mouseleave="leaveNew" :style="NewStyle">-->
-<!--                <i class="el-icon-circle-plus" style="margin-right: 5px;margin-left: 10px;"></i><b>新建收藏夹</b>-->
-<!--              </div>-->
-<!--              <div v-for="(item,index) in List" :key="index">-->
-<!--                <div class="item" @mouseenter="onItem(index)" @mouseleave="leaveItem(index)" @click="clickItem(index)" :style="List[index].style">-->
-<!--                  <div v-if="List[index].isClick === 0">-->
-<!--                    <i class="bx bxs-folder" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List[index].name}}</b>-->
-<!--                  </div>-->
-<!--                  <div v-if="List[index].isClick === 1">-->
-<!--                    <i class="bx bxs-folder-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List[index].name}}</b>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </el-collapse-item>-->
-<!--            <el-collapse-item name="2">-->
-<!--              <template slot="title">-->
-<!--              <span style="font-size: 18px;margin-left: 20px">-->
-<!--                我的订阅与收藏-->
-<!--              </span>-->
-<!--              </template>-->
-<!--              <div v-for="(item,index) in List1" :key="index">-->
-<!--                <div class="item" @mouseenter="onItem1(index)" @mouseleave="leaveItem1(index)" @click="click1Item(index)" :style="List1[index].style">-->
-<!--                  <div v-if="List1[index].isClick === 0">-->
-<!--                    <i class="bx bxs-book-alt" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List1[index].name}}</b>-->
-<!--                    <span style="float: right;margin-right: 20px">-->
-<!--                    32-->
-<!--                  </span>-->
-<!--                  </div>-->
-<!--                  <div v-if="List1[index].isClick === 1">-->
-<!--                    <i class="bx bxs-book-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List1[index].name}}</b>-->
-<!--                    <span style="float: right;margin-right: 20px;color: white">-->
-<!--                    32-->
-<!--                  </span>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div v-for="(item,index) in List2" :key="index">-->
-<!--                <div class="item" @mouseenter="onItem2(index)" @mouseleave="leaveItem2(index)" @click="click2Item(index)" :style="List2[index].style">-->
-<!--                  <div v-if="List2[index].isClick === 0">-->
-<!--                    <i class="bx bxs-folder" style="margin-right: 5px;margin-left: 10px;"></i><b>{{List2[index].name}}</b>-->
-<!--                  </div>-->
-<!--                  <div v-if="List2[index].isClick === 1">-->
-<!--                    <i class="bx bxs-folder-open" style="margin-right: 5px;margin-left: 10px;color: white"></i><b style="color: white">{{List2[index].name}}</b>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </el-collapse-item>-->
-<!--          </el-collapse>-->
         </div>
         <div class="CollectionItems">
           <div class="CollectionItem" v-for="(item,index) in favorites" :key="index">
             <div class="itemTitle">
-              {{favorites[index].title}}
+              <router-link :to="'SearchDetails/'+item.id" class="a">{{favorites[index].title}}</router-link><span style="float: right" @click="deletefrom(item.id)"><i class="el-icon-delete"></i></span>
             </div>
             <div class="author">
-              {{favorites[index].author}}
+              <span v-for="(item,index1) in favorites[index].authors" :key="index1" style="margin-right: 8px;">
+                <router-link :to="'NS?id='+item.id" style=" color: #248F24;font-weight :bold;font-size: 10px">
+                  {{favorites[index].authors[index1].name}}
+                </router-link>
+              </span>
             </div>
             <div class="introductions">
               {{favorites[index].introduction | ellipsis}}
@@ -178,30 +128,12 @@ export default {
   name: "Collection",
   data() {
     return {
+      nowCollectionid : 0,
+      nowlistid : 0,
       activeMenu1: false,
       activeMenu2: false,
-      favorites : [
-        {
-          "title": '改进的二分法查找',
-          "author": '王嗨涛，朱虹-计算机工程，2006-cqvip.com',
-          "introduction": '...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法\n' +
-              '              更加有效的查找方式，文章给出了一个称之为改进的...',
-          "like": 53,
-          "collect": 43,
-          "comment" : 10,
-          "times": 20,
-        },
-        {
-          "title": '改进的二分法查找',
-          "author": '王嗨涛，朱虹-计算机工程，2006-cqvip.com',
-          "introduction": '...对有序数列的查找算法中二分法查找（binarysearch）是最常用的。利用二分法，在含有n个元素的有...之差的最大值的一个上界，就可以有比二分法\n' +
-              '              更加有效的查找方式，文章给出了一个称之为改进的...',
-          "like": 53,
-          "collect": 43,
-          "comment" : 10,
-          "times": 20,
-        },
-      ],
+      // favorites: [],
+      favorites : [],
       form :{
         title : '',
       },
@@ -212,72 +144,9 @@ export default {
       visible1 : false,
       activeNames: [],
       NewStyle: '',
-      List: [
-        {
-          "name" : '二分法',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '植物学研究',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '天文学论文合集',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '北美落叶林',
-          "style" : '',
-          "isClick" : 0,
-        }
-        ],
-      List1: [
-        {
-          "name" : '二分法',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '植物学研究',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '天文学论文合集',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '北美落叶林',
-          "style" : '',
-          "isClick" : 0,
-        }
-      ],
-      List2: [
-        {
-          "name" : '二分法',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '植物学研究',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '天文学论文合集',
-          "style" : '',
-          "isClick" : 0,
-        },
-        {
-          "name" : '北美落叶林',
-          "style" : '',
-          "isClick" : 0,
-        }
-      ],
+      List: [],
+      List1: [],
+      List2: [],
     };
   },
   created() {
@@ -294,15 +163,32 @@ export default {
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
-        this.List.push({
-          id : res.data[i].id,
-          name : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-          isClick: 0,
-          style: ''
-        })
+        if(this.$route.params.selected === 1 && this.$route.params.index === i) {
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 1,
+            style: ''
+          })
+          if (this.List.length >= 0){
+            this.nowCollectionid = this.List[0].id;
+          }
+          this.showFavorites(i);
+        }
+        else {
+          this.List.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
       }
     })
     this.$axios({
@@ -315,15 +201,28 @@ export default {
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
-        this.List1.push({
-          id : res.data[i].id,
-          name : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-          isClick: 0,
-          style: ''
-        })
+        if(this.$route.params.selected === 2 && this.$route.params.index === i) {
+          this.List1.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 1,
+            style: ''
+          })
+        }
+        else {
+          this.List1.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
       }
     })
     this.$axios({
@@ -336,17 +235,39 @@ export default {
     }).then(res =>{
       var i = 0;
       for (i = 0; i < res.data.length; i++){
-        this.List2.push({
-          id : res.data[i].id,
-          name : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-          isClick: 0,
-          style: ''
-        })
+        if(this.$route.params.selected === 3 && this.$route.params.index === i) {
+          this.List2.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 1,
+            style: ''
+          })
+        }
+        else {
+          this.List2.push({
+            id : res.data[i].id,
+            name : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+            isClick: 0,
+            style: ''
+          })
+        }
       }
     })
+    if(this.$route.params.selected === 1) {
+      this.activeMenu1 = true;
+    }
+
+    else if(this.$route.params.selected === 2) {
+      this.activeMenu2 = true;
+    }
+  },
+  mounted() {
   },
   filters:{
     ellipsis(value){
@@ -358,6 +279,38 @@ export default {
     }
   },
   methods: {
+    deletecollect(id){
+      let params = new FormData();
+      params.append("favorites_id", id);
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/relation/deleteFavorites',
+        data: params,
+      }).then(res =>{
+        this.$message.success(res.data.msg);
+        this.getCollections();
+        this.showFavorites(this.nowlistid);
+      })
+    },
+    deletefrom(id){
+      let params = new FormData();
+      params.append("paper_id", id);
+      params.append("favorites_id", this.nowCollectionid);
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/publication/UnCollectPaper/',
+        data: params,
+      }).then(res =>{
+        this.$message.success(res.data.message);
+        this.showFavorites(this.nowlistid);
+      })
+    },
     toChangeAvatar(){
       let fid = this.currentfid;
       this.changeAvatarVisible = false;
@@ -400,12 +353,11 @@ export default {
             title: res.data[i].paper._source.title,
             id: res.data[i].paper._source.id,
             authors: res.data[i].paper._source.authors,
-            author: res.data[i].paper._source.authors[0].name +  res.data[i].paper._source.authors[0].org,
             introduction: res.data[i].paper._source.abstract,
             like: res.data[i].like_count,
             collect: res.data[i].collect_count,
-            "comment" : 10,
-            times: res.data[i].read_count,
+            "comment" : 1,
+            times: res.data[i].paper._source.n_citation,
           })
         }
       }).catch(err => {
@@ -493,10 +445,10 @@ export default {
         data: params,
       }).then(res =>{
         this.$message.success(res.data.msg);
+        this.getCollections();
       })
       this.form.title = '';
       this.visible = false;
-      location.reload();
     },
     close(){
       this.visible = false;
@@ -533,6 +485,8 @@ export default {
       }
       this.List[id].isClick = 1;
       this.List[id].style = 'background-color: #00AEEC;';
+      this.nowCollectionid = this.List[id].id;
+      this.nowlistid = id;
       this.showFavorites(id);
     },
     onItem1(id) {
@@ -586,6 +540,14 @@ export default {
 </script>
 
 <style scoped>
+
+author-name {
+
+}
+a {
+  text-decoration: none;
+  color: #4DA5FF;
+}
 ul {
   list-style: none;
 }
@@ -814,7 +776,23 @@ li {
   transition: all ease 0.4s;
 }
 
+.menu-item .sub-menu .sub-item .sub-delete-icon{
+  color: #f44336;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all ease 0.4s;
+}
+
+
 .menu-item .sub-menu .sub-item:hover .sub-edit-icon{
+  margin-right: 5px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.menu-item .sub-menu .sub-item:hover .sub-delete-icon {
   margin-right: 10px;
   opacity: 1;
   visibility: visible;

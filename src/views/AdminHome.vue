@@ -142,6 +142,9 @@ export default {
 
       ],
       screenWidth: document.documentElement.clientWidth,
+      adminNum: 0,
+      userNum: 0,
+      scholarNum: 0,
       chartType: 0,
       userChart: null,
       userChartOption: {
@@ -185,9 +188,6 @@ export default {
           }
         ]
       },
-      adminNum: 0,
-      userNum: 0,
-      scholarNum: 0,
       hotChart: null,
       hotChartOption: {
         title: {
@@ -196,6 +196,9 @@ export default {
         },
         xAxis: {
           data: ['AI', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
+        },
+        tooltip: {
+          trigger: 'item',
         },
         yAxis: {},
         series: [
@@ -208,16 +211,19 @@ export default {
       taskChart: null,
       taskChartOption: {
         title: {
-          text: '七天工作状态统计图',
+          text: '七天处理工作统计图',
           left: 'center',
         },
         xAxis: {
           data: ['2022/12/7', '2022/12/8', '2022/12/9',
-                  '2022/12/10', '2022/12/11', '2022/12/12',
-                  '2022/12/13',
+            '2022/12/10', '2022/12/11', '2022/12/12',
+            '2022/12/13',
           ],
         },
         yAxis: {},
+        tooltip: {
+          trigger: 'item',
+        },
         series: [
           {
             data: [10, 5, 3, 8, 3, 16, 25],

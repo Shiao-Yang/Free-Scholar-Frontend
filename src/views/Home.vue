@@ -98,6 +98,15 @@
             个人头像
           </span>
         </div>
+        <div class="source-item" :class="{'active' : isActive2}" @click="toNS" v-if="baseInfo.author_id !== null">
+          <span class="image">
+<!--            <img src="../assets/img/home/avatar.png">-->
+            <i class='bx bx-user-circle'></i>
+          </span>
+          <span class="name">
+            学者门户
+          </span>
+        </div>
       </div>
       <div class="divider-y"></div>
       <div class="content-box">
@@ -545,6 +554,17 @@ export default {
         },
       }
     },
+
+    toNS() {
+      this.$router.push({
+        path: '/NS',
+        query: {
+          id: this.baseInfo.author_id,
+          scholar_id: this.baseInfo.scholar_id,
+        }
+      })
+    },
+
     getBaseInfo(uid) {
       // let token = JSON.parse(sessionStorage.getItem('baseInfo')).token
       this.axios({

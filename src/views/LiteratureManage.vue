@@ -267,239 +267,9 @@ export default {
       visible : false,
       visible1 : false,
       currentInstitutional : 0,
-      List : [
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-          "author" : [
-      {
-        "num" : 1,
-        "name" : "不知名",
-        "id" : 1,
-        "right" : "移除",
-      },
-      {
-        "num" : 2,
-        "name" : "不知名2",
-        "id" : 2,
-        "right" : "移除",
-      },
-      {
-        "num" : 3,
-        "name" : "不知名2",
-        "id" : 3,
-        "right" : "移除",
-      },
-      {
-        "num" : 4,
-        "name" : "不知名2",
-        "id" : 4,
-      },
-    ],
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 4,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 7,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 9,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 11,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-        {
-          "id" : 1,
-          "name": "hahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "origin" : "Science",
-          "date" : "2021",
-        },
-      ],
+      List : [],
       Literature : [],
-      tableData : [
-        {
-          "num" : 1,
-          "name" : "不知名",
-          "id" : 1,
-          "right" : "移除",
-        },
-        {
-          "num" : 2,
-          "name" : "不知名2",
-          "id" : 2,
-          "right" : "移除",
-        },
-        {
-          "num" : 3,
-          "name" : "不知名2",
-          "id" : 3,
-          "right" : "移除",
-        },
-        {
-          "num" : 4,
-          "name" : "不知名2",
-          "id" : 4,
-        },
-      ],
+      tableData : [],
       // 每页显示数量
       pageSize: 6,
       // 共几页
@@ -510,6 +280,9 @@ export default {
       currentPage: 0,
       input: '',
       field: 'title',
+      adminNum: 0,
+      userNum: 0,
+      scholarNum: 0,
       // 数据可视化相关数据
       chartType: 0,
       userChart: null,
@@ -563,6 +336,9 @@ export default {
         xAxis: {
           data: ['AI', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
         },
+        tooltip: {
+          trigger: 'item',
+        },
         yAxis: {},
         series: [
           {
@@ -574,7 +350,7 @@ export default {
       taskChart: null,
       taskChartOption: {
         title: {
-          text: '七天工作状态统计图',
+          text: '七天处理工作统计图',
           left: 'center',
         },
         xAxis: {
@@ -584,6 +360,9 @@ export default {
           ],
         },
         yAxis: {},
+        tooltip: {
+          trigger: 'item',
+        },
         series: [
           {
             data: [10, 5, 3, 8, 3, 16, 25],

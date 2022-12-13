@@ -382,9 +382,6 @@ export default {
         method: 'post',
         url: this.$store.state.address+'api/publication/ReadPaper/',
         data: para,
-        headers: {
-          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-        },
       })
           .then(res=>{
             console.log('readPaper:')
@@ -1378,7 +1375,6 @@ export default {
 }
 
 .add-condition .add-condition-btn{
-  height: 30px;
   line-height: 30px;
   text-align: center;
   cursor: pointer;
@@ -1404,7 +1400,6 @@ export default {
 }
 
 .clear-condition .clear-condition-btn{
-  height: 30px;
   line-height: 30px;
   background-color: #f44336;
   color: #f4f4f4;
