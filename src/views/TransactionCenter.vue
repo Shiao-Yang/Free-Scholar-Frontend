@@ -644,8 +644,8 @@
                          style="height: 40px;width: 40px;border-radius: 5px"
                     >
                   </div>
-                  <p style="display: inline-block;font-size: 25px;margin-left: 25px">{{ recordList[index].fields.name}}</p>
-                  &nbsp发起的关于
+                  <p style="display: inline-block;font-size: 25px;margin-left: 25px">{{ userList[index].name}}</p>
+                  &nbsp发起的
                   <p style="color: #0f62fe;display: inline-block;font-size: 20px;">
                     学者申请</p>
                   <el-button type="text" @click="dialogVisible = true;handleWhichOne=index">
@@ -666,14 +666,14 @@
                       <p style="display:inline-block">{{ recordList[handleWhichOne].fields.name}}</p>
                     </div>
                     <div style="">
-                      <strong>学者所属机构:&nbsp</strong>
-                      <p style="display:inline-block">{{recordList[handleWhichOne].fields.affi.name}}</p>
+                      <strong>学者邮箱:&nbsp</strong>
+                      <p style="display:inline-block">{{userList[handleWhichOne].mail}}</p>
                     </div>
-                    <div style="">
-                      <strong>学者研究领域:&nbsp</strong>
-                      <!--                      <p style="display:inline-block;color: #0f62fe;text-decoration: underline;cursor: pointer">{{recordList[handleWhichOne].fields.reported}}</p>-->
-                      <p style="display:inline-block;">{{recordList[handleWhichOne].fields.field}}</p>
-                    </div>
+<!--                    <div style="">-->
+<!--                      <strong>学者研究领域:&nbsp</strong>-->
+<!--                      &lt;!&ndash;                      <p style="display:inline-block;color: #0f62fe;text-decoration: underline;cursor: pointer">{{recordList[handleWhichOne].fields.reported}}</p>&ndash;&gt;-->
+<!--                      <p style="display:inline-block;">{{recordList[handleWhichOne].fields.field}}</p>-->
+<!--                    </div>-->
                     <div style="">
                       <strong>事务状态:&nbsp</strong>
                       <p style="display:inline-block" v-if="recordList[handleWhichOne].fields.status===0">待处理</p>
@@ -834,8 +834,7 @@ export default {
       reportedCommentList:[],
       reportedScholarList:[],
       appealedPaperList:[],
-      requestedInstitutionList:[],  //这个可以不用，直接使用recordList即可
-      requestedScholarList:[],   //这个也可以不用，直接使用recordList即可
+      requestedScholarList:[],
 
 
 
@@ -874,6 +873,8 @@ export default {
         tempthis.getAllAppealRecords()
         tempthis.selectWhichMenu=5
 
+
+
       }else if(x===3&&y===2){
         tempthis.getPendingAppealRecords()
         tempthis.selectWhichMenu=6
@@ -893,7 +894,10 @@ export default {
       }else if(x===5&&y===2){
         tempthis.getPendingScholarApplication()
         tempthis.selectWhichMenu=10
-
+        console.log("users:")
+        console.log(tempthis.userList)
+        console.log("shows")
+        console.log(tempthis.recordList)
       }
     },
     changePage(val) {
@@ -1168,6 +1172,7 @@ export default {
             tempthis.transactionType="申请";
             for(let i=0;i<tempthis.recordList.length;i++){
               tempthis.getUserInfoToShow(tempthis.recordList[i].fields.user,i)
+              tempthis.requestedScholarList[i]=tempthis.recordList[i].fields;
             }
           })
           .catch(err => {
@@ -1192,6 +1197,7 @@ export default {
             tempthis.transactionType="申请";
             for(let i=0;i<tempthis.recordList.length;i++){
               tempthis.getUserInfoToShow(tempthis.recordList[i].fields.user,i)
+              tempthis.requestedScholarList[i]=tempthis.recordList[i];
             }
           })
           .catch(err => {

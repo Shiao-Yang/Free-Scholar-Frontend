@@ -18,11 +18,13 @@
 <!--      </div>-->
       <div class="theicons">
         <span class="header-icon" style="margin-right: 50px">
-              <i class='bx bxs-like' style="margin-right: 7px" @click="toLikeThisPaper"></i>
+              <i class='bx bxs-like' style="margin-right: 7px" @click="toLikeThisPaper" v-if="hasLikedThisPaper===false"></i>
+              <i class='bx bxs-like' style="margin-right: 7px;color:orange" @click="toLikeThisPaper" v-else-if="hasLikedThisPaper===true"></i>
               <span style="font-size: 14px">{{ number_of_like }}</span>
             </span>
         <span class="header-icon" style="margin-right: 50px">
-              <i class='el-icon-star-off' style="margin-right: 7px;color: orange" @click="drawer = true"></i>
+              <i class='el-icon-star-off' style="margin-right: 7px;color: orange" @click="drawer = true" v-if="hasCollectedThisPaper===false"></i>
+              <i class='el-icon-star-on' style="margin-right: 7px;color: orange" @click="drawer = true" v-else-if="hasCollectedThisPaper===true"></i>
               <span style="font-size: 14px">{{ number_of_collect }}</span>
               <el-drawer
                   :visible.sync="drawer"
@@ -47,7 +49,7 @@
                 </div>
               </el-drawer>
             </span>
-        <span class="header-icon" style="margin-right: 50px">
+        <span class="header-icon" style="margin-right: 50px" @click="toWriteComment">
               <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
               <span style="font-size: 14px">{{ number_of_comment }}</span>
             </span>
@@ -86,25 +88,16 @@
     <div class="leftdown">
       <div class="title">
         评论
-        <div class="replys" v-if="commentList.length>0">
+        <div class="replys" v-if="commentList.length>=0">
           <div style="width:100%;margin-top: 5px;" v-for="item in commentList">
             <div style="height: 40px;width: 40px;display: inline-block;vertical-align: middle;">
-              <img :src="require('../assets/' + item.userAvatarUrl)" style="height: 40px;width: 40px;border-radius: 20px">
+              <img :src="'http://139.9.134.209:8000/media/avatars/'+item.avatar" style="height: 40px;width: 40px;border-radius: 20px">
             </div>
             <div style="display:inline-block;margin-left: 5px">
-              <p>{{ item.userName }}</p>
-            </div>
-            <div style="display: inline-block;margin-left: 10px">
-              <p style="font-size: 10px">{{ item.editTime }}</p>
-            </div>
-            <div style="display: inline-block;margin-left: 10px" id="likeTheComment">
-              <i class='bx bxs-like'></i>
-            </div>
-            <div style="display: inline-block;margin-left: 2px">
-              <p>{{ item.likeNum }}</p>
+              <p>{{ item.username }}</p>
             </div>
             <div style="">
-              <p>{{ item.detail }}</p>
+              <p>{{ item.text }}</p>
               <div class="divider"></div>
             </div>
           </div>
@@ -120,7 +113,7 @@
       </div>
       <div class="recommendations">
         <div class="recommendation" v-for="item in relevant_recommended_literature">
-          <div class="recommendationTitle">
+          <div class="recommendationTitle" @click="$router.push('../');$router.push('SearchDetails/'+item.recommended_literature_id)">
             {{ item.recommended_literature_title }}
           </div>
           <div class="recommendationAuthor">
@@ -185,22 +178,28 @@ export default {
           "利用二分法，在含有n个元素的有...之差的最大值的一个上界，" +
           "就可以有比二分法 更加有效的查找方式，文章给出了一个称之为改进的 祝大家翅膀更好",
       commentList: [],
+      hasLikedThisPaper:false,
+      hasCollectedThisPaper:false,
       relevant_recommended_literature: [
         {
-          recommended_literature_title: "感觉画质",
-          recommended_literature_author: "王海涛",
-          recommended_literature_link_str: ""
+          recommended_literature_title: "Invariant scattering convolution networks.",
+          recommended_literature_author: "Joan Bruna, Stephane Mallat",
+          recommended_literature_id: "53e99a8cb7602d9702303c85"
         },
         {
-          recommended_literature_title: "弗如远甚",
-          recommended_literature_author: "大力为",
-          recommended_literature_link_str: ""
+          recommended_literature_title: "Convolution Kernels on Discrete Structures",
+          recommended_literature_author: "David Haussler",
+          recommended_literature_id: "53e9ac3db7602d9703607b7b"
         }
       ],
     }
   },
   mounted() {
     this.toGetPaperById();
+  },
+  $route(){
+    //跳转到该页面后需要进行的操作
+
   },
   created() {
     this.List = [];
@@ -277,6 +276,8 @@ export default {
         else
           this.$message.error(res.data.msg);
         this.drawer = false;
+        console.log("collect")
+        console.log(res)
       })
       this.handleClose();
     },
@@ -335,7 +336,6 @@ export default {
         paper_id:paperId,
         paper_name:paperName
       }
-      console.log('params:')
       console.log(params)
       if(sessionStorage.getItem('baseInfo') === null
           || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
@@ -348,13 +348,17 @@ export default {
              data: qs.stringify(params)*/
         })
             .then(res => {
-              console.log("otherPaperData:")
-              console.log(res)
+              console.log("otherPaperData1:")
               tempthis.this_paper[1]=res.data;
               tempthis.number_of_like = tempthis.this_paper[1].like_count;
               tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
               tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
               tempthis.number_of_read = tempthis.this_paper[1].read_count;
+              tempthis.hasLikedThisPaper = tempthis.this_paper[1].isLiked;
+              tempthis.hasCollectedThisPaper = tempthis.this_paper[1].isCollected;
+              tempthis.commentList = tempthis.this_paper[1].comment
+              console.log("commentList")
+              console.log(tempthis.commentList)
             })
             .catch(err => {
               console.log(err);
@@ -379,6 +383,11 @@ export default {
               tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
               tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
               tempthis.number_of_read = tempthis.this_paper[1].read_count;
+              tempthis.hasLikedThisPaper = tempthis.this_paper[1].isLiked;
+              tempthis.hasCollectedThisPaper = tempthis.this_paper[1].isCollected;
+              tempthis.commentList = tempthis.this_paper[1].comment
+              console.log("commentList")
+              console.log(tempthis.commentList.length)
             })
             .catch(err => {
               console.log(err);
@@ -386,28 +395,63 @@ export default {
       }
     },
     toLikeThisPaper(){
-      const tempthis = this;
-      let formData = new FormData();
-      formData.append('paper_id',tempthis.literature_id);
-      this.axios({
+      const tempthis = this
+      let params = new FormData();
+      params.append("paper_id", this.literature_id);
+      this.$axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
         method: 'post',
-        url: 'https://139.9.134.209:8000/api/publication/LikePaper/',
-        data: formData
+        url: this.$store.state.address+'api/publication/LikePaper/',
+        data: params,
+      }).then(res =>{
+        console.log('like:')
+        console.log(res)
+        if(tempthis.hasLikedThisPaper===true){
+          tempthis.hasLikedThisPaper=false;
+          tempthis.number_of_like--;
+        }else if(tempthis.hasLikedThisPaper===false){
+          tempthis.hasLikedThisPaper=true;
+          tempthis.number_of_like++;
+        }
       })
-          .then(res => {
-            console.log('like:')
-            console.log(res)
-          })
-          .catch(err => {
-            console.log(err);
-          })
     },
     changeUrlActive() {
       this.urlActive = !this.urlActive
     },
+    toWriteComment(){
+      this.$prompt('发一条友善的评论吧', '发布评论', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        console.log(value)
+        const tempthis = this;
+        let params ={
+          paper_id:this.literature_id,
+          content:value
+        }
+        console.log("comment params")
+        console.log(params)
+        this.axios({
+          method: 'post',
+          url: 'http://139.9.134.209:8000/api/publication/MakeComment/',
+          headers: {
+            jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+          },
+          data:qs.stringify(params)
+        })
+            .then(res => {
+              console.log(res)
+              location.reload()
+            })
+            .catch(err => {
+              console.log(err);
+            })
+      }).catch(() => {
+
+      });
+  }
   }
 }
 </script>

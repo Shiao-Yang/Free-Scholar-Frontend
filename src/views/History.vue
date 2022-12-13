@@ -2,7 +2,7 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="require('../assets/' + url)">
+        <img :src="this.$store.state.url+avatarUrl">
       </div>
       <div class="profile">
         <ul class="profile-list">
@@ -64,38 +64,93 @@
           历史记录
         </span>
         <div style="margin-left: auto">
-          <el-button @click="toDeleteAllHistory()">清空已选</el-button>
-          <el-button @click="toDeleteSelectedHistory()">清空全部</el-button>
+          <el-button @click="toDeleteAllHistory()">清空全部</el-button>
+          <el-button @click="toDeleteSelectedHistory()">清空已选</el-button>
         </div>
       </div>
       <div class="divider"></div>
       <div class="history-list">
-        <div class="history-list-divided-by-data" v-for="(item,index) in historyListDivededByDate" :key="index">
-          <span class="history-time">{{historyListDivededByDate[index][0].date}}&nbsp</span>
+
+        <div class="history-list-divided-by-data" v-if="dayNum>=1">
+          <span class="history-time">{{historyListDay1[0].time.split('T')[0]}}&nbsp</span>
           <el-table
-                ref="multipleTable"
-                :data="historyListDivededByDate[index]"
-                tooltip-effect="dark"
-                style="width: 100% ;overflow:auto;"
-                fit="true"
-                @selection-change="handleSelectionChange"
-            >
-              <el-table-column
-                  prop="title"
-                  label="标题"
-                  width="900">
-              </el-table-column>
-              <el-table-column
-                  prop="time"
-                  label="时间"
-                  width="120">
-              </el-table-column>
-              <el-table-column
-                  type="selection"
-                  width="55">
-              </el-table-column>
-            </el-table>
+              ref="multipleTable"
+              :data="historyListDay1"
+              tooltip-effect="dark"
+              style="width: 100% ;overflow:auto;font-size: 20px"
+              fit="true"
+              @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+                prop="paper_name"
+                label="标题"
+                width="1100">
+            </el-table-column>
+            <el-table-column
+                prop="time"
+                label="时间"
+                width="115">
+            </el-table-column>
+            <el-table-column
+                type="selection"
+                width="55">
+            </el-table-column>
+          </el-table>
         </div>
+
+        <div class="history-list-divided-by-data" v-if="dayNum>=2">
+          <span class="history-time">{{historyListDay2[0].time.split('T')[0]}}&nbsp</span>
+          <el-table
+              ref="multipleTable"
+              :data="historyListDay2"
+              tooltip-effect="dark"
+              style="width: 100% ;overflow:auto;font-size: 20px"
+              fit="true"
+              @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+                prop="paper_name"
+                label="标题"
+                width="1100">
+            </el-table-column>
+            <el-table-column
+                prop="time"
+                label="时间"
+                width="115">
+            </el-table-column>
+            <el-table-column
+                type="selection"
+                width="55">
+            </el-table-column>
+          </el-table>
+        </div>
+
+        <div class="history-list-divided-by-data" v-if="dayNum>=3">
+          <span class="history-time">{{historyListDay3[0].time.split('T')[0]}}&nbsp</span>
+        </div>
+        <el-table
+            ref="multipleTable"
+            :data="historyListDay3"
+            tooltip-effect="dark"
+            style="width: 100% ;overflow:auto;font-size: 20px"
+            fit="true"
+            @selection-change="handleSelectionChange"
+        >
+          <el-table-column
+              prop="paper_name"
+              label="标题"
+              width="1100">
+          </el-table-column>
+          <el-table-column
+              prop="time"
+              label="时间"
+              width="115">
+          </el-table-column>
+          <el-table-column
+              type="selection"
+              width="55">
+          </el-table-column>
+        </el-table>
       </div>
     </div>
   </div>
@@ -106,67 +161,32 @@ export default {
   name: "FollowList",
   data() {
     return {
-      url: 'img/home/avatar1.jpg',
+      userBaseInfo:[],
+      avatarUrl: 'img/home/avatar1.jpg',
       username: 'Peter',
       institution: 'Beihang University',
       profile: 'I am Peter',
       isFollow: false,
       isLike: false,
-      isScholar: false,
+      isScholar: true,
       FollowNumber: 32,
       LikeNumber: 20,
       FanNumber: 15,
       currentPage: 1,
-      historyList: [
-        {
-          date: '2022-11-18',
-          title: '信号量在母猪产后护理的应用',
-          time: '16:07',
-        },
-        {
-          date: '2022-11-18',
-          title: '七圣召唤技术实践',
-          time: '11:03',
-        },
-        {
-          date: '2022-11-18',
-          title: '摸鱼学导论',
-          time: '08:28',
-        },
-        {
-          date: '2022-11-15',
-          title: '信号量在母猪产后护理的应用',
-          time: '08:07',
-        },
-        {
-          date: '2022-11-15',
-          title: '七圣召唤技术实践',
-          time: '07:02',
-        },
-        {
-          date: '2022-11-15',
-          title: '信号量在母猪产后护理的应用',
-          time: '06:07',
-        },
-        {
-          date: '2022-11-15',
-          title: '七圣召唤技术实践',
-          time: '03:02',
-        },
-        {
-          date: '2022-11-15',
-          title: '信号量在母猪产后护理的应用',
-          time: '01:07',
-        },
-        {
-          date: '2022-11-15',
-          title: '七圣召唤技术实践',
-          time: '01:02',
-        },
-
-      ],
-      historyListDivededByDate: [],
-      multipleSelection: []
+      historyList: [],
+      historyListDividedByDate: [],
+      historyListDay1:[],
+      historyListDay2:[],
+      historyListDay3:[],
+      // historyListDay1info:[],
+      // historyListDay2info:[],
+      // historyListDay3info:[],
+      // historyListDay1time:[],
+      // historyListDay2time:[],
+      // historyListDay3time:[],
+      dayNum:0,
+      multipleSelection: [],
+      avatarUlr:"",
     }
   },
   methods: {
@@ -179,35 +199,168 @@ export default {
     init() {
       let len = this.historyList.length;
       let tempThis = this;
-      let tempDate = this.historyList[0].date;
+      let tempDate = this.historyList[0].time.split('T')[0];
       let tempListDividedByDate = [];
       let j = 0;
       for (let i = 0; i < len; i++) {
-        if (tempThis.historyList[i].date !== tempDate) {
-          tempThis.historyListDivededByDate[j]=tempListDividedByDate;
+        if (tempThis.historyList[i].time.split('T')[0] !== tempDate) {
+          tempThis.historyListDividedByDate[j]=tempListDividedByDate;
           j = j + 1;
           tempListDividedByDate = [];
-          tempDate = tempThis.historyList[i].date;
+          tempDate = tempThis.historyList[i].time.split('T')[0];
         }
         tempListDividedByDate[tempListDividedByDate.length]=tempThis.historyList[i];
         if(i===len-1){
-          tempThis.historyListDivededByDate[j]=tempListDividedByDate;
+          tempThis.historyListDividedByDate[j]=tempListDividedByDate;
         }
       }
-      console.log(tempThis.historyListDivededByDate)
+      if(tempThis.historyListDividedByDate.length>0){
+        tempThis.historyListDay1 = tempThis.historyListDividedByDate[0]
+        // for(let i=0;i<tempThis.historyListDay1.length;i++){
+        //    tempThis.toGetPaperById(tempThis.historyListDay1[i].paper_id,i,1)
+        // }
+
+        tempThis.dayNum = 1;
+      }
+      if(tempThis.historyListDividedByDate.length>1){
+        tempThis.historyListDay2 = tempThis.historyListDividedByDate[1]
+        // for(let i=0;i<tempThis.historyListDay2.length;i++){
+        //   tempThis.toGetPaperById(tempThis.historyListDay2[i].paper_id,i,2)
+        // }
+        tempThis.dayNum = 2;
+      }
+      if(tempThis.historyListDividedByDate.length>2){
+        tempThis.historyListDay3 = tempThis.historyListDividedByDate[2]
+        // for(let i=0;i<tempThis.historyListDay3.length;i++){
+        //   tempThis.toGetPaperById(tempThis.historyListDay3[i].paper_id,i,3)
+        // }
+        tempThis.dayNum = 3;
+      }
+      console.log("historyListDay")
+      console.log(tempThis.historyListDay1)
+      console.log(tempThis.historyListDay2)
+      console.log(tempThis.historyListDay3)
+
+    },
+    toDeleteHistoryById(historyId){
+      const tempthis = this;
+      let param= new FormData()
+      param.append('history_id',historyId)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/deleteHistory',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        data:param
+      })
+          .then(res => {
+            console.log("deleteHistory:"+historyId)
+            console.log(res)
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
     toDeleteAllHistory(){
-
+      const tempthis = this;
+      let listToDelete = tempthis.historyList
+      for(let i=0;i<listToDelete.length;i++){
+        tempthis.toDeleteHistoryById(listToDelete[i]._id)
+      }
+      location.reload();
     },
+
     toDeleteSelectedHistory(){
-
+      const tempthis = this;
+      let listToDelete = tempthis.multipleSelection[0]
+        for(let i=0;i<listToDelete.length;i++){
+          tempthis.toDeleteHistoryById(listToDelete[i]._id)
+        }
+      location.reload();
     },
+
     handleSelectionChange(val) {
       this.multipleSelection.push(val);
-    }
-  },
+      console.log(this.multipleSelection)
+    },
+    getUserBaseInfo() {
+      const tempthis = this;
+      this.axios({
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/relation/getBaseInfo',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res => {
+            console.log("UserBaseInfo:")
+            console.log(res)
+            tempthis.getUserHistory()
+            tempthis.userBaseInfo[0] = res.data
+            tempthis.username = tempthis.userBaseInfo[0].username
+            tempthis.institution = tempthis.userBaseInfo[0].institution.name
+            tempthis.profile = tempthis.userBaseInfo[0].bio
+            tempthis.FollowNumber = tempthis.userBaseInfo[0].follows
+            tempthis.FunNumber = tempthis.userBaseInfo[0].followers
+            tempthis.LikeNumber = tempthis.userBaseInfo[0].likes
+            tempthis.avatarUrl = tempthis.userBaseInfo[0].avatar
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+    getUserHistory(){
+      const tempthis = this;
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/getHistoryByUserId',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res => {
+            console.log("UserHistory:")
+            console.log(res)
+            let j = 0,k=0;
+            for(let i=0;i<res.data.length;i++){
+              tempthis.historyList[i] = res.data[i]
+            }
+            this.init()
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+    // toGetPaperById:function (paper_id,index,day){
+    //   const tempthis = this;
+    //   let formData = new FormData();
+    //   formData.append('id',paper_id)
+    //   this.axios({
+    //     method: 'post',
+    //     url: 'http://139.9.134.209:8000/api/publication/getPaperById/',
+    //     data: formData
+    //   })
+    //       .then(res => {
+    //         // console.log("toGetPaperById res.data.paper:")
+    //         // console.log(res.data.paper)
+    //         if(day===1){
+    //           tempthis.historyListDay1info[index] = res.data.paper.title
+    //         }else if(day===2){
+    //           tempthis.historyListDay2info[index] = res.data.paper.title
+    //         }else if(day===3){
+    //           tempthis.historyListDay3info[index] = res.data.paper.title
+    //         }
+    //       })
+    //       .catch(err => {
+    //         console.log(err);
+    //       })
+    // },
+    },
+
   created() {
-    this.init()
+    this.getUserBaseInfo()
+
   }
 }
 </script>
@@ -234,14 +387,14 @@ export default {
 .avatar {
   position: relative;
   margin: 15px 0px 15px 30px;
-  width: 150px;
+  width: 170px;
   height: 170px;
   vertical-align: middle;
 }
 
 .avatar img {
   height: 170px;
-  width: 140px;
+  width: 170px;
   max-height: 100%;
   vertical-align: middle;
   border-radius: 5px;
@@ -535,7 +688,6 @@ export default {
   position: relative;
   width: 100%;
   margin: 0 0 15px 10px;
-  display: flex;
   justify-content: flex-start;
   border-radius: 5px;
 }
@@ -551,5 +703,16 @@ export default {
   font-weight: bold;
   margin-right: 40px;
 }
+
+.anHistoryRecord{
+  margin-right: 30px;
+  margin-top: 30px;
+  width: 1035px;
+  height: 50px;
+  border: 1px solid rgb(240, 240, 240);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+  line-height: 5px;
+}
+
 
 </style>
