@@ -226,7 +226,8 @@
       </div>
       <div class="content">
         <div class="items-box" v-if="displayResult.length !== 0">
-          <span class="item" :class="{'active':sort===1}" @click="sort=1;search(10)">默认综合</span>
+          <span>搜索结果：{{total}}</span>
+          <span class="item first" :class="{'active':sort===1}" @click="sort=1;search(10)">默认综合</span>
           <span class="item" :class="{'active':sort===2}" @click="sort=2;search(10)">引用量</span>
           <span class="item" :class="{'active':sort===3}" @click="sort=3;search(10)">时间</span>
         </div>
@@ -1503,6 +1504,9 @@ td.active {
   border: 1px solid black;
   padding: 5px;
   transition: 0.5s;
+}
+.content .items-box .item.first {
+  margin-left: 520px;
 }
 .content .items-box .item.active{
   border: none;
