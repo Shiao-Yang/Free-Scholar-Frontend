@@ -8,27 +8,54 @@
                      font-size: 120%; display: inline-block; left: 85px; right: 0;
                      top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
-                <div class="option-box">
-                  <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(scholar_id)">
-                    <i class="bx bxs-user-plus"></i>
-                    <div class="fo" style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
-                  </div>
-                    <div class="follow" v-else style="color: #2196f3" @click="focus(scholar_id)">
-                        <i class="bx bxs-user-plus"></i>
-                        <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">已关注</div>
+                <div class="option-box" v-if="accreditation===1">
+                    <div>
+                        <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(scholar_id)">
+                            <i class="bx bxs-user-plus"></i>
+                            <div class="fo" style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px">关注</div>
+                        </div>
+                        <a class="follow" v-else style="color: #2196f3" title="取消关注" @click="unFocus(scholar_id)">
+                            <i class="bx bxs-user-plus"></i>
+                            <div style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px">已关注</div>
+                        </a>
                     </div>
-                  <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer" title="立即认领" @click="toAdmitScholar">
-                    <i class="bx bxs-award"></i>
-                    <div class="cl" style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;" >未认领</div>
-                  </a>
-                    <div class="claim" v-else style="color: #ffcb74">
-                        <i class="bx bxs-award"></i>
-                        <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;">已认领</div>
+                    <div>
+                        <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer"
+                           title="立即认领" @click="toAdmitScholar">
+                            <i class="bx bxs-award"></i>
+                            <div class="cl" style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px;" >未认领</div>
+                        </a>
+                        <div class="claim" v-else style="color: #ffcb74">
+                            <i class="bx bxs-award"></i>
+                            <div style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px;">已认领</div>
+                        </div>
                     </div>
-                  <div class="message" @click="replyVisible = true;">
-                    <i class="bx bxs-chat"></i>
-                    <div style="position: absolute; margin-top: 13px; left: 245px; font-size: 15px">私信</div>
-                  </div>
+                    <div>
+                        <div class="message" @click="replyVisible = true">
+                            <i class="bx bxs-chat"></i>
+                            <div style="position: relative; display: inline-block; font-size: 15px; bottom: 5px;">私信</div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="option-box" v-else>
+                    <div>
+                        <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer"
+                           title="立即认领" @click="toAdmitScholar">
+                            <i class="bx bxs-award"></i>
+                            <div class="cl" style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px;" >未认领</div>
+                        </a>
+                        <div class="claim" v-else style="color: #ffcb74">
+                            <i class="bx bxs-award"></i>
+                            <div style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px;">已认领</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="introduction">
@@ -71,7 +98,7 @@
                 <div class="contents" v-for="(item) in paperList">
                     <div style="display: flex; width: 98%; height: auto">
                         <i class='bx bxs-bookmark-alt'></i>
-                        <a :href="item.url" class="title">{{item.title}}</a>
+                        <div class="title" @click="$router.push('/searchDetails/'+item.id)">{{item.title}}</div>
                     </div>
                     <div style="position: relative; display: flex; flex-wrap: wrap; list-style: none; line-height: 15px;
                     margin-left: 25px; align-items: center;">
@@ -180,7 +207,7 @@
                 visitors: 0,
                 paperList: [],
                 scholarList: [],
-
+                // paper_id: '',
                 scholar_id: 0,
 
                 replyVisible: false,
@@ -225,21 +252,65 @@
                 })
                 this.dialogVisible = false;
             },
+            unFocus(sid){
+                this.open(sid);
+            },
+            open(sid) {
+                this.$confirm('确认取消关注?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let params = {
+                        // user_id: uid,
+                        aim_id: sid,
+                    }
+                    this.$axios({
+                        method: 'post',
+                        url: 'http://139.9.134.209:8000/api/relation/unFocus',
+                        data: params,
+                        headers: {
+                            jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                        },
+                    }).then(res => {
+                        console.log(res)
+                        if(res.data.errno===0){
+                            this.follow = 0;
+                            this.$message({
+                                type: 'success',
+                                message: '操作成功!'
+                            });
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
             focus(uid){
-                console.log('fuck: '+uid)
+                console.log('scholar_id: '+uid)
+                let params = {
+                    // user_id: uid,
+                    aim_id: uid,
+                }
                 this.$axios({
                     method: 'post',
                     url: 'http://139.9.134.209:8000/api/relation/focus',
-                    data: qs.stringify({
-                        aim_id: uid,
-                        user_id: 2,
-                    }),
+                    data: params,
                     headers: {
                         jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
                     },
                 })
                     .then(res => {
                         console.log(res.data);
+                        if(res.data.errno===0){
+                            this.follow = 1;
+                        }
 
                     })
                     .catch(err => {
@@ -272,7 +343,7 @@
                         id: uid
                     })
                 }).then(res => {
-                    // console.log(res.data)
+                    console.log(res.data)
                     this.scholarList = res.data.coworkers;
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
@@ -305,6 +376,9 @@
                     }
                     else {
                         this.heat = res.data.Hotpoint
+                    }
+                    if(res.data.followed===true){
+                        this.follow = 1;
                     }
                     if(res.data.visitors==null){
                         this.visitors = 0
@@ -564,6 +638,12 @@
         box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
     }
 
+    .left .option-box {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
     .left .name {
         position: relative;
         background-color: white;
@@ -583,11 +663,11 @@
         margin-bottom: 10px;
     }
     .name .bxs-user-plus {
-        position: absolute;
+        position: relative;
         display: inline-block;
         font-size: 30px;
         margin-top: 7px;
-        margin-left: 15px;
+        /*margin-left: 15px;*/
         /*color: #333333;*/
     }
 
@@ -658,19 +738,19 @@
         font-weight: bold;
     }
     .name .bxs-award {
-        position: absolute;
+        position: relative;
         display: inline-block;
         font-size: 30px;
         margin-top: 7px;
-        left: 105px;
+        /*left: 105px;*/
         /*color: #ffcb74;*/
     }
     .name .bxs-chat {
-        position: absolute;
+        position: relative;
         display: inline-block;
         font-size: 30px;
         margin-top: 7px;
-        left: 210px;
+        /*left: 210px;*/
         color: #333333;
     }
     .blackBox {
