@@ -11,18 +11,18 @@
     <div class="divider-x"></div>
     <div class="message-container">
       <div class="source-box">
-        <div class="platform-msg" :class="{'active' : isActive1}" @click="changeActive1(event)">
-          <div class="red-point" v-if="msg_plm_has_new > 0">
-            <img src="../assets/img/MessageManage/red-point.png">
-          </div>
-          <span class="image">
-<!--          <img src="../assets/img/MessageManage/notice.png">-->
-            <i class='bx bxs-bell' ></i>
-          </span>
-          <span class="name">
-          系统通知
-        </span>
-        </div>
+<!--        <div class="platform-msg" :class="{'active' : isActive1}" @click="changeActive1(event)">-->
+<!--          <div class="red-point" v-if="msg_plm_has_new > 0">-->
+<!--            <img src="../assets/img/MessageManage/red-point.png">-->
+<!--          </div>-->
+<!--          <span class="image">-->
+<!--&lt;!&ndash;          <img src="../assets/img/MessageManage/notice.png">&ndash;&gt;-->
+<!--            <i class='bx bxs-bell' ></i>-->
+<!--          </span>-->
+<!--          <span class="name">-->
+<!--          系统通知-->
+<!--        </span>-->
+<!--        </div>-->
         <div class="platform-msg" :class="{'active' : isActive2}" @click="changeActive2(event)">
           <div class="red-point" v-if="msg_rec_has_new > 0">
             <img src="../assets/img/MessageManage/red-point.png">
@@ -187,8 +187,8 @@ export default {
         owner_id: 0,
         content: '',
       },
-      isActive1: true, //true 则展示系统消息
-      isActive2: false, //true 则展示收到的私信
+      isActive1: false, //true 则展示系统消息
+      isActive2: true, //true 则展示收到的私信
       isActive3: false, //true 则展示发送的私信
       showContent: false, //true则展示消息具体内容
       msg_plm_has_new: 0, //新的系统消息的数量
@@ -632,9 +632,9 @@ export default {
             //   this.changeShowContent();
             // }
             console.log(this.showContent)
-            if(type === 0) {
-              this.dis_msg_list = this.msg_plm_list;
-            }
+
+            // this.dis_msg_list = this.msg_plm_list;
+
           })
           .catch(err => {
             console.log(err);
@@ -693,8 +693,6 @@ export default {
     },
 
     openMessage(mid, index, event) { //查看一条消息的具体内容
-
-
       let uid = 1;
       //系统消息
       if(this.isActive1) {
@@ -703,6 +701,7 @@ export default {
           this.dis_msg_list[index].is_read = true;
           this.msg_plm_list[index].is_read = true;
           this.msg_plm_has_new--;
+          this.$store.state.msg_rec_has_new--;
           console.log(this.msg_plm_has_new);
           this.readMsg(mid); //改变消息状态为已读
         }
@@ -716,6 +715,7 @@ export default {
         if(!this.msg_rec_list[index].is_read) { //未读, 则改为已读, 新消息数量-1
           this.msg_rec_list[index].is_read = true;
           this.msg_rec_has_new--;
+          this.$store.state.msg_rec_has_new--;
           this.readMsg(mid); //改变消息状态为已读
         }
         this.cur_msg = this.dis_msg_list[index];
@@ -740,10 +740,10 @@ export default {
     this.getMsgRec(this.uid, 0);
   },
   mounted() {
-    this.getMsgPlm(this.uid);
+    // this.getMsgPlm(this.uid);
     console.log(this.msg_plm_has_new)
     console.log(this.msg_rec_has_new)
-    this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    // this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
     console.log(this.dis_msg_list)
   }
 }
