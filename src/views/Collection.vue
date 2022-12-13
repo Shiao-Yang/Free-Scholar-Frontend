@@ -376,7 +376,7 @@ export default {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       }).then(res => {
-            window.alert(res.data.msg);
+            this.$message.success(res.data.msg);
       })
 
     },
@@ -492,11 +492,11 @@ export default {
         url: this.$store.state.address+'api/relation/newFavorites',
         data: params,
       }).then(res =>{
-        window.alert(res.data.msg);
+        this.$message.success(res.data.msg);
       })
       this.form.title = '';
-      this.getCollections();
       this.visible = false;
+      location.reload();
     },
     close(){
       this.visible = false;
