@@ -9,11 +9,11 @@
                      top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
                 <div class="option-box">
-                  <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(uid)">
+                  <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(scholar_id)">
                     <i class="bx bxs-user-plus"></i>
                     <div class="fo" style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
                   </div>
-                    <div class="follow" v-else style="color: #2196f3" @click="focus(uid)">
+                    <div class="follow" v-else style="color: #2196f3" @click="focus(scholar_id)">
                         <i class="bx bxs-user-plus"></i>
                         <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">已关注</div>
                     </div>
@@ -111,11 +111,27 @@
             </div>
 
         </div>
-        <div class="question-btn">
+        <div class="question-btn" @click="dialogVisible = true">
           <div class="question-icon" title="举报冒领"><i class='bx bxs-error-circle' ></i></div>
           <div class="question-sub-item">
           </div>
         </div>
+        <el-dialog
+                title="举报学者"
+                :visible.sync="dialogVisible"
+                width="40%"
+                >
+            <el-input
+                    type="textarea"
+                    :rows="5"
+                    placeholder="请输入内容"
+                    v-model="textarea">
+            </el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="complain(textarea)">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 
 </template>
@@ -126,6 +142,8 @@
         name: "NS",
         data() {
             return {
+                textarea: '',
+                dialogVisible: false,
                 uid: '540888a2dabfae92b4247e94',
                 userName: '',
                 baseInfo: {
@@ -136,32 +154,66 @@
                 follow: 0, //1表示已关注，0表示未关注
                 accreditation: 0, //1表示已认证，0表示未认证
                 introduction:'这个人很懒，什么都没有写……',
-                heat: 38,
-                visitors: 23,
+                heat: 0,
+                visitors: 0,
                 paperList: [],
                 scholarList: [],
-
+                scholar_id: 0,
             }
         },
         methods: {
-            focus(uid){
-              console.log("token: "+JSON.parse(sessionStorage.getItem('baseInfo')).token)
-              let formData = new FormData();
-              formData.append('aim_id', uid);
-              this.follow = 1;
-              this.$axios({
-                  method: 'post',
-                  url: this.$store.state.address + 'api/relation/focus',
-                  data: formData,
-                  headers: {
-                      jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-                  }
-              }).then(res =>{
-                  console.log(res)
-              })
-                .catch(err =>{
-                    console.log(err)
+            complain(textarea){
+                this.$axios({
+                    method: 'post',
+                    url: 'http://139.9.134.209:8000/api/user/complainSochlar/',
+                    data: qs.stringify({
+                        scholar_id: this.scholar_id,
+                        reason: textarea,
+                    }),
+                    headers: {
+                        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                    },
+                }).then(res => {
+                    if(res.data.msg==='success'){
+                        this.$message({
+                            type: 'success',
+                            message: '举报成功！请等待审核'
+                        })
+                    }
+                    else {
+                        this.$message({
+                            type: 'error',
+                            message: '举报失败！'
+                        })
+                    }
+                }).catch(err => {
+                    this.$message({
+                        type: 'error',
+                        message: '举报失败！'
+                    })
                 })
+                this.dialogVisible = false;
+            },
+            focus(uid){
+                console.log('fuck: '+uid)
+                this.$axios({
+                    method: 'post',
+                    url: 'http://139.9.134.209:8000/api/relation/focus',
+                    data: qs.stringify({
+                        aim_id: uid,
+                        user_id: 2,
+                    }),
+                    headers: {
+                        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                    },
+                })
+                    .then(res => {
+                        console.log(res.data);
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
             temp(id){
                 this.uid = id;
@@ -200,25 +252,28 @@
                 })
             },
             getBaseInfo(uid){
+                console.log(JSON.parse(sessionStorage.getItem('baseInfo')).token);
                 this.axios({
                     method: 'get',
                     url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?author_id=' + uid,
                     // url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + '1',
+                    headers: {
+                        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                    },
                 }).then(res => {
                     console.log(res)
-                    if(res.data.introduction!=null){
-                        this.introduction = res.data.introduction;
-                    }
+                    this.scholar_id = res.data.scholar_id
+                    // console.log(this.scholar_id)
                     if(res.data.errno===1){
                         this.accreditation = 0;
                     }
                     else
                         this.accreditation = 1;
-                    if(res.data.heat==null){
+                    if(res.data.Hotpoint==null){
                         this.heat = 0;
                     }
                     else {
-                        this.heat = res.data.heat
+                        this.heat = res.data.Hotpoint
                     }
                     if(res.data.visitors==null){
                         this.visitors = 0
@@ -235,9 +290,9 @@
 
         },
         created() {
-            // console.log(this.$route.query.id)
+            console.log(this.$route.query.id)
             this.uid = this.$route.query.id;
-            console.log(this.uid)
+            // console.log(this.uid)
             this.getCoworkers(this.uid)
             this.getBaseInfo(this.uid)
         },
