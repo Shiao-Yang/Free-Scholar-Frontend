@@ -140,11 +140,11 @@ const routes = [
     name: 'login&signup',
     component: () => import('../views/Login&SignUp'),
   },
-  // {
-  //   path: '/admitScholar',
-  //   name: 'admitScholar',
-  //   component: () => import('../views/AdmitScholar'),
-  // },
+  {
+    path: '/admitScholar',
+    name: 'admitScholar',
+    component: () => import('../views/AdmitScholar'),
+  },
 ]
 
 const router = new VueRouter({

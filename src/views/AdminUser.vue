@@ -2,28 +2,50 @@
   <div class="adminHome">
     <div class="data-statistics">
       <p id="statistics">数据统计</p>
-      <div class="user-box data-box">
-        <i class='bx bxs-user'></i>
-        <div class="info">
-          <p class="title">用户数量</p>
-          <p class="num">{{userNum}}</p>
+      <div class="dashboard-container">
+        <div class="dashboard-header">
+          <div class="dashboard-header-btn" :class="{'active': chartType === 1}" @click="changeChartType(1)">
+            <span class="header-icon "><i class='bx bxs-user-detail'></i></span>
+            <span class="header-text">用户统计</span>
+          </div>
+          <div class="dashboard-header-btn" :class="{'active': chartType === 2}" @click="changeChartType(2)">
+            <span class="header-icon"><i class='bx bxs-hot'></i></span>
+            <span class="header-text">热词统计</span>
+          </div>
+          <div class="dashboard-header-btn" :class="{'active': chartType === 3}" @click="changeChartType(3)">
+            <span class="header-icon"><i class='bx bxs-dashboard' ></i></span>
+            <span class="header-text">任务统计</span>
+          </div>
+        </div>
+        <div class="main-chart-box">
+          <div ref="userChart" class="chart-item" v-show="chartType === 1"></div>
+          <div ref="hotChart" class="chart-item" v-show="chartType === 2"></div>
+          <div ref="taskChart" class="chart-item" v-show="chartType === 3"></div>
         </div>
       </div>
-      <div class="scholar-box data-box">
-        <i class='bx bx-award'></i>
-        <div class="info">
-          <p class="title">认证学者</p>
-          <p class="num">{{scholarNum}}</p>
-        </div>
-      </div>
-      <div class="admin-box data-box">
-        <i class='bx bxs-coffee-alt' ></i>
-        <div class="info">
-          <p class="title">管理员</p>
-          <p class="num">{{adminNum}}</p>
-        </div>
-      </div>
+<!--      <div class="user-box data-box">-->
+<!--        <i class='bx bxs-user'></i>-->
+<!--        <div class="info">-->
+<!--          <p class="title">用户数量</p>-->
+<!--          <p class="num">{{userNum}}</p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="scholar-box data-box">-->
+<!--        <i class='bx bx-award'></i>-->
+<!--        <div class="info">-->
+<!--          <p class="title">认证学者</p>-->
+<!--          <p class="num">{{scholarNum}}</p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="admin-box data-box">-->
+<!--        <i class='bx bxs-coffee-alt' ></i>-->
+<!--        <div class="info">-->
+<!--          <p class="title">管理员</p>-->
+<!--          <p class="num">{{adminNum}}</p>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
+
     <div class="user-admin">
       <i class='bx bxs-user-rectangle'></i>
       <span>用户管理</span>
@@ -71,6 +93,8 @@
 
 <script>
 
+const echarts = require('echarts')
+
 export default {
   name: 'AdminUser',
   created() {
@@ -78,7 +102,8 @@ export default {
     this.getNum()
   },
   mounted() {
-
+    this.initCharts();
+    this.changeChartType(1)
   },
   data() {
     return {
@@ -87,7 +112,94 @@ export default {
       scholarNum: 0,
       userNum: 0,
       displayResult: [],
-      users: []
+      users: [],
+      chartType: 0,
+      userChart: null,
+      userChartOption: {
+
+        title: {
+          text: '用户统计图',
+          left: 'center'
+        },
+        legend: {
+          orient: 'vertical',
+          x: 'left',
+          data: ['认证学者', '普通用户', '管理员']
+        },
+        tooltip: {
+          trigger: 'item',
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
+            labelLine: {
+              show: false
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '30',
+                fontWeight: 'bold'
+              }
+            },
+            data: [
+              { value: 10, name: '认证学者' },
+              { value: 23, name: '普通用户' },
+              { value: 1, name: '管理员' },
+            ]
+          }
+        ]
+      },
+      hotChart: null,
+      hotChartOption: {
+        title: {
+          text: '热词搜索频率统计图',
+          left: 'center',
+        },
+        xAxis: {
+          data: ['AI', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
+        },
+        yAxis: {},
+        series: [
+          {
+            type: 'bar',
+            data: [78, 63, 55, 44, 32, 28, 25]
+          }
+        ]
+      },
+      taskChart: null,
+      taskChartOption: {
+        title: {
+          text: '七天工作状态统计图',
+          left: 'center',
+        },
+        xAxis: {
+          data: ['2022/12/7', '2022/12/8', '2022/12/9',
+            '2022/12/10', '2022/12/11', '2022/12/12',
+            '2022/12/13',
+          ],
+        },
+        yAxis: {},
+        series: [
+          {
+            data: [10, 5, 3, 8, 3, 16, 25],
+            type: 'line',
+            label: {
+              show: true,
+              position: 'bottom',
+              textStyle: {
+                fontSize: 20
+              }
+            }
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -207,6 +319,70 @@ export default {
                 this.$message.success(res.data.msg)
             }
           })
+    },
+    getUserChartNum(userOption) {
+      this.axios( {
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getNum',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res => {
+            console.log(res.data)
+            userOption.series[0].data = [
+              { value: res.data.scholarNum, name: '认证学者' },
+              { value: res.data.userNum, name: '普通用户' },
+              { value: res.data.adminNum, name: '管理员' },
+            ]
+            this.userChart.setOption(userOption)
+            this.adminNum = res.data.adminNum
+            this.scholarNum = res.data.scholarNum
+            this.userNum = res.data.userNum
+          })
+    },
+    changeChartType(index) {
+      let self = this
+      if(index === this.chartType)
+        return ;
+      this.chartType = index;
+      switch (index) {
+        case 1:
+          setTimeout(function (){
+            self.userChart.resize();
+          }, 10)
+        case 2:
+          setTimeout(function (){
+            self.hotChart.resize();
+          }, 10)
+        case 3:
+          setTimeout(function (){
+            self.taskChart.resize();
+          }, 10)
+      }
+    },
+    initCharts() {
+      this.userChart = echarts.init(this.$refs.userChart);
+      this.hotChart = echarts.init(this.$refs.hotChart);
+      this.taskChart = echarts.init(this.$refs.taskChart)
+      window.addEventListener("resize", ()=> {
+        this.userChart.resize()
+        this.hotChart.resize()
+        this.taskChart.resize()
+      });
+      this.setOptions();
+    },
+    setOptions() {
+      let userOption = this.userChartOption;
+      let hotOption = this.hotChartOption;
+      let taskOption = this.taskChartOption
+      this.getUserChartNum(userOption);
+      hotOption.xAxis.data = ['人工智能', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
+      hotOption.series[0].data = [99, 63, 55, 44, 32, 28, 25];
+      this.hotChart.setOption(hotOption)
+      this.hotChartOption = hotOption
+      this.taskChart.setOption(taskOption)
+      this.taskChartOption = taskOption
     }
   }
 }
@@ -218,12 +394,12 @@ export default {
   margin-top: 0;
   left: 0;
   width: 90%;
-  height: 250px;
   border-radius: 2px;
   padding: 1px;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
 }
 #statistics {
+  width: 100%;
   font-weight: bold;
   font-size: 20px;
   margin: 10px 0 0 40px;
@@ -384,5 +560,61 @@ export default {
   height: 50px;
   margin-left: 40px;
   cursor: pointer;
+}
+
+.dashboard-container {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.dashboard-container .dashboard-header {
+  display: flex;
+  width: 100%;
+  margin-left: 20px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.dashboard-header-btn {
+  margin-right: 30px;
+  font-size: 20px;
+  padding: 5px;
+  cursor: pointer;
+  transition: 0.2s all ease;
+}
+
+.dashboard-header-btn:hover {
+  font-weight: 500;
+  color: #0f62fe;
+  border-bottom: 2px solid #2196f3;
+}
+
+.dashboard-header-btn.active {
+  font-weight: bold;
+  border-bottom: 4px solid #2196f3;
+  color: #0f62fe;
+}
+
+.dashboard-header-btn .header-icon {
+  display: inline-block;
+  line-height: 30px;
+  min-width: 30px;
+}
+
+.dashboard-header-btn .header-text {
+  line-height: 30px;
+  height: 30px;
+}
+
+.main-chart-box {
+  width: 95%;
+  margin: 30px auto auto;
+}
+
+.chart-item {
+  width: 95%;
+  height: 500px;
+  transition: 1s all ease;
 }
 </style>

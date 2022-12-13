@@ -349,6 +349,8 @@ export default {
         state: 1,
         gender: 1,
         login_date: '2022-10-16 22:10:16',
+        scholar_id: null,
+        author_id: null,
       },
 
     }
@@ -505,32 +507,32 @@ export default {
         url: 'http://139.9.134.209:8000/api/relation/editInfo',
         data: param,
       })
-          .then(res => {
-            console.log(res.data)
-            if(res.data.errno === 0) {
-              if(res.data.errno === 0) {
-                this.$message ({
-                  message: "取消成功",
-                  showClose: true,
-                  type: 'success',
-                })
-                this.baseInfo.follows--;
-                this.getBaseInfo(uid); //重新获取数据
-              }
+      .then(res => {
+        console.log(res.data)
+        if(res.data.errno === 0) {
+          if(res.data.errno === 0) {
+            this.$message ({
+              message: "取消成功",
+              showClose: true,
+              type: 'success',
+            })
+            this.baseInfo.follows--;
+            this.getBaseInfo(uid); //重新获取数据
+          }
 
-              else {
-                this.$message ({
-                  message: "操作失败",
-                  showClose: true,
-                  type: 'error',
-                })
-              }
-            }
+          else {
+            this.$message ({
+              message: "操作失败",
+              showClose: true,
+              type: 'error',
+            })
+          }
+        }
 
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      })
+      .catch(err => {
+        console.log(err);
+      })
 
       this.infoForm = {
         name: '',  //重置为空

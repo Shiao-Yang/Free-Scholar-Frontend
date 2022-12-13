@@ -111,7 +111,11 @@
             </div>
 
         </div>
-
+        <div class="question-btn">
+          <div class="question-icon" title="举报冒领"><i class='bx bxs-error-circle' ></i></div>
+          <div class="question-sub-item">
+          </div>
+        </div>
     </div>
 
 </template>
@@ -570,5 +574,27 @@
 
     .message:hover .bxs-chat{
       color: #00cc00;
+    }
+
+    .question-btn {
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+    .question-icon {
+      display: block;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      /*border-radius: 100%;*/
+      /*border: 2px solid rgba(244, 244, 244, 0.8);*/
+      font-size: 30px;
+    }
+
+    .question-icon:hover {
+      color: #f44336;
     }
 </style>

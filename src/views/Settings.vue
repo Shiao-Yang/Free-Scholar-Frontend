@@ -16,18 +16,21 @@
       <div class="hotWord-box">
         <ul id="hot" class="hotWord-list">
           <li><span class="hotWord-text">热词推荐</span></li>
-          <li id="hot1" class="hot-item" v-for="item in hotWord_3"><span class="hotWord">{{item}}</span></li>
+          <li id="hot1" class="hot-item" v-for="item in hotWord_3" @click="input=item;search()"><span class="hotWord">{{item}}</span></li>
         </ul>
       </div>
     </div>
     <div class="content">
       <p><i class='bx bxs-hot'></i>热点文章</p>
       <div class="result-box" v-for="(result, i) in paper">
-        <p class="articleName"><span style="cursor: pointer" @click="">{{result.title}}</span></p>
+        <p class="articleName"><span style="cursor: pointer" @click="readPaper(result.id,result.title);$router.push('/searchDetails/'+result.id)">{{result.title}}</span></p>
         <ul class="authors-list">
-          <li class="author" v-for="author in result.author">{{author.name}}</li>
+          <li class="author" v-for="author in result.author">
+            <span v-if="author.id" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</span>
+            <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
+          </li>
         </ul>
-        <p class="abstract">{{result.abstract}}</p>
+        <p class="abstract" @click="readPaper(result.id,result.title);$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
         <ul class="info-list">
           <li class="info">
             <i class='bx bxs-like' style="font-size: 15px"></i>
@@ -77,6 +80,7 @@ export default {
   name: 'Settings',
   created() {
     window.myData = this;
+    this.$store.state.input = ''
     this.getHotWord()
     this.getHotPaper()
   },
@@ -103,6 +107,26 @@ export default {
     }
   },
   methods: {
+    readPaper(id,name) {
+      let para = {
+        paper_id:id,
+        paper_name:name
+      }
+      console.log('para:')
+      console.log(para)
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/publication/ReadPaper/',
+        data: para,
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res=>{
+            console.log('readPaper:')
+            console.log(res.data)
+          })
+    },
     search() {
       this.$store.state.input = this.input
       this.$router.push('/searchList')
@@ -161,7 +185,7 @@ export default {
       }
       this.axios({
         method: 'post',
-        url: this.$store.state.address+'/api/publication/getPaperByIdList/',
+        url: this.$store.state.address+'api/publication/getPaperByIdList/',
         data: para
       })
           .then(res=> {
