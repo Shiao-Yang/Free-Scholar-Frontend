@@ -219,9 +219,22 @@ export default {
         return '#f44336';
       else
         return '#0fc70f';
+    },
+  },
+  watch: {
+    baseInfo : {
+      handler(newVal, oldVal) {
+        if(newVal !== null
+            && newVal !== undefined
+            && newVal.uid !== null
+            && newVal.uid !== undefined) {
+          this.getMsgRec(newVal.uid, 0);
+        }
+
+      },
+      deep: true,
     }
   },
-
   methods: {
     logout() {
       let baseInfo = JSON.parse(sessionStorage.getItem('baseInfo'))
@@ -281,7 +294,6 @@ export default {
 
     getMsgRec(uid, type) { //type=0,初始化时的调用
       let that = this;
-
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -367,14 +379,14 @@ export default {
   },
 
   created() {
-    this.getMsgRec(this.uid, 0);
+    // this.getMsgRec(this.uid, 0);
   },
   mounted() {
-    this.getMsgPlm(this.uid);
-    console.log(this.msg_plm_has_new)
-    console.log(this.msg_rec_has_new)
-    this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
-    console.log(this.dis_msg_list)
+    // this.getMsgPlm(this.uid);
+    // console.log(this.msg_plm_has_new)
+    // console.log(this.msg_rec_has_new)
+    // this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    // console.log(this.dis_msg_list)
   },
 }
 </script>
