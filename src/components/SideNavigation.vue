@@ -161,7 +161,7 @@ export default {
     return {
       isActive: false,
       index: 0,
-      userStateClr: '#f44336',
+      // userStateClr: '#f44336',
       msg_plm_has_new: 0, //新的系统消息的数量
       msg_rec_has_new: 0, //新的私信的数量
     }
@@ -213,6 +213,12 @@ export default {
     },
     baseInfo() {
       return this.$store.state.baseInfo;
+    },
+    userStateClr() {
+      if(this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0)
+        return '#f44336';
+      else
+        return '#0fc70f';
     }
   },
 
