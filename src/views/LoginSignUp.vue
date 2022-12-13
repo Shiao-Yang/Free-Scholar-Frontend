@@ -88,13 +88,13 @@ export default {
     login() {
       let that = this;
       let pwd;
-      pwd = md5(this.login_password)
+      // pwd = md5(this.login_password)
 
       let param = new FormData();
       console.log(this.login_username)
       console.log(pwd)
       param.append('username', this.login_username);
-      param.append('password', pwd);
+      param.append('password', this.login_password);
 
       this.axios({
         method: "post",
@@ -143,6 +143,10 @@ export default {
     },
     register() {
       let param = new FormData();
+      let pwd1, pwd2;
+      // pwd1 = md5(this.register_password1)
+      // pwd2 = md5(this.register_password2)
+
       console.log(this.register_username)
       console.log(this.register_mail)
       console.log(this.register_password1)
