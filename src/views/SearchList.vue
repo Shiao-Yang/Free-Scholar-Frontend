@@ -122,7 +122,7 @@
       </div>
     </div>
     <div class="search-content-container">
-      <div id="filter" v-if="displayResult.length !== 0">
+      <div id="filter" v-if="displayResult.length !== 0 || show">
         <p style="left: 5px;position:relative;">筛选</p>
         <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="time_zone = !time_zone">
           时间
@@ -308,6 +308,7 @@ export default {
       show_1: false,
       show_2: false,
       show_3: false,
+      show: false,
       activeYear: 0,
       startTime: '',
       endTime: '',
@@ -380,7 +381,10 @@ export default {
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/publication/ReadPaper/',
-        data: para
+        data: para,
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
       })
           .then(res=>{
             console.log('readPaper:')
@@ -739,9 +743,6 @@ export default {
       }
       console.log('para:')
       console.log(params)
-      if (flag === 0) {
-        this.getWord(params)
-      }
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/publication/search/',
@@ -791,6 +792,15 @@ export default {
             }
             if (len === 0) {
               this.$message('搜索结果为空')
+              if (flag === 4) {
+                this.show = true
+              } else {
+                this.show = false
+              }
+            } else {
+              if (flag === 0) {
+                this.getWord(params)
+              }
             }
             this.getOrgList()
             this.getKeyList()
@@ -811,6 +821,7 @@ export default {
           })
     },
     searchByYearBtn(val) {
+      this.show = true
       let params = {
         page: 1,
         condition: [
