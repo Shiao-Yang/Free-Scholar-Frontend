@@ -10,7 +10,7 @@
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" v-model="login_password" placeholder="密码" />
+            <input type="password" v-model="login_password" placeholder="密码" @keyup.enter="login"/>
           </div>
           <el-button style="position: relative; top: 10px;" type="primary" plain round @click="login">立即登录</el-button>
           <!--<input type="submit" value="立即登录" class="btn solid" @click="login"/>-->
