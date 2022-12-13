@@ -13,26 +13,27 @@
         {{ institution }}
       </div>
       <div class="theicons">
-          <span style="margin-right: 50px">
+          <span class="header-icon" style="margin-right: 50px">
               <i class='el-icon-download' style="margin-right: 7px"></i>
               <span style="font-size: 14px">{{ number_of_download }}</span>
             </span>
-        <span style="margin-right: 50px">
+        <span class="header-icon" style="margin-right: 50px">
               <i class='bx bxs-like' style="margin-right: 7px"></i>
               <span style="font-size: 14px">{{ number_of_like }}</span>
             </span>
-        <span style="margin-right: 50px">
+        <span class="header-icon" style="margin-right: 50px">
               <i class='el-icon-star-off' style="margin-right: 7px;color: orange"></i>
               <span style="font-size: 14px">{{ number_of_collect }}</span>
             </span>
-        <span style="margin-right: 50px">
+        <span class="header-icon" style="margin-right: 50px">
               <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
               <span style="font-size: 14px">{{ number_of_comment }}</span>
             </span>
-        <span style="margin-right: 50px">
+        <span class="header-icon" style="margin-right: 50px">
             <i class='el-icon-s-promotion' style="margin-right: 7px"></i>
-              <span style="font-size: 14px"><el-link type="primary" :href=out_link_str>外部链接</el-link></span>
-            </span>
+            <span style="font-size: 14px"><el-link type="primary" :href=out_link_str>外部链接</el-link></span>
+            <div class="sub-menu"></div>
+        </span>
       </div>
       <div class="keywords">
         关键词：
@@ -399,5 +400,12 @@ export default {
 }
 #likeTheComment :hover{
   cursor: pointer
+}
+
+.header-icon {
+  cursor: pointer;
+}
+.header-icon:hover {
+  color: #2196f3;
 }
 </style>

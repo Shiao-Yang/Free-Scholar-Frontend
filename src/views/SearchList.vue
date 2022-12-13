@@ -122,7 +122,7 @@
       </div>
     </div>
     <div class="search-content-container">
-      <div id="filter" v-if="displayResult.length !== 0">
+      <div id="filter" v-if="displayResult.length !== 0 || show">
         <p style="left: 5px;position:relative;">筛选</p>
         <p style="font-size: 12px;margin-top: 20px;margin-bottom: 8px;cursor: pointer" @click="time_zone = !time_zone">
           时间
@@ -225,15 +225,21 @@
         <p v-else-if="show_3&&journals.length>10" @click="show_3=false" class="show"><i class='bx bx-minus' ></i>收回</p>
       </div>
       <div class="content">
+        <div class="items-box" v-if="displayResult.length !== 0">
+          <span>搜索结果：{{total}}</span>
+          <span class="item first" :class="{'active':sort===1}" @click="sort=1;search(10)">默认综合</span>
+          <span class="item" :class="{'active':sort===2}" @click="sort=2;search(10)">引用量</span>
+          <span class="item" :class="{'active':sort===3}" @click="sort=3;search(10)">时间</span>
+        </div>
         <div class="result-box" v-for="(result, i) in displayResult">
-          <p class="articleName"><span style="cursor: pointer" @click="$router.push('/searchDetails/'+result.id)">{{result.articleName}}</span></p>
+          <p class="articleName"><span style="cursor: pointer" @click="readPaper(result.id,result.articleName);$router.push('/searchDetails/'+result.id)">{{result.articleName}}</span></p>
           <ul class="authors-list">
             <li class="author" v-for="author in result.author">
               <span v-if="author.id" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</span>
               <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
             </li>
           </ul>
-          <p class="abstract" @click="$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
+          <p class="abstract" @click="readPaper(result.id,result.articleName);$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
           <ul class="info-list">
             <li class="info">
               <i v-if="!result.user_collected" class='bx bxs-star'  :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
@@ -289,6 +295,7 @@ export default {
   },
   data() {
     return {
+      sort: 1,
       firstFieldSelect: false,
       isAdvanceSearch: false,
       time_zone: true,
@@ -301,6 +308,7 @@ export default {
       show_1: false,
       show_2: false,
       show_3: false,
+      show: false,
       activeYear: 0,
       startTime: '',
       endTime: '',
@@ -363,6 +371,26 @@ export default {
     }
   },
   methods: {
+    readPaper(id,name) {
+      let para = {
+        paper_id:id,
+        paper_name:name
+      }
+      console.log('para:')
+      console.log(para)
+      this.axios({
+        method: 'post',
+        url: this.$store.state.address+'api/publication/ReadPaper/',
+        data: para,
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res=>{
+            console.log('readPaper:')
+            console.log(res.data)
+          })
+    },
     changeFieldSelect(index) {
       this.$set(this.fieldSelect, index, !this.fieldSelect[index])
     },
@@ -433,7 +461,7 @@ export default {
       else
         return "";
     },
-    search(flag,val) { // flag = 0:普通搜索,1:筛选关键词搜索,2:筛选机构搜索,3:筛选期刊搜索，4:筛选时间搜索,5:取消关键词搜索,6:取消机构搜索,7:取消期刊搜索,8:筛选语言搜素,9:取消语言搜素
+    search(flag,val) { // flag = 0:普通搜索,1:筛选关键词搜索,2:筛选机构搜索,3:筛选期刊搜索，4:筛选时间搜索,5:取消关键词搜索,6:取消机构搜索,7:取消期刊搜索,8:筛选语言搜素,9:取消语言搜素,10:排序搜索
       this.show_card = false;
       let params = {
         page: 1,
@@ -458,6 +486,7 @@ export default {
         this.oldConditions = this.conditions;
         this.oldInputs = this.inputs;
         this.oldFields = this.fields;
+        this.$store.state.input = this.input
       } else if (flag === 1) {
         this.keyword = val
         params.filter.push({field: 'keyword',value: val})
@@ -476,6 +505,11 @@ export default {
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
         }
         this.$refs.box.scrollIntoView()
       } else if (flag === 2) {
@@ -497,6 +531,11 @@ export default {
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
+        }
         this.$refs.box.scrollIntoView()
       } else if (flag === 3) {
         this.venue = val
@@ -516,6 +555,11 @@ export default {
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
         }
         this.$refs.box.scrollIntoView()
       } else if (flag === 4) {
@@ -544,6 +588,11 @@ export default {
         if (this.lang !== '') {
           params.filter.push({field: 'lang',value: this.lang})
         }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
+        }
         this.$refs.box.scrollIntoView()
       } else if (flag === 5) {
         this.keyword = '';
@@ -562,6 +611,11 @@ export default {
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
         }
         this.$refs.box.scrollIntoView()
       } else if (flag === 6) {
@@ -582,6 +636,11 @@ export default {
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
+        }
         this.$refs.box.scrollIntoView()
       } else if (flag === 7) {
         this.venue = '';
@@ -600,6 +659,11 @@ export default {
         }
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
         }
         this.$refs.box.scrollIntoView()
       } else if (flag === 8) {
@@ -621,6 +685,11 @@ export default {
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
+        }
         this.$refs.box.scrollIntoView()
       } else if (flag === 9) {
         this.lang = '';
@@ -640,12 +709,40 @@ export default {
         if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
           params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
         }
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
+        }
         this.$refs.box.scrollIntoView()
+      } else if (flag === 10) {
+        if (this.sort === 2) {
+          params['sort'] = 'citation'
+        } else if (this.sort === 3) {
+          params['sort'] = 'time'
+        }
+        let i;
+        for (i = 0; i < this.oldInputs.length; i++) {
+          params.condition.push({type: this.oldConditions[i],input: this.oldInputs[i],field: this.oldFields[i]})
+        }
+        if (this.keyword !== '') {
+          params.filter.push({field: 'keyword',value: this.keyword})
+        }
+        if (this.org !== '') {
+          params.filter.push({field: 'org',value: this.org})
+        }
+        if (this.venue !== '') {
+          params.filter.push({field: 'venue',value: this.venue})
+        }
+        if (this.lang !== '') {
+          params.filter.push({field: 'lang',value: this.lang})
+        }
+        if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
+          params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+        }
       }
+      console.log('para:')
       console.log(params)
-      if (flag === 0) {
-        this.getWord(params)
-      }
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/publication/search/',
@@ -695,6 +792,15 @@ export default {
             }
             if (len === 0) {
               this.$message('搜索结果为空')
+              if (flag === 4) {
+                this.show = true
+              } else {
+                this.show = false
+              }
+            } else {
+              if (flag === 0) {
+                this.getWord(params)
+              }
             }
             this.getOrgList()
             this.getKeyList()
@@ -706,7 +812,7 @@ export default {
     getWord(para) {
       this.axios({
         method: 'post',
-        url: this.$store.state.address+'/api/publication/GetWord/',
+        url: this.$store.state.address+'api/publication/GetWord/',
         data: para
       })
           .then(res=>{
@@ -715,6 +821,7 @@ export default {
           })
     },
     searchByYearBtn(val) {
+      this.show = true
       let params = {
         page: 1,
         condition: [
@@ -754,6 +861,11 @@ export default {
       }
       if (this.lang !== '') {
         params.filter.push({field: 'lang',value: this.lang})
+      }
+      if (this.sort === 2) {
+        params['sort'] = 'citation'
+      } else if (this.sort === 3) {
+        params['sort'] = 'time'
       }
       this.$refs.box.scrollIntoView()
       console.log(params)
@@ -837,6 +949,11 @@ export default {
       }
       if (!(this.startTime === '' || this.endTime === '' || this.startTime === null || this.endTime === null) && this.startTime <= this.endTime) {
         params.filter.push({field: 'year',value: [''+this.startTime.getFullYear(),''+this.endTime.getFullYear()]})
+      }
+      if (this.sort === 2) {
+        params['sort'] = 'citation'
+      } else if (this.sort === 3) {
+        params['sort'] = 'time'
       }
       console.log(params)
       this.axios({
@@ -1389,7 +1506,24 @@ td.active {
   min-height: 550px;
   /*overflow: auto;*/
 }
-
+.content .items-box {
+  margin: 10px 0 10px 0;
+}
+.content .items-box .item {
+  margin-right: 10px;
+  cursor: pointer;
+  border: 1px solid black;
+  padding: 5px;
+  transition: 0.5s;
+}
+.content .items-box .item.first {
+  margin-left: 520px;
+}
+.content .items-box .item.active{
+  border: none;
+  color: white;
+  background-color: #2196f3;
+}
 .result-box {
   margin: 0 0 20px 0;
   width: 95%;
