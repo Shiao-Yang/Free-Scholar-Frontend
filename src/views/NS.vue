@@ -314,7 +314,7 @@
         },
         created() {
             // console.log(this.$route.query.id)
-            this.uid = this.$route.query.author_id;
+            this.uid = this.$route.query.id;
             // this.user_id = this.$route.query.user_id;
             // this.scholar_id = this.$route.query.scholar_id;
             console.log(this.uid)
