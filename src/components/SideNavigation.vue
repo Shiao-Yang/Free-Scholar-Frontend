@@ -2,7 +2,7 @@
   <div class="side-navigation" :class="{'active': isActive}">
     <div class="side-menu-top" v-on:click="changeIsActive">
     </div>
-    <ul class="side-navigation-list">
+    <ul class="side-navigation-list" v-if="!isAdmin">
       <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': activeIndex === 1}">
         <router-link :to="{path: '/'}" style="--clr:#f44336;" title="主页">
           <span class="icon"><i class='bx bxs-home'></i></span>
@@ -10,28 +10,28 @@
         </router-link>
       </li>
       <li class="side-navigation-item" v-on:click="activeLink(2)" :class="{'active': activeIndex === 2}">
-        <router-link :to="{path: '/'}" style="--clr:#ffa117;" title="搜索">
+        <router-link :to="{path: '/searchList'}" style="--clr:#0fc70f;" title="搜索">
           <span class="icon"><i class='bx bx-search' ></i></span>
-          <span class="text">高级检索</span>
+          <span class="text">检索页</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(3)" :class="{'active': activeIndex === 3}">
-        <router-link :to="{path: '/'}" style="--clr:#0fc70f;" title="主页">
-          <span class="icon"><i class='bx bxs-home'></i></span>
-          <span class="text">主页</span>
+      <li class="side-navigation-item" v-on:click="activeLink(8)" :class="{'active': activeIndex === 8}" v-if="isLogin">
+        <router-link :to="{path: '/collectionCover'}" style="--clr:#ffa117;" title="收藏夹">
+          <span class="icon"><i class='bx bxs-star' ></i></span>
+          <span class="text">收藏夹</span>
         </router-link>
       </li>
-      <li class="side-navigation-item" v-on:click="activeLink(4)" :class="{'active': activeIndex === 4}">
-        <router-link :to="{path: '/'}" style="--clr:#2196f3;" title="主页">
-          <span class="icon"><i class='bx bxs-home'></i></span>
-          <span class="text">主页</span>
+      <li class="side-navigation-item" v-on:click="activeLink(9)" :class="{'active': activeIndex === 9}" v-if="isLogin">
+        <router-link :to="{path: '/history'}" style="--clr:#2196f3;" title="历史记录">
+          <span class="icon"><i class='bx bx-history'></i></span>
+          <span class="text">历史记录</span>
         </router-link>
       </li>
-      <li class="side-navigation-item user-box">
+      <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style=""></i>
-          <span class="icon avatar"><img alt="头像" src="../assets/logo.png"></span>
-          <span class="text">用户名用户名用户名</span>
+          <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
+          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
+          <span class="text">{{ baseInfo.username }}</span>
         </router-link>
         <ul class="user-sub-menu" @click="toHome">
           <li class="sub-item">
@@ -39,24 +39,110 @@
             <span>个人中心</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
-          <li class="sub-item">
-            <i class='bx bxs-user-account'></i>
-            <span>账号设置</span>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
+<!--          <li class="sub-item">-->
+<!--            <i class='bx bxs-user-account'></i>-->
+<!--            <span>账号设置</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
           <li class="sub-item" @click="toMessageCenter">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
-            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
+            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
             <i class='bx bx-chevron-right right'></i>
           </li>
-          <li class="sub-item">
-            <i class='bx bx-group'></i>
-            <span>我的机构</span>
-            <i class='bx bx-chevron-right right'></i>
-          </li>
+<!--          <li class="sub-item">-->
+<!--            <i class='bx bx-group'></i>-->
+<!--            <span>我的机构</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
           <li class="bottom-bor">
           </li>
+          <li class="sub-item log-out" @click="logout">
+            <i class='bx bx-log-out-circle'></i>
+            <span>退出登录</span>
+            <i class='bx bx-chevron-right right'></i>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="side-navigation-list" v-else>
+      <li class="side-navigation-item"  v-on:click="activeLink(1)" :class="{'active': activeIndex === 1}">
+        <router-link :to="{path: '/'}" style="--clr:#f44336;" title="主页">
+          <span class="icon"><i class='bx bxs-home'></i></span>
+          <span class="text">主页</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(2)" :class="{'active': activeIndex === 2}">
+        <router-link :to="{path: '/searchList'}" style="--clr:#0fc70f;" title="搜索">
+          <span class="icon"><i class='bx bx-search' ></i></span>
+          <span class="text">检索页</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(3)" :class="{'active': activeIndex === 3}">
+        <router-link :to="{path: '/adminHome'}" style="--clr:#845EC2;" title="管理员主页">
+          <span class="icon"><i class='bx bxs-tachometer' ></i></span>
+          <span class="text">管理员页</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(4)" :class="{'active': activeIndex === 4}">
+        <router-link :to="{path: '/adminUser'}" style="--clr:#D65DB1;" title="用户管理">
+          <span class="icon"><i class='bx bxs-user-circle' ></i></span>
+          <span class="text">用户管理</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(5)" :class="{'active': activeIndex === 5}">
+        <router-link :to="{path: '/LiteratureManage'}" style="--clr:#FF6F91;" title="文献管理">
+          <span class="icon"><i class='bx bxs-book' ></i></span>
+          <span class="text">文献管理</span>
+        </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(7)" :class="{'active': activeIndex === 7}">
+        <router-link :to="{path: '/TransactionCenter'}" style="--clr:#FF9671;" title="事务中心">
+          <span class="icon"><i class='bx bx-task' ></i></span>
+          <span class="text">事务中心</span>
+        </router-link>
+      </li>
+<!--      <li class="side-navigation-item" v-on:click="activeLink(8)" :class="{'active': activeIndex === 8}" v-if="isLogin">-->
+<!--        <router-link :to="{path: '/collectionCover'}" style="&#45;&#45;clr:#ffa117;" title="收藏夹">-->
+<!--          <span class="icon"><i class='bx bxs-star' ></i></span>-->
+<!--          <span class="text">收藏夹</span>-->
+<!--        </router-link>-->
+<!--      </li>-->
+<!--      <li class="side-navigation-item" v-on:click="activeLink(9)" :class="{'active': activeIndex === 9}" v-if="isLogin">-->
+<!--        <router-link :to="{path: '/history'}" style="&#45;&#45;clr:#2196f3;" title="历史记录">-->
+<!--          <span class="icon"><i class='bx bx-history'></i></span>-->
+<!--          <span class="text">历史记录</span>-->
+<!--        </router-link>-->
+<!--      </li>-->
+      <li class="side-navigation-item user-box" v-if="isLogin">
+        <router-link to="#" style="--clr: #0fc70f">
+          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
+          <span class="text">{{baseInfo.username}}</span>
+        </router-link>
+        <ul class="user-sub-menu sub-menu-admin">
+<!--          <li class="sub-item" @click="toHome">-->
+<!--            <i class='bx bx-user'></i>-->
+<!--            <span>个人中心</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
+<!--          <li class="sub-item">-->
+<!--            <i class='bx bxs-user-account'></i>-->
+<!--            <span>账号设置</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
+<!--          <li class="sub-item" @click="toMessageCenter">-->
+<!--            <i class='bx bx-message-rounded'></i>-->
+<!--            <span>消息中心</span>-->
+<!--            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
+<!--          <li class="sub-item">-->
+<!--            <i class='bx bx-group'></i>-->
+<!--            <span>我的机构</span>-->
+<!--            <i class='bx bx-chevron-right right'></i>-->
+<!--          </li>-->
+<!--          <li class="bottom-bor">-->
+<!--          </li>-->
           <li class="sub-item log-out" @click="logout">
             <i class='bx bx-log-out-circle'></i>
             <span>退出登录</span>
@@ -75,15 +161,67 @@ export default {
     return {
       isActive: false,
       index: 0,
-      userStateClr: '#f44336',
+      // userStateClr: '#f44336',
+      msg_plm_has_new: 0, //新的系统消息的数量
+      msg_rec_has_new: 0, //新的私信的数量
     }
   },
   computed :{
     activeIndex() {
-      if(this.$route.path === '' || this.$route.path === '/' || this.$route.path === '/settings')
+      if(this.$route.path === ''
+          || this.$route.path === '/'
+          || this.$route.path.startsWith('/settings')
+      )
         return 1;
+
+      else if(this.$route.path.startsWith('/search') || this.$route.path.startsWith('/Search'))
+        return 2;
+
+      else if(this.$route.path.startsWith('/adminHome'))
+        return 3;
+
+      else if(this.$route.path.startsWith('/adminUser'))
+        return 4;
+
+      else if(this.$route.path.startsWith('/LiteratureManage'))
+        return 5;
+
+      else if(this.$route.path.startsWith('/Institutional'))
+        return 6;
+
+      else if(this.$route.path.startsWith('/TransactionCenter'))
+        return 7;
+
+      else if(this.$route.path.startsWith('/collection'))
+        return 8;
+
+      else if(this.$route.path.startsWith('/history'))
+        return 9;
     },
+
+    isLogin() {
+      return this.$store.state.baseInfo.length !== 0;
+    },
+    isAdmin() {
+      // return (this.$route.path.startsWith('/admin')
+      //     || this.$route.path.indexOf('Manage') !== -1
+      //     || this.$route.path.indexOf('manage') !== -1
+      //     || this.$route.path.startsWith('/Institutional')
+      //     || this.$route.path.startsWith('/TransactionCenter'))
+      //     && !this.$route.path.startsWith('/MessageManage');
+      return this.$store.state.baseInfo.isAdmin !== null && this.$store.state.baseInfo.isAdmin;
+    },
+    baseInfo() {
+      return this.$store.state.baseInfo;
+    },
+    userStateClr() {
+      if(this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0)
+        return '#f44336';
+      else
+        return '#0fc70f';
+    }
   },
+
   methods: {
     logout() {
       let baseInfo = JSON.parse(sessionStorage.getItem('baseInfo'))
@@ -111,6 +249,8 @@ export default {
 
 
           this.$router.push('/')
+          this.$store.state.baseInfo = []
+          window.location.reload()
         }
         else {
           this.$message({
@@ -138,6 +278,103 @@ export default {
       this.isActive = !this.isActive;
       this.$emit('getActive', this.isActive);
     },
+
+    getMsgRec(uid, type) { //type=0,初始化时的调用
+      let that = this;
+
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec',
+      })
+          .then(res => {
+            console.log(res.data)
+            this.msg_rec_list = res.data;
+            for(let i = 0; i < this.msg_rec_list.length; i++) {
+              // this.msg_rec_list[i].avatar = 'user.png';
+              this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+            this.dis_msg_list = this.msg_rec_list;
+
+            console.log(this.dis_msg_list)
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+            console.log(this.showContent)
+            if(type === 0) {
+              this.dis_msg_list = this.msg_plm_list;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+
+    getMsgPlm(uid) {
+      let that = this;
+
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getPlatMsg',
+      })
+          .then(res => {
+            console.log(res.data)
+
+            this.msg_plm_list = res.data;
+            for(let i = 0; i < this.msg_plm_list.length; i++) {
+              // this.msg_plm_list[i].avatar = 'user.png';
+              this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.dis_msg_list = this.msg_plm_list;
+            that.$store.state.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+
+    cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
+      let has_new = 0;
+      for(let i = 0; i < msg_list.length; i++) {
+        if(!msg_list[i].is_read) { //有未读消息就+1
+          has_new++;
+        }
+      }
+      console.log(has_new);
+      return has_new;
+    },
+    cal_msg_plm(msg_list) { //计算系统消息是否有未读消息
+      let has_new = 0;
+      console.log("in cal_msg_plm")
+      for(let i = 0; i < msg_list.length; i++) {
+        console.log(msg_list[i].is_read)
+        if(!msg_list[i].is_read) { //有未读消息就+1
+          has_new++;
+        }
+      }
+      console.log(has_new)
+      return has_new;
+    },
+  },
+
+  created() {
+    this.getMsgRec(this.uid, 0);
+  },
+  mounted() {
+    this.getMsgPlm(this.uid);
+    console.log(this.msg_plm_has_new)
+    console.log(this.msg_rec_has_new)
+    this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    console.log(this.dis_msg_list)
   },
 }
 </script>
@@ -394,7 +631,7 @@ export default {
   position: absolute;
   width: 200px;
   right: -200px;
-  top: -200px;
+  top: -100px;
   color: #333;
   border-radius: 10px;
   z-index: 99;
@@ -406,12 +643,22 @@ export default {
   pointer-events: none;
 }
 
+.user-box .user-sub-menu.sub-menu-admin {
+  top: -20px;
+}
+
+
+
 .user-box:hover .user-sub-menu {
-  top:-150px;
+  top: -75px;
   right: -210px;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+.user-box:hover .user-sub-menu.sub-menu-admin {
+  top: 0;
 }
 
 .user-box .user-info {

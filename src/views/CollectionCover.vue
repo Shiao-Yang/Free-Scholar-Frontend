@@ -1,5 +1,19 @@
 <template>
   <div class="box">
+    <div class="mask" v-if="this.visible === true"></div>
+    <div class="windows" v-if="this.visible === true">
+      <div class="newForm">
+        <el-form ref="form" label-width="120px">
+          <el-form-item label="收藏夹标题:" :model="form" style="width: 200px">
+            <el-input v-model="form.title" style="width: 340px"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="nowSubmit">
+        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button style="margin-left: 30px" @click="close">取消</el-button>
+      </div>
+    </div>
     <div class="myCollection">
       <div class="title">
         <div class="titleName">
@@ -17,36 +31,18 @@
             <span class="sub-title">我创建的</span>
           </div>
         </div>
-        <div class="item">
-          <img src="../assets/Cover1.jpg" class="cover">
+        <div class="item" v-for="(item,index) in MyCreateList" :key="index" :title="item.title" @click="toCollection(1, index)">
+          <img :src="'http://139.9.134.209:8000/media/coverimgs/'+item.avatar" class="cover">
           <div class="name">
-            植物学研究
+            {{item.title}}
           </div>
           <div class="date">
-            创建于2021-11-03
+            创建于{{item.date}}
           </div>
         </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          植物学研究
-        </div>
-        <div class="date">
-          创建于2021-11-03
-        </div>
-      </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          {{name|ellipsis}}
-        </div>
-        <div class="date">
-          创建于2021-11-03
-        </div>
-      </div>
-        <div class="item">
+        <div class="item" title="新建">
         <div class="newCollection">
-          <i class='bx bx-plus' style="font-size: 150px;position: relative;left: 12px"></i>
+          <i class='bx bx-plus' style="font-size: 150px;position: relative;left: 12px" @click="newCollect"></i>
         </div>
         <div class="name">
           新建收藏夹
@@ -61,41 +57,14 @@
           <i class='bx bxs-folder' style="color: orange"></i>
           我的收藏与订阅
         </div>
-        <div class="item">
+        <div class="item" v-for="(item,index) in MyCollection" :key="index">
           <img src="../assets/Cover1.jpg" class="cover">
           <div class="name">
-            植物学研究
+            {{MyCollection[index].title}}
           </div>
           <div class="date">
-            更新于2021-11-03<i class="dotClass" style="background-color: red"></i>
+            更新于{{MyCollection[index].date}}<i class="dotClass" style="background-color: red"></i>
           </div>
-        </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          植物学研究
-        </div>
-        <div class="date">
-          更新于2021-11-03
-        </div>
-      </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          植物学研究
-        </div>
-        <div class="date">
-          更新于2021-11-03<i class="dotClass" style="background-color: red"></i>
-        </div>
-      </div>
-        <div class="item">
-        <img src="../assets/Cover1.jpg" class="cover">
-        <div class="name">
-          植物学研究
-        </div>
-        <div class="date">
-          更新于2021-11-03
-        </div>
       </div>
       </div>
     </div>
@@ -107,8 +76,39 @@ export default {
   name: "CollectionCover",
   data() {
     return {
-      name:'这是一个标题很长的收藏夹'
+      form :{
+        title : '',
+      },
+      visible : false,
+      name:'这是一个标题很长的收藏夹',
+      MyCreateList:[
+        {
+          "id":1,
+          "title":"编译技术答案",
+          "date":"2021-12-01",
+        },
+        {
+          "id":1,
+          "title":"编译技术答案",
+          "date":"2021-12-01",
+        },
+      ],
+      MyCollection:[
+        {
+          "id":1,
+          "title":"编译技术答案",
+          "date":"2021-12-01",
+        },
+        {
+          "id":1,
+          "title":"编译技术答案",
+          "date":"2021-12-01",
+        },
+      ],
     };
+  },
+  created() {
+    this.getCollections();
   },
   filters:{
     ellipsis(value){
@@ -120,6 +120,75 @@ export default {
     }
   },
   methods: {
+    getCollections(){
+      this.MyCollection = [];
+      this.MyCreateList = [];
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.MyCreateList.push({
+            id : res.data[i].id,
+            title : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+          })
+        }
+      })
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getCollectFavorites',
+        data: '1',
+      }).then(res =>{
+        var i = 0;
+        for (i = 0; i < res.data.length; i++){
+          this.MyCollection.push({
+            id : res.data[i].id,
+            title : res.data[i].title,
+            avatar : res.data[i].avatar,
+            count : res.data[i].count,
+            date : res.data[i].time,
+          })
+        }
+      })
+    },
+    onSubmit(){
+      let params = {
+        title: this.form.title,
+      }
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/relation/newFavorites',
+        data: params,
+      }).then(res =>{
+        if(res.data.error === 0)
+          this.$message.success('创建成功');
+        else
+          this.$message.error(res.data.msg);
+      })
+      this.form.title = '';
+      this.visible = false;
+      location.reload();
+    },
+    close(){
+      this.visible = false;
+    },
+    newCollect(){
+      this.visible = true;
+    },
     handleChange(val) {
       console.log(val);
     },
@@ -128,12 +197,54 @@ export default {
     },
     leaveItem() {
       this.itemStyle = '';
-    }
+    },
+    toCollection(ListNum, index) {
+      this.$router.push(
+          {
+            name: 'Collection',
+            params: {
+              selected: ListNum,
+              index: index,
+            }
+          }
+      );
+    },
   }
 }
 </script>
 
 <style scoped>
+.nowSubmit {
+  position: relative;
+  top: 150px;
+  left: 130px;
+}
+.newForm {
+  position: relative;
+  top: 80px;
+  width: 600px;
+}
+.mask {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.windows {
+  position: fixed;
+  background-color: white;
+  width: 500px;
+  height: 350px;
+  top: 130px;
+  left: 500px;
+  z-index: 1000;
+}
 .newCollection {
   border-radius: 10px;
   width: 180px;
@@ -154,7 +265,6 @@ export default {
   margin-bottom: 10px;
 }
 .name {
-
   width: 200px;
   margin-left: 3px;
   font-size: 21px;
@@ -169,7 +279,9 @@ export default {
 .item {
   display: inline-block;
   margin-left: 20px;
+  cursor: pointer;
 }
+
 .Mytitle {
   position: relative;
   height: 40px;

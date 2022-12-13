@@ -12,6 +12,7 @@ import SearchDetails from "@/views/SearchDetails"
 import History from "@/views/History"
 import TransactionCenter from "@/views/TransactionCenter"
 import LoginSignUp from "@/views/Login&SignUp";
+// import admitScholar from "@/views/AdmitScholar";
 
 Vue.use(VueRouter)
 
@@ -120,6 +121,11 @@ const routes = [
     component: () => import('../views/SearchDetails.vue')
   },
   {
+    path:`/SearchDetails/:LiteratureId`,
+    name:'SearchDetailsByID',
+    component: () => import('../views/SearchDetails.vue')
+  },
+  {
     path: '/History',
     name: 'History',
     component: () => import('../views/History.vue')
@@ -133,6 +139,11 @@ const routes = [
     path: '/login&signup',
     name: 'login&signup',
     component: () => import('../views/Login&SignUp'),
+  },
+  {
+    path: '/admitScholar',
+    name: 'admitScholar',
+    component: () => import('../views/AdmitScholar'),
   },
 ]
 

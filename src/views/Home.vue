@@ -2,7 +2,7 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="this.$store.state.url+baseInfo.avatar">
+        <img :src="url+baseInfo.avatar">
       </div>
       <div class="profile">
         <ul class="profile-list">
@@ -12,11 +12,13 @@
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-home'></i></span>
-            <span class="text">{{baseInfo.institution.name}}</span>
+            <span class="text" v-if="baseInfo.institution !== null">{{baseInfo.institution.name}}</span>
+            <span class="text" v-if="baseInfo.institution === null">暂无</span>
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-bookmark'></i></span>
-            <span class="text">{{baseInfo.bio}}</span>
+            <span class="text" v-if="baseInfo.bio !== null">{{baseInfo.bio}}</span>
+            <span class="text" v-if="baseInfo.bio === null">暂无</span>
           </li>
         </ul>
       </div>
@@ -32,7 +34,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="baseInfo.identity===1" @click="toFollowerList">
+        <div class="social-info-item" v-if="baseInfo.identity===2" @click="toFollowerList">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart' ></i></span>
             <span class="text">粉丝</span>
@@ -96,6 +98,15 @@
             个人头像
           </span>
         </div>
+        <div class="source-item" :class="{'active' : isActive2}" @click="toNS" v-if="baseInfo.author_id !== null">
+          <span class="image">
+<!--            <img src="../assets/img/home/avatar.png">-->
+            <i class='bx bx-user-circle'></i>
+          </span>
+          <span class="name">
+            学者门户
+          </span>
+        </div>
       </div>
       <div class="divider-y"></div>
       <div class="content-box">
@@ -123,7 +134,7 @@
             <div class="item-name">
               身份
             </div>
-            <div class="item-content" v-if="baseInfo.identity === 0">
+            <div class="item-content" v-if="baseInfo.identity === 1">
               <div class="text">
                 普通用户
               </div>
@@ -131,7 +142,7 @@
                 <img src="../assets/img/home/user.png" style="margin: 5px; width: 35px; height: 35px; position: relative; left: -100px; filter: drop-shadow(100px 0px rgba(98,100,100,0.82)); ">
               </div>
             </div>
-            <div class="item-content" v-if="baseInfo.identity === 1">
+            <div class="item-content" v-if="baseInfo.identity === 2">
               <div class="text">
                 认证学者
               </div>
@@ -268,7 +279,7 @@
         </div>
         <div class="show-box" v-if="isActive3">
           <div class="user-avatar">
-            <img :src="this.$store.state.url+baseInfo.avatar">
+            <img :src="url+baseInfo.avatar">
           </div>
           <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; left: 50px; bottom: 10px;" @click="changeAvatarVisible = true">更换头像</el-button>
           <el-dialog
@@ -279,7 +290,7 @@
               <span>
                 <input type="file" ref="pic">
               </span>
-            <span slot="footer" class="dialog-footer">
+              <span slot="footer" class="dialog-footer">
                 <el-button @click="changeAvatarVisible = false">取 消 上 传</el-button>
                 <el-button type="primary" @click="toChangeAvatar(uid); changePwdVisible = false">确 定 上 传</el-button>
               </span>
@@ -299,6 +310,7 @@ export default {
   data() {
     return {
       uid: 1,
+      url: this.$store.state.url,
       closable: true, //是否可关闭dialog
       isCenter: true, //dialog footer 和 head 是否居中
       isActive1: true, //true 则展示系统消息
@@ -346,6 +358,8 @@ export default {
         state: 1,
         gender: 1,
         login_date: '2022-10-16 22:10:16',
+        scholar_id: null,
+        author_id: null,
       },
 
     }
@@ -433,17 +447,15 @@ export default {
       let fileToUpload = this.$refs.pic.files[0];
       //console.log(fileToUpload)
       let param = new FormData();  //创建表单对象
-      param.append("avatar",fileToUpload);
+      param.append("img",fileToUpload);
       // param.append("uid",tempthis.$store.state.userInfo.uid);
       param.append("uid",tempthis.uid);
-
       param.forEach((value, key) => {
         console.log(`key ${key}: value ${value}`);
       })
-
       this.axios({
         method: 'post',
-        url: 'http://139.9.134.209:8000/api/relation/set_avatar/',
+        url: 'http://139.9.134.209:8000/api/media/set_avatar/',
         data: param,
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -455,7 +467,7 @@ export default {
           tempthis.$message({
             type: 'success',
             showClose: true,
-            message: "头像上传成功",
+            message: "封面上传成功",
           })
         }
         else {
@@ -464,7 +476,7 @@ export default {
               type: 'success',
               showClose: true,
               // message: "res.data.msg",
-              message: "头像上传失败",
+              message: "封面上传失败",
             })
           }
         }
@@ -504,32 +516,32 @@ export default {
         url: 'http://139.9.134.209:8000/api/relation/editInfo',
         data: param,
       })
-          .then(res => {
-            console.log(res.data)
-            if(res.data.errno === 0) {
-              if(res.data.errno === 0) {
-                this.$message ({
-                  message: "取消成功",
-                  showClose: true,
-                  type: 'success',
-                })
-                this.baseInfo.follows--;
-                this.getBaseInfo(uid); //重新获取数据
-              }
+      .then(res => {
+        console.log(res.data)
+        if(res.data.errno === 0) {
+          if(res.data.errno === 0) {
+            this.$message ({
+              message: "取消成功",
+              showClose: true,
+              type: 'success',
+            })
+            this.baseInfo.follows--;
+            this.getBaseInfo(uid); //重新获取数据
+          }
 
-              else {
-                this.$message ({
-                  message: "操作失败",
-                  showClose: true,
-                  type: 'error',
-                })
-              }
-            }
+          else {
+            this.$message ({
+              message: "操作失败",
+              showClose: true,
+              type: 'error',
+            })
+          }
+        }
 
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      })
+      .catch(err => {
+        console.log(err);
+      })
 
       this.infoForm = {
         name: '',  //重置为空
@@ -542,6 +554,17 @@ export default {
         },
       }
     },
+
+    toNS() {
+      this.$router.push({
+        path: '/NS',
+        query: {
+          id: this.baseInfo.author_id,
+          scholar_id: this.baseInfo.scholar_id,
+        }
+      })
+    },
+
     getBaseInfo(uid) {
       // let token = JSON.parse(sessionStorage.getItem('baseInfo')).token
       this.axios({
@@ -551,20 +574,21 @@ export default {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
         },
       })
-      .then(res => {
-        console.log(res.data)
+          .then(res => {
+            console.log(res.data)
 
-        this.baseInfo = res.data
-        if(this.baseInfo.avatar === null) {
-          this.baseInfo.avatar = 'img/home/no-avatar.png'
-        }
-        // this.baseInfo.avatar = 'img/home/avatar1.jpg'
-        console.log(this.baseInfo)
+            this.baseInfo = res.data
+            this.$store.state.baseInfo = res.data
+            if(this.baseInfo.avatar === null) {
+              this.baseInfo.avatar = 'img/home/no-avatar.png'
+            }
+            // this.baseInfo.avatar = 'img/home/avatar1.jpg'
+            console.log(this.baseInfo)
 
-      })
-      .catch(err => {
-        console.log(err);
-      })
+          })
+          .catch(err => {
+            console.log(err);
+          })
 
     },
   },

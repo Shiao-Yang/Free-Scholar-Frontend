@@ -5,16 +5,31 @@
                 <div class="blackBox">
                     <img :src="require('../assets/'+baseInfo.avatar)" class="image">
                     <div class="userName" style="position: absolute; text-align: center;
-                     font-size: 30px; display: inline-block; left: 85px; right: 0;
-                     top: 30px; color: white; font-weight: bold">{{this.userName}}</div>
+                     font-size: 120%; display: inline-block; left: 85px; right: 0;
+                     top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
-                <i class="bx bxs-user-plus"></i>
-                <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
-                <i class="bx bxs-award"></i>
-                <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;
-                 color: #ffcb74">已认领</div>
-                <i class="bx bxs-chat"></i>
-                <div style="position: absolute; margin-top: 13px; left: 245px; font-size: 15px">私信</div>
+                <div class="option-box">
+                  <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(uid)">
+                    <i class="bx bxs-user-plus"></i>
+                    <div class="fo" style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
+                  </div>
+                    <div class="follow" v-else style="color: #2196f3" @click="focus(uid)">
+                        <i class="bx bxs-user-plus"></i>
+                        <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">已关注</div>
+                    </div>
+                  <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer" title="立即认领" @click="toAdmitScholar">
+                    <i class="bx bxs-award"></i>
+                    <div class="cl" style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;" >未认领</div>
+                  </a>
+                    <div class="claim" v-else style="color: #ffcb74">
+                        <i class="bx bxs-award"></i>
+                        <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;">已认领</div>
+                    </div>
+                  <div class="message" @click="replyVisible = true;">
+                    <i class="bx bxs-chat"></i>
+                    <div style="position: absolute; margin-top: 13px; left: 245px; font-size: 15px">私信</div>
+                  </div>
+                </div>
             </div>
             <div class="introduction">
                 <i class="bx bxs-user-pin"></i>
@@ -45,17 +60,34 @@
             </div>
             <div style="position: relative; height: 30px">
                 <div style="position: absolute; left: 20px">排序方式：</div>
-                <button class="sort" @click="">按发表时间排序</button>
-                <button class="sort" style="left: 220px" @click="">按引用量排序</button>
+                <button class="sort" @click="sortByTime(0)" v-if="sort===0" style="color: white;
+                background: #2196f3;">按发表时间排序</button>
+                <button class="sort" @click="sortByTime(0)" v-else >按发表时间排序</button>
+                <button class="sort" style="left: 220px" @click="sortByTime(1)" v-if="sort===0">按引用量排序</button>
+                <button class="sort" @click="sortByTime(1)" v-else style="left: 220px; color: white;
+                background: #2196f3;">按引用量排序</button>
             </div>
             <div style="overflow: auto; position: absolute; width: 100%; height: 660px">
                 <div class="contents" v-for="(item) in paperList">
-                    <i class='bx bxs-bookmark-alt'></i>
-<!--                    <div class="title">{{item.title}}</div>-->
-                    <a :href="item.url" class="title">{{item.title}}</a>
-                    <div class="author" v-for="(tItem) in item.authors">{{tItem.name}}</div>
-                    <i class='bx bx-link'></i>
-                    <div class="citation">被引用次数: {{item.n_citation}}</div>
+                    <div style="display: flex; width: 98%; height: auto">
+                        <i class='bx bxs-bookmark-alt'></i>
+                        <a :href="item.url" class="title">{{item.title}}</a>
+                    </div>
+                    <div style="position: relative; display: flex; flex-wrap: wrap; list-style: none; line-height: 15px;
+                    margin-left: 25px; align-items: center;">
+                        <div class="author" v-for="(tItem) in item.authors" >
+                            <span v-if="tItem.id" @click="temp(tItem.id)">{{tItem.name}}</span>
+                            <span v-else @click="$message('暂无该作者信息')">{{tItem.name}}</span>
+                        </div>
+                        <div style="margin-left: auto">
+                            <div class="year">年份: {{item.year}}</div>
+                            <i class='bx bx-link'></i>
+                            <div class="citation">被引用次数: {{item.n_citation}}</div>
+                        </div>
+
+                    </div>
+
+
                 </div>
             </div>
 
@@ -79,7 +111,24 @@
             </div>
 
         </div>
-
+        <el-dialog append-to-body title="发送私信" :visible="replyVisible" :center="isCenter" width="30%">
+          <el-input
+              style="z-index: 2"
+              type="textarea"
+              maxlength="500"
+              placeholder="请输入内容"
+              v-model="msg_send.content">
+          </el-input>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="replyVisible = false; msg_send.content=''">取 消</el-button>
+            <el-button type="primary" plain @click="sendMsg">确 定</el-button>
+          </div>
+        </el-dialog>
+        <div class="question-btn">
+          <div class="question-icon" title="举报冒领"><i class='bx bxs-error-circle' ></i></div>
+          <div class="question-sub-item">
+          </div>
+        </div>
     </div>
 
 </template>
@@ -91,26 +140,69 @@
         data() {
             return {
                 uid: '540888a2dabfae92b4247e94',
+                scholar_id: null,
+                user_id: null,
                 userName: '',
                 baseInfo: {
                     userName: '王海涛',
                     avatar: 'YAN.jpg',
+                    user_id: null,
+                    scholar_id: null,
                 },
+                sort: 0, //0表示按时间排序，1表示按引用量排序
+                follow: 0, //1表示已关注，0表示未关注
+                accreditation: 0, //1表示已认证，0表示未认证
                 introduction:'这个人很懒，什么都没有写……',
                 heat: 38,
                 visitors: 23,
-                paperList: [
-
-                ],
-                scholarList: [
-
-                ],
-                test: [
-
-                ]
+                paperList: [],
+                scholarList: [],
+                replyVisible: false,
+                isCenter: true,
+                msg_send: {
+                  owner_id: 1,
+                  content: '',
+                },
             }
         },
         methods: {
+            focus(uid){
+              console.log("token: "+JSON.parse(sessionStorage.getItem('baseInfo')).token)
+              let formData = new FormData();
+              formData.append('aim_id', uid);
+              this.follow = 1;
+              this.$axios({
+                  method: 'post',
+                  url: this.$store.state.address + 'api/relation/focus',
+                  data: formData,
+                  headers: {
+                      jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                  }
+              }).then(res =>{
+                  console.log(res)
+              })
+                .catch(err =>{
+                    console.log(err)
+                })
+            },
+            temp(id){
+                this.uid = id;
+                this.getCoworkers(id);
+            },
+            sortByTime(n){
+                // console.log('uid: '+this.uid)
+                this.sort = n;
+                if(n==0){
+                    this.paperList.sort(function (a, b) {
+                        return b.year - a.year;
+                    })
+                }
+                else {
+                    this.paperList.sort(function (a, b) {
+                        return b.n_citation - a.n_citation;
+                    })
+                }
+            },
             getCoworkers(uid){
                 this.axios({
                     method: 'post',
@@ -119,42 +211,141 @@
                         id: uid
                     })
                 }).then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.scholarList = res.data.coworkers;
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
+                    // this.coID = res.data.
+                    this.sortByTime(0)
                 }).catch(err => {
-                    console.log(err)
+                    // console.log(err)
                 })
             },
             getBaseInfo(uid){
                 this.axios({
-                    method: 'post',
-                    url: 'http://127.0.0.1:8000/api/ScholarPortal/GetBaseInfo/',
-                    data: qs.stringify({
-                        id: uid
-                    })
+                    method: 'get',
+                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo?author_id=' + uid,
+                    // url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + '1',
                 }).then(res => {
                     console.log(res)
+                    if(res.data.introduction!=null){
+                        this.introduction = res.data.introduction;
+                    }
+                    if(res.data.errno===1){
+                        this.accreditation = 0;
+                    }
+                    else
+                        this.accreditation = 1;
+                    if(res.data.heat==null){
+                        this.heat = 0;
+                    }
+                    else {
+                        this.heat = res.data.heat
+                    }
+                    if(res.data.visitors==null){
+                        this.visitors = 0
+                    }
+                    else{
+                        this.visitors = res.data.visitors
+                    }
+                    if(res.data.scholar_id !== null){
+                      this.baseInfo.scholar_id = res.data.scholar_id
+                    }
+                    if(res.data.user_id !== null){
+                      this.baseInfo.user_id = res.data.user_id
+                    }
+
                 }).catch(err =>{
                     console.log(err)
                 })
 
+            },
 
+          toAdmitScholar() {
+            this.$router.push({
+              path: '/admitScholar',
+              query: {
+                author_id: this.uid,
+                scholar_id: this.baseInfo.scholar_id,
+              }
+            })
+          },
+
+          sendMsg() {
+            console.log(this.msg_send);
+            if(this.msg_send.content === '') {
+              this.$message({
+                type: 'error',
+                showClose: true,
+                message: '内容不能为空'
+              })
+              return;
             }
+            let params = new FormData();
+            params.append("owner_id", this.msg_send.owner_id);
+            params.append("content", this.msg_send.content);
+
+            this.axios({
+              headers: {
+                jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+              },
+              method: 'post',
+              url: 'http://139.9.134.209:8000/api/MessageCenter/sendMsg/',
+              data: params,
+            })
+                .then(res => {
+                  this.dis_msg_list = [];
+                  // if(this.isActive1) { //当前处于系统消息列表
+                  //   this.getMsgPlm(this.uid);
+                  // }
+                  // else if(this.isActive2) { //当前处于收到的私信列表
+                  //   this.getMsgRec(this.uid);
+                  // }
+                  // else if(this.isActive3) { //当前处于发送的私信列表
+                  //   this.getMsgSend(this.uid);
+                  // }
+
+                  if(res.data.errno === 0) {
+                    this.$message({
+                      type: 'success',
+                      showClose: true,
+                      message: '发送成功'
+                    })
+                  }
+
+                })
+                .catch(err => {
+                  console.log(err)
+                })
+            this.replyVisible = false;
+            this.msg_send.content = '';
+          },
+
         },
         created() {
+            // console.log(this.$route.query.id)
+            this.uid = this.$route.query.id;
+            // this.user_id = this.$route.query.user_id;
+            // this.scholar_id = this.$route.query.scholar_id;
+            console.log(this.uid)
             this.getCoworkers(this.uid)
-            // this.getBaseInfo(this.uid)
-        }
+            this.getBaseInfo(this.uid)
+        },
+
     }
 </script>
 
 <style scoped>
+    .NS {
+      width: 100%;
+      /*min-width: 1450px;*/
+    }
+
     .left {
         position: relative;
         display: inline-block;
-        width: 23%;
+        width: 24%;
+        /*min-width: 330px;*/
         margin: 10px;
         height: 760px;
         /*background-color: #4DA5FF;*/
@@ -162,7 +353,8 @@
     .middle {
         position: relative;
         display: inline-block;
-        width: 48%;
+        width: 45%;
+        /*min-width: 680px;*/
         height: 760px;
         margin: 10px;
         /*background-color: #00CA97;*/
@@ -173,29 +365,49 @@
         position: relative;
         display: inline-block;
         width: 24%;
+        /*min-width: 330px;*/
         height: 760px;
         margin: 10px;
         /*margin-top: 0;*/
         border-radius: 5px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
     }
+    /* 设置滚动条的样式 */
+    ::-webkit-scrollbar {
+        width:10px;
+    }
+    /* 滚动槽 */
+    ::-webkit-scrollbar-track {
+        /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.3);*/
+        border-radius:10px;
+    }
+    /* 滚动条滑块 */
+    ::-webkit-scrollbar-thumb {
+        border-radius:10px;
+        background:rgba(0,0,0,0.1);
+        /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.5);*/
+    }
     .middle .title {
-        position: absolute;
+        position: relative;
         text-decoration: none;
-        margin-left: 10px;
+        display: inline-block;
+        margin-bottom: 5px;
+        margin-left: 5px;
         margin-top: 5px;
-        left: 25px;
+        /*left: 25px;*/
         font-size: 15px;
         color: #4DA5FF;
+        cursor: pointer;
     }
     .middle .title:hover {
-        position: absolute;
+        position: relative;
         text-decoration: underline;
-        margin-left: 10px;
+        margin-left: 5px;
         margin-top: 5px;
-        left: 25px;
+        /*left: 25px;*/
         font-size: 15px;
         color: #4DA5FF;
+        cursor: pointer;
     }
     .right .bxs-contact {
         position: absolute;
@@ -222,29 +434,43 @@
         color: #FBBD08;
     }
     .contents .bx-link {
-        position: absolute;
-        bottom: 10px;
-        right: 95px;
+        position: relative;
+        display: inline-block;
+        font-size: 13px;
+        margin-right: 5px;
+    }
+    .contents .year {
+        position: relative;
+        display: inline-block;
+        /*align-self: cross-end;*/
+        margin-right: 10px;
+        font-size: 13px;
     }
     .contents .citation {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        font-size: 10px;
+        position: relative;
+        display: inline-block;
+        /*align-self: cross-end;*/
+        margin-right: 10px;
+        font-size: 13px;
     }
     .middle .bxs-bookmark-alt {
-        position: absolute;
+        /*position: relative;*/
+        /*display: inline-block;*/
         font-size: 20px;
-        margin: 10px;
+        margin: 5px 5px 10px 10px;
         color: #FBBD08;
     }
     .middle .author {
-        position: relative;
-        display: inline-block;
-        margin-left: 10px;
-        top: 60px;
+        /*position: relative;*/
+        /*display: inline-block;*/
+        margin-left: 15px;
         font-size: 10px;
         color: #24bf24;
+        cursor: pointer;
+    }
+    .middle .author:hover {
+        color: #27ae60;
+        font-weight: bold;
     }
     .middle .sort {
         position: absolute;
@@ -253,19 +479,29 @@
         border: 1px solid #0f62fe;
         left: 100px;
         transition: .5s;
+        /*border-radius: 5px;*/
     }
     .middle .sort:hover {
         color: white;
         background: #2196f3;
     }
+    /*.middle .sort:focus {*/
+    /*    color: white;*/
+    /*    background: #2196f3;*/
+    /*}*/
     .middle .contents {
         position: relative;
-        height: 90px;
+        /*display: flex;*/
+        /*!*flex-wrap: wrap;*!*/
+        /*flex-direction: row;*/
+        height: auto;
         width: 95%;
+        padding-bottom: 5px;
         margin: 10px auto;
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
     }
+
     .left .name {
         position: relative;
         background-color: white;
@@ -290,8 +526,9 @@
         font-size: 30px;
         margin-top: 7px;
         margin-left: 15px;
-        color: #333333;
+        /*color: #333333;*/
     }
+
     .introduction .bxs-user-pin {
         position: absolute;
         margin-top: 15px;
@@ -364,7 +601,7 @@
         font-size: 30px;
         margin-top: 7px;
         left: 105px;
-        color: #ffcb74;
+        /*color: #ffcb74;*/
     }
     .name .bxs-chat {
         position: absolute;
@@ -382,9 +619,72 @@
     }
     .image {
         position: absolute;
+
         padding: 15px;
-        width: 100px; height: 100px;
+        width: 70px; height: 70px;
         border-radius: 20px;
+
         display: inline-block
+    }
+
+    .follow {
+      transition: 0.2s;
+      /*color: #333333;*/
+      cursor: pointer;
+    }
+
+    .follow:hover .fo{
+      color: #2196f3;
+    }
+
+    .follow:hover .bxs-user-plus{
+      color: #2196f3;
+    }
+    .name .claim {
+        transition: 0.2s;
+    }
+    .name .claim:hover {
+        color: #ffcb74;
+    }
+    .claim:hover .bxs-award{
+        color: #ffcb74;
+    }
+    .claim:hover .cl {
+        color: #ffcb74;
+    }
+    .message {
+      /*transition: 0.2s;*/
+      color: #333333;
+      cursor: pointer;
+    }
+
+    .message:hover {
+      color: #00cc00;
+    }
+
+    .message:hover .bxs-chat{
+      color: #00cc00;
+    }
+
+    .question-btn {
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+    .question-icon {
+      display: block;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      /*border-radius: 100%;*/
+      /*border: 2px solid rgba(244, 244, 244, 0.8);*/
+      font-size: 30px;
+    }
+
+    .question-icon:hover {
+      color: #f44336;
     }
 </style>
