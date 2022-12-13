@@ -108,46 +108,7 @@ export default {
     };
   },
   created() {
-    this.MyCollection = [];
-    this.MyCreateList = [];
-    this.$axios({
-      headers: {
-        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-      },
-      method: 'get',
-      url: this.$store.state.address+'api/relation/getFavorites',
-      data: '1',
-    }).then(res =>{
-      var i = 0;
-      for (i = 0; i < res.data.length; i++){
-        this.MyCreateList.push({
-          id : res.data[i].id,
-          title : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-        })
-      }
-    })
-    this.$axios({
-      headers: {
-        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-      },
-      method: 'get',
-      url: this.$store.state.address+'api/relation/getCollectFavorites',
-      data: '1',
-    }).then(res =>{
-      var i = 0;
-      for (i = 0; i < res.data.length; i++){
-        this.MyCollection.push({
-          id : res.data[i].id,
-          title : res.data[i].title,
-          avatar : res.data[i].avatar,
-          count : res.data[i].count,
-          date : res.data[i].time,
-        })
-      }
-    })
+    this.getCollections();
   },
   filters:{
     ellipsis(value){
@@ -213,11 +174,11 @@ export default {
         url: this.$store.state.address+'api/relation/newFavorites',
         data: params,
       }).then(res =>{
-        window.alert(res.data.msg);
+        this.$message.success(res.data.msg);
       })
       this.form.title = '';
-      this.getCollections();
       this.visible = false;
+      location.reload();
     },
     close(){
       this.visible = false;

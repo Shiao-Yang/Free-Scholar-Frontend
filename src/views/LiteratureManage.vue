@@ -77,7 +77,8 @@
     <div class="windows" v-if="this.visible1 === true">
       <el-form ref="form" :model="form" label-width="100px" style="width: 620px;position: relative;top: 60px">
         <div v-if="this.active === 0">
-          <el-form-item label="title">
+          <el-form-item label="title" prop="title"
+          :rules="[{ required: true, message: '请输入文献标题', trigger: 'blur' },]">
             <el-input v-model="form.title"></el-input>
           </el-form-item>
           <el-form-item label="year">
@@ -125,13 +126,12 @@
               :rules="{required: true, message: '作者不能为空', trigger: 'blur'}"
               style="width: 700px"
           >
-            <el-input v-model="domain.value" style="width: 135px;margin-right: 10px"></el-input>
-            <el-input v-model="domain.org" style="width: 135px;margin-right: 10px"></el-input>
-            <el-input v-model="domain.id" style="width: 135px;margin-right: 10px"></el-input>
+            <el-input v-model="domain.name" style="width: 135px;margin-right: 10px" placeholder="输入姓名"></el-input>
+            <el-input v-model="domain.org" style="width: 135px;margin-right: 10px" placeholder="输入机构"></el-input>
+            <el-input v-model="domain.id" style="width: 135px;margin-right: 10px" placeholder="输入id"></el-input>
             <el-button @click.prevent="removeDomain(domain)">删除</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('dynamicValidateForm')">提交</el-button>
             <el-button @click="addDomain">新增作者</el-button>
           </el-form-item>
         </div>
@@ -234,9 +234,9 @@ export default {
     return {
       dynamicValidateForm: {
         domains: [{
-          value: '请输入姓名',
-          org: '请输入机构',
-          id: '请输入id',
+          name: '',
+          org: '',
+          id: '',
         }],
         email: ''
       },
@@ -607,7 +607,35 @@ export default {
       this.visible1 = false;
     },
     upload(){
-
+      let venues = {
+        raw : this.form.raw,
+        id : this.form.id
+      };
+      let params = {
+        title : this.form.title,
+        year : this.form.year,
+        n_citation : this.form.n_citation,
+        lang : this.form.lang,
+        doi : this.form.doi,
+        issn : this.form.issn,
+        venue : venues,
+        keywords : this.form.keywords,
+        pdf : this.form.pdf,
+        url : this.form.url,
+        abstract : this.form.abstract,
+        authors: this.dynamicValidateForm.domains
+      };
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/publication/addPub/',
+        data: params,
+      }).then(res =>{
+        this.$message.success(res.data.msg);
+      })
+      this.visible1 = false;
     },
     next() {
       if (this.active++ > 2) this.active = 0;
@@ -623,9 +651,9 @@ export default {
     },
     addDomain() {
       this.dynamicValidateForm.domains.push({
-        value: '请输入姓名',
-        org: '请输入机构',
-        id: '请输入id',
+        name: '',
+        org: '',
+        id: '',
         key: Date.now()
       });
     }
