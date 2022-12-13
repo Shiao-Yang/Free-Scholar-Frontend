@@ -520,8 +520,6 @@ export default {
               this.getMsgSend(this.uid);
             }
 
-
-
             if(res.data.errno === 0) {
               this.$message({
                 type: 'success',
