@@ -29,7 +29,7 @@
       </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style=""></i>
+          <i class='bx bxs-circle user-info' style="" v-if="$store.state.msg_plm_has_new > 0 || $store.state.msg_rec_has_new > 0"></i>
           <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
           <span class="text">{{ baseInfo.username }}</span>
         </router-link>
@@ -47,7 +47,7 @@
           <li class="sub-item" @click="toMessageCenter">
             <i class='bx bx-message-rounded'></i>
             <span>消息中心</span>
-            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;"></i>
+            <i class='bx bxs-circle notice' style="font-size:12px;color: #FF5733;" v-if="$store.state.msg_plm_has_new > 0 || $store.state.msg_rec_has_new > 0"></i>
             <i class='bx bx-chevron-right right'></i>
           </li>
 <!--          <li class="sub-item">-->
@@ -162,6 +162,8 @@ export default {
       isActive: false,
       index: 0,
       userStateClr: '#f44336',
+      msg_plm_has_new: 0, //新的系统消息的数量
+      msg_rec_has_new: 0, //新的私信的数量
     }
   },
   computed :{
@@ -270,6 +272,103 @@ export default {
       this.isActive = !this.isActive;
       this.$emit('getActive', this.isActive);
     },
+
+    getMsgRec(uid, type) { //type=0,初始化时的调用
+      let that = this;
+
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec',
+      })
+          .then(res => {
+            console.log(res.data)
+            this.msg_rec_list = res.data;
+            for(let i = 0; i < this.msg_rec_list.length; i++) {
+              // this.msg_rec_list[i].avatar = 'user.png';
+              this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+            this.dis_msg_list = this.msg_rec_list;
+
+            console.log(this.dis_msg_list)
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+            console.log(this.showContent)
+            if(type === 0) {
+              this.dis_msg_list = this.msg_plm_list;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+
+    getMsgPlm(uid) {
+      let that = this;
+
+      this.axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'get',
+        url: 'http://139.9.134.209:8000/api/MessageCenter/getPlatMsg',
+      })
+          .then(res => {
+            console.log(res.data)
+
+            this.msg_plm_list = res.data;
+            for(let i = 0; i < this.msg_plm_list.length; i++) {
+              // this.msg_plm_list[i].avatar = 'user.png';
+              this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
+            }
+            this.dis_msg_list = this.msg_plm_list;
+            that.$store.state.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
+            // if(this.showContent) {
+            //   this.changeShowContent();
+            // }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    },
+
+    cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
+      let has_new = 0;
+      for(let i = 0; i < msg_list.length; i++) {
+        if(!msg_list[i].is_read) { //有未读消息就+1
+          has_new++;
+        }
+      }
+      console.log(has_new);
+      return has_new;
+    },
+    cal_msg_plm(msg_list) { //计算系统消息是否有未读消息
+      let has_new = 0;
+      console.log("in cal_msg_plm")
+      for(let i = 0; i < msg_list.length; i++) {
+        console.log(msg_list[i].is_read)
+        if(!msg_list[i].is_read) { //有未读消息就+1
+          has_new++;
+        }
+      }
+      console.log(has_new)
+      return has_new;
+    },
+  },
+
+  created() {
+    this.getMsgRec(this.uid, 0);
+  },
+  mounted() {
+    this.getMsgPlm(this.uid);
+    console.log(this.msg_plm_has_new)
+    console.log(this.msg_rec_has_new)
+    this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
+    console.log(this.dis_msg_list)
   },
 }
 </script>

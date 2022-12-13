@@ -577,6 +577,8 @@ export default {
 
     //获取系统通知
     getMsgPlm(uid) {
+      let that = this;
+
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -592,6 +594,7 @@ export default {
           this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
         }
         this.dis_msg_list = this.msg_plm_list;
+        that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
         this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
         // if(this.showContent) {
         //   this.changeShowContent();
@@ -604,6 +607,8 @@ export default {
 
     //获取用户收到的私信
     getMsgRec(uid, type) { //type=0,初始化时的调用
+      let that = this;
+
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -619,6 +624,7 @@ export default {
               this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
             }
             this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+            that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
             this.dis_msg_list = this.msg_rec_list;
 
             console.log(this.dis_msg_list)
@@ -687,7 +693,7 @@ export default {
     },
 
     openMessage(mid, index, event) { //查看一条消息的具体内容
-      // let uid = this.$store.state.userInfo.uid;
+
 
       let uid = 1;
       //系统消息
