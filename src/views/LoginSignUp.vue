@@ -69,6 +69,8 @@
 </template>
 
 <script>
+import cryptoJSObj from  '@/assets/js/cryp.js'
+
 export default {
   name: "LoginSignUp",
   data (){
@@ -84,9 +86,19 @@ export default {
   },
   methods: {
     login() {
+      let that = this;
+      that.login_password = cryptoJSObj.encryptFunc(this.login_password)
+
       let param = new FormData();
       console.log(this.login_username)
       console.log(this.login_password)
+
+      // let encrypt = CryptoJS.AES.encrypt(message, CryptoJS.enc.Utf8.parse(this.login_password), {
+      //   mode: CryptoJS.mode.ECB,
+      //   padding: CryptoJS.pad.Pkcs7,
+      // }).toString();
+      // console.log(encrypt);
+
       param.append('username', this.login_username);
       param.append('password', this.login_password);
 
