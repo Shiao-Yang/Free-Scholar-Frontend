@@ -559,7 +559,7 @@ export default {
       this.$router.push({
         path: '/NS',
         query: {
-          author_id: this.baseInfo.author_id,
+          id: this.baseInfo.author_id,
           scholar_id: this.baseInfo.scholar_id,
         }
       })
