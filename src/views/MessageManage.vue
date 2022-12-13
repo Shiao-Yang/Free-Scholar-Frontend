@@ -1136,14 +1136,13 @@ export default {
   bottom: 15px;
   right: 150px;
   height: 25px;
-  width: 200px;
 }
 
 .sender-box .sender-baseInfo .send-time .text{
   position: absolute;
   top: 0px;
   right: 0px;
-  width: 150px;
+  width: 200px;
 }
 
 .content-box {
