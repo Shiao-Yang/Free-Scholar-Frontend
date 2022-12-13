@@ -3,11 +3,15 @@
   <div class="background">
 
     <div class="leftup">
-      <div class="title">
+      <div class="title" :title="literature_title">
         {{ literature_title }}
       </div>
       <div class="author">
-        {{ author }}
+        <div class="author-list" >
+          <div class="author-item" v-for="author in this_paper[0].authors">
+            <span class="author-name" :title="author.name" @click="$router.push({path:'/NS',query:{id: author.id}})">{{author.name}}</span>
+          </div>
+        </div>
       </div>
 <!--      <div class="fromwhere">-->
 <!--        {{ institution }}-->
@@ -351,9 +355,7 @@ export default {
           })
     },
     changeUrlActive() {
-      console.log(this.urlActive)
       this.urlActive = !this.urlActive
-      console.log(this.urlActive)
     },
   }
 }
@@ -503,19 +505,18 @@ export default {
 }
 
 .theicons {
-  position: absolute;
   color: #030303;
   font-size: 15px;
-  top: 120px;
-  left: 20px;
+  /*top: 120px;*/
+  margin-left: 20px;
 }
 
 .keywordsAndAbstract {
-  position: absolute;
+  /*position: absolute;*/
   color: #030303;
   font-size: 15px;
   top: 155px;
-  left: 20px;
+  margin-left: 20px;
 }
 
 .abstract {
@@ -527,11 +528,14 @@ export default {
 }
 
 .leftup .author {
-  position: absolute;
+  /*position: absolute;*/
   color: #248F24;
   font-size: 15px;
-  top: 70px;
-  left: 20px;
+  margin-left: 20px;
+  width: 95%;
+  overflow: scroll;
+  /*top: 70px;*/
+  /*left: 20px;*/
 }
 
 .replys {
@@ -643,6 +647,23 @@ export default {
 
 .header-icon .sub-menu .sub-item:hover a {
   color: white;
+}
+
+.leftup .author-list {
+  width: 100%;
+  line-height: 25px;
+}
+
+.leftup .author-list .author-item {
+  display: inline-block;
+  margin-right: 5px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.leftup .author-list .author-item:hover {
+  color: #248F24;
+  font-weight: bold;
 }
 
 </style>
