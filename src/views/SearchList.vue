@@ -1375,7 +1375,6 @@ export default {
 }
 
 .add-condition .add-condition-btn{
-  height: 30px;
   line-height: 30px;
   text-align: center;
   cursor: pointer;
@@ -1401,7 +1400,6 @@ export default {
 }
 
 .clear-condition .clear-condition-btn{
-  height: 30px;
   line-height: 30px;
   background-color: #f44336;
   color: #f4f4f4;

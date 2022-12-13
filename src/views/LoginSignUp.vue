@@ -3,7 +3,7 @@
     <div class="forms-container">
       <div class="signin-signup">
         <form class="sign-in-form">
-          <h2 class="title">登录</h2>
+          <h2 class="login-title">登录</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
             <input type="text" v-model="login_username" placeholder="用户名" />
@@ -16,7 +16,7 @@
           <!--<input type="submit" value="立即登录" class="btn solid" @click="login"/>-->
         </form>
         <form action="#" class="sign-up-form">
-          <h2 class="title">注册</h2>
+          <h2 class="login-title">注册</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
             <input type="text" v-model="register_username" placeholder="用户名" />
@@ -70,7 +70,7 @@
 
 <script>
 export default {
-  name: "Login&SignUp",
+  name: "LoginSignUp",
   data (){
     return {
       loginMode: true,
@@ -243,7 +243,7 @@ form.sign-in-form {
   z-index: 2;
 }
 
-.title {
+.login-title {
   font-size: 2.2rem;
   color: #444;
   margin-bottom: 10px;
