@@ -510,10 +510,8 @@ export default {
       })
           .then(res => {
             this.dis_msg_list = [];
-            if(this.isActive1) { //当前处于系统消息列表
-              this.getMsgPlm(this.uid);
-            }
-            else if(this.isActive2) { //当前处于收到的私信列表
+
+            if(this.isActive2) { //当前处于收到的私信列表
               this.getMsgRec(this.uid);
             }
             else if(this.isActive3) { //当前处于发送的私信列表
