@@ -575,6 +575,12 @@ export default {
           })
     },
 
+    //根据指定字段 规则排序 这里是获取时间的时间戳然后比较
+    sortData(a, b){
+      return new Date(b.create_time).getTime() - new Date(a.create_time).getTime();
+    },
+
+
     //获取系统通知
     getMsgPlm(uid) {
       let that = this;
@@ -593,6 +599,7 @@ export default {
           // this.msg_plm_list[i].avatar = 'user.png';
           this.msg_plm_list[i].create_time = new Date(this.msg_plm_list[i].create_time).toLocaleString('zh', {hour12: false})
         }
+        that.msg_plm_list = this.msg_plm_list.sort(this.sortData);
         this.dis_msg_list = this.msg_plm_list;
         that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
         this.msg_plm_has_new = this.cal_msg_plm(this.msg_plm_list);
@@ -623,6 +630,7 @@ export default {
               // this.msg_rec_list[i].avatar = 'user.png';
               this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
             }
+            that.msg_rec_list = this.msg_rec_list.sort(this.sortData);
             this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
             that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
             this.dis_msg_list = this.msg_rec_list;
@@ -643,6 +651,8 @@ export default {
 
     //获取用户发送的私信
     getMsgSend(uid, type) { //type=0,初始化时的调用
+      let that = this;
+
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -657,6 +667,7 @@ export default {
               // this.msg_send_list[i].avatar = 'user.png';
               this.msg_send_list[i].create_time = new Date(this.msg_send_list[i].create_time).toLocaleString('zh', {hour12: false})
             }
+            that.msg_send_list = this.msg_send_list.sort(this.sortData);
             this.dis_msg_list = this.msg_send_list;
 
             // if(this.showContent) {
