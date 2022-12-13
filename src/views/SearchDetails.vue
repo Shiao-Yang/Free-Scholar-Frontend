@@ -236,7 +236,7 @@ export default {
         url: this.$store.state.address+'api/publication/CollectPaper/',
         data: params,
       }).then(res =>{
-        window.alert(res.data.message);
+        this.$message.success(res.data.message);
         console.log(res);
       })
     },

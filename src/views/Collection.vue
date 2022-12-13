@@ -86,7 +86,7 @@
         <div class="CollectionItems">
           <div class="CollectionItem" v-for="(item,index) in favorites" :key="index">
             <div class="itemTitle">
-              {{favorites[index].title}}
+              {{favorites[index].title}}<span style="float: right" @click="deletefrom(item.id)"><i class="el-icon-delete"></i></span>
             </div>
             <div class="author">
               {{favorites[index].author}}
@@ -123,6 +123,8 @@ export default {
   name: "Collection",
   data() {
     return {
+      nowCollectionid : 0,
+      nowlistid : 0,
       activeMenu1: false,
       activeMenu2: false,
       // favorites: [],
@@ -353,6 +355,22 @@ export default {
     }
   },
   methods: {
+    deletefrom(id){
+      let params = new FormData();
+      params.append("paper_id", id);
+      params.append("favorites_id", this.nowCollectionid);
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/publication/UnCollectPaper/',
+        data: params,
+      }).then(res =>{
+        this.$message.success(res.data.message);
+        this.showFavorites(this.nowlistid);
+      })
+    },
     toChangeAvatar(){
       let fid = this.currentfid;
       this.changeAvatarVisible = false;
@@ -528,6 +546,8 @@ export default {
       }
       this.List[id].isClick = 1;
       this.List[id].style = 'background-color: #00AEEC;';
+      this.nowCollectionid = this.List[id].id;
+      this.nowlistid = id;
       this.showFavorites(id);
     },
     onItem1(id) {
