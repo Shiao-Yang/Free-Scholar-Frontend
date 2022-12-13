@@ -28,10 +28,11 @@
                   :visible.sync="drawer"
                   :direction="direction"
                   :before-close="handleClose">
-                <div style="color: black;position: relative;left: 40px;top: -20px">
+                <div style="text-align: left">
+                  <div style="color: black;position: relative;left: 40px;top: -20px">
                   <h2>选择收藏夹</h2>
                 </div>
-              <el-form ref="form" :model="form" label-width="80px">
+                  <el-form ref="form" :model="form" label-width="80px">
                 <el-form-item >
                   <el-radio-group v-model="form.index">
                     <div v-for="(item,index) in List" :key="index" style="margin-bottom: 20px">
@@ -40,9 +41,10 @@
                   </el-radio-group>
                 </el-form-item>
               </el-form>
-              <div style="position: relative;left: 170px;width: 50px">
+                  <div style="position: relative;left: 170px;width: 50px">
                 <el-button type="primary" plain @click="collect">加入收藏夹</el-button>
               </div>
+                </div>
               </el-drawer>
             </span>
         <span class="header-icon" style="margin-right: 50px">
@@ -226,11 +228,7 @@ export default {
   },
   methods:{
     handleClose(done) {
-      this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
+        done();
     },
     collect(){
       var i = 0;
@@ -249,9 +247,13 @@ export default {
         url: this.$store.state.address+'api/publication/CollectPaper/',
         data: params,
       }).then(res =>{
-        this.$message.success(res.data.message);
-        console.log(res);
+        if (res.data.message !== undefined)
+          this.$message.success(res.data.message);
+        else
+          this.$message.error(res.data.msg);
+        this.drawer = false;
       })
+      this.handleClose();
     },
     toGetPaperById:function (){
       const tempthis = this;

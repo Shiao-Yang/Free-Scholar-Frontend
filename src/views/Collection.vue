@@ -275,6 +275,21 @@ export default {
     }
   },
   methods: {
+    deletecollect(id){
+      let params = new FormData();
+      params.append("favorites_id", this.List[id]);
+      this.$axios({
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        method: 'post',
+        url: this.$store.state.address+'api/relation/deleteFavorites',
+        data: params,
+      }).then(res =>{
+        this.$message.success(res.data.message);
+        this.showFavorites(this.nowlistid);
+      })
+    },
     deletefrom(id){
       let params = new FormData();
       params.append("paper_id", id);
@@ -288,6 +303,7 @@ export default {
         data: params,
       }).then(res =>{
         this.$message.success(res.data.message);
+        this.getCollections();
         this.showFavorites(this.nowlistid);
       })
     },
@@ -425,10 +441,10 @@ export default {
         data: params,
       }).then(res =>{
         this.$message.success(res.data.msg);
+        this.getCollections();
       })
       this.form.title = '';
       this.visible = false;
-      location.reload();
     },
     close(){
       this.visible = false;
