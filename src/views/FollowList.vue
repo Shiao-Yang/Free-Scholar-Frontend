@@ -68,16 +68,16 @@
       <div class="divider"></div>
       <div class="follow-list" v-if="showList.length !== 0">
         <div class="follow-list-item" v-for="(item,index) in showList" :key="index">
-          <div class="avatar">
+          <div class="avatar" @click="toNS(item.author_id)">
             <img :src="url+item.avatar" style="max-width: 100%">
           </div>
           <div class="profile">
             <ul class="profile-list">
-              <li class="profile-list-item">
+              <li class="profile-list-item" @click="toNS(item.author_id)">
                 <span class="icon"><i class='bx bxs-user'></i></span>
                 <span class="text" style="font-size: 20px; font-weight: bold">{{item.username}}</span>
               </li>
-              <li class="profile-list-item">
+              <li class="profile-list-item" @click="toNS(item.author_id)">
                 <span class="icon"><i class='bx bxs-bookmark'></i></span>
                 <span class="text" v-if="item.bio !== null">{{item.bio}}</span>
                 <span class="text" v-if="item.bio === null">暂无</span>
@@ -180,6 +180,7 @@ export default {
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
           scholar_id: 1,
+          author_id: 'abcedg',
         },
         {
           id: 1,
@@ -189,6 +190,7 @@ export default {
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
           scholar_id: 1,
+          author_id: 'abcedg',
         },
         {
           id: 1,
@@ -198,6 +200,7 @@ export default {
           bio: 'I am 王婉',
           time: '2022-01-10 16:07',
           scholar_id: 1,
+          author_id: 'abcedg',
         },
       ],
       followList:[
@@ -209,6 +212,7 @@ export default {
           bio: 'I am 王婉',
           time: '2022-01-10 16:01',
           scholar_id: 1,
+          author_id: 'abcedg',
         },
         {
           id: 1,
@@ -218,6 +222,7 @@ export default {
           bio: 'I am 王婉',
           time: '2022-01-10 16:02',
           scholar_id: 1,
+          author_id: 'abcedg',
         },
         {
           id: 1,
@@ -227,6 +232,7 @@ export default {
           bio: 'I am 王婉',
           time: '2022-01-10 16:03',
           scholar_id: 1,
+          author_id: 'abcedg',
         },
         {
           id: 1,
@@ -236,6 +242,7 @@ export default {
           bio: 'I am 王婉',
           time: '2022-01-10 16:04',
           scholar_id: 1,
+          author_id: 'abcedg',
         },
         {
           id: 1,
@@ -245,6 +252,7 @@ export default {
           bio: 'I am 王婉',
           time: '2022-01-10 16:05',
           scholar_id: 1,
+          author_id: 'abcedg',
         },
       ]
     }
@@ -254,6 +262,17 @@ export default {
       let that = this;
       that.$router.push('/home');
     },
+
+    toNS(author_id, scholar_id) {
+      this.$router.push({
+        path: '/NS',
+        query: {
+          id: author_id,
+          scholar_id: scholar_id,
+        }
+      })
+    },
+
     toFollowerList() {
       let that = this;
       that.$router.push('/followerList');
@@ -367,28 +386,28 @@ export default {
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getFollows',
       })
-          .then(res => {
-            console.log(res.data)
-            this.followList = [];
-            this.followList = res.data;
-            this.showList = [];
+      .then(res => {
+        console.log(res.data)
+        this.followList = [];
+        this.followList = res.data;
+        this.showList = [];
 
-            console.log(this.followList[0]);
-            console.log(typeof this.followList[0].time)
+        console.log(this.followList[0]);
+        console.log(typeof this.followList[0].time)
 
-            for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
-              this.showList[j] = this.followList[i]
-              if(this.showList[j].avatar === null) {
-                this.showList[j].avatar = 'img/home/no-avatar.png'
-              }
-              // this.showList[j].avatar = 'img/home/avatar1.jpg'
-              this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
-            }
+        for (let i = (this.currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
+          this.showList[j] = this.followList[i]
+          if(this.showList[j].avatar === null) {
+            this.showList[j].avatar = 'img/home/no-avatar.png'
+          }
+          // this.showList[j].avatar = 'img/home/avatar1.jpg'
+          this.showList[j].time = new Date(this.followList[i].time).toLocaleString('zh', {hour12: false})
+        }
 
-          })
-          .catch(err => {
-            console.log(err);
-          })
+      })
+      .catch(err => {
+        console.log(err);
+      })
 
     },
 
@@ -453,6 +472,10 @@ export default {
   vertical-align: middle;
 }
 
+.avatar:hover {
+  cursor: pointer;
+}
+
 .avatar img {
   height: 170px;
   width: 140px;
@@ -480,6 +503,10 @@ export default {
   height: 30px;
   line-height: 40px;
   align-items: center;
+}
+
+.profile .profile-list .profile-list-item:hover {
+  cursor: pointer;
 }
 
 .profile .profile-list .profile-list-item .icon {
