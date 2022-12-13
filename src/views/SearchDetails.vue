@@ -45,10 +45,18 @@
               <i class='bx bxs-message-rounded-dots' style="margin-right: 7px"></i>
               <span style="font-size: 14px">{{ number_of_comment }}</span>
             </span>
-        <span class="header-icon" style="margin-right: 50px">
+        <span class="header-icon" :class="{'active': urlActive}" @click="changeUrlActive" style="margin-right: 50px">
             <i class='el-icon-s-promotion' style="margin-right: 7px"></i>
-            <span style="font-size: 14px"><el-link type="primary" :href=out_link_str>外部链接</el-link></span>
-            <div class="sub-menu"></div>
+            <span style="font-size: 14px">外部链接</span>
+            <span class="url-icon" ><i class='bx bx-caret-left'></i></span>
+            <div class="sub-menu">
+              <div class="sub-item" v-if="this_paper[0].url === null || this_paper[0].url.length === 0">
+                暂无链接
+              </div>
+              <div class="sub-item" v-for="url in this_paper[0].url">
+                <a :href="url" :title="url" target="_blank">{{ url }}</a>
+              </div>
+            </div>
         </span>
       </div>
       <div class="keywordsAndAbstract" >
@@ -127,6 +135,7 @@ export default {
   name: "ScholarsDetails",
   data() {
     return {
+      urlActive: false,
       form: {
         index: '',
       },
@@ -181,7 +190,7 @@ export default {
           recommended_literature_author: "大力为",
           recommended_literature_link_str: ""
         }
-      ]
+      ],
     }
   },
   mounted() {
@@ -276,8 +285,8 @@ export default {
       //机构  存疑  目前逻辑是一作的第一个机构，这显然不符合实际
       //tempthis.institution = tempthis.this_paper[0].authors[0].org.split(",")[0]
 
-      //外部链接
-      tempthis.out_link_str = tempthis.this_paper[0].url[0]
+      // //外部链接
+      // tempthis.out_link_str = tempthis.this_paper[0].url[0]
 
       //关键词
       for(let i = 0;i<tempthis.this_paper[0].keywords.length;i++){
@@ -340,7 +349,12 @@ export default {
           .catch(err => {
             console.log(err);
           })
-    }
+    },
+    changeUrlActive() {
+      console.log(this.urlActive)
+      this.urlActive = !this.urlActive
+      console.log(this.urlActive)
+    },
   }
 }
 </script>
@@ -445,7 +459,12 @@ export default {
 }
 
 .leftup .title {
-  position: absolute;
+  width: 95%;
+  height: 50px;
+  overflow: hidden;
+  margin-top: 20px;
+  margin-left: 20px;
+  /*position: absolute;*/
   font-size: 35px;
   left: 20px;
   top: 20px;
@@ -557,9 +576,73 @@ export default {
 }
 
 .header-icon {
+  position: relative;
+  height: 20px;
+  line-height: 20px;
   cursor: pointer;
+  text-align: center;
+  transition: 0.2s;
 }
 .header-icon:hover {
   color: #2196f3;
 }
+
+.header-icon .url-icon {
+  display: inline-block;
+  margin-top: 10px;
+  height: 20px;
+  font-size: 16px;
+  line-height: 20px;
+  transition: 0.2s;
+}
+
+.header-icon.active .url-icon {
+  transform: rotate(-90deg);
+}
+
+.header-icon .sub-menu {
+  position: absolute;
+  left: -250px;
+  z-index: 1000;
+  width: 600px;
+  overflow: hidden;
+  text-align: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  transition: 0.3s all ease;
+  opacity: 0;
+  padding: 5px;
+  pointer-events: none;
+
+}
+
+.header-icon.active .sub-menu {
+  margin-top: 10px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.header-icon .sub-menu .sub-item {
+  width: 95%;
+  margin: 10px auto;
+  background-color: transparent;
+  border-radius: 10px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.header-icon .sub-menu .sub-item:hover {
+  background-color: #00B7FC;
+}
+
+.header-icon .sub-menu .sub-item a {
+  color: black;
+  text-decoration: none;
+}
+
+.header-icon .sub-menu .sub-item:hover a {
+  color: white;
+}
+
 </style>
