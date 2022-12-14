@@ -218,11 +218,15 @@ export default {
   watch: {
     baseInfo : {
       handler(newVal, oldVal) {
+        console.log('baseInfo更新')
+        console.log('newBaseInfo')
+        console.log(newVal)
         if(newVal !== null
             && newVal !== undefined
-            && newVal.uid !== null
-            && newVal.uid !== undefined) {
-          this.getMsgRec(newVal.uid, 0);
+            && newVal.token !== null
+            && newVal.token !== undefined) {
+          this.getMsgRec(1, 0);
+          this.getMsgPlm(1)
         }
       },
       deep: true,
@@ -301,6 +305,7 @@ export default {
           || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
         this.$store.state.msg_plm_has_new = 0
         this.$store.state.msg_rec_has_new = 0
+        console.log('未登录')
         return ;
       }
       this.axios({
