@@ -173,6 +173,10 @@ export default {
             isClick: 0,
             style: ''
           })
+          if (this.List.length >= 0){
+            this.nowCollectionid = this.List[0].id;
+          }
+          this.showFavorites(i);
         }
       }
     })
