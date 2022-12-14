@@ -242,6 +242,10 @@
           <p class="abstract" @click="readPaper(result.id,result.articleName);$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
           <ul class="info-list">
             <li class="info">
+              <i class='bx bxs-like'></i>
+              <span class="nums">{{result.likes}}</span>
+            </li>
+            <li class="info">
               <i v-if="!result.user_collected" class='bx bxs-star'  :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
               <i v-else class='bx bxs-star' style="color: #2196f3" :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
               <span class="nums">{{result.collections}}</span>
@@ -329,6 +333,7 @@ export default {
       user_collected: false,
       collection_num: 0,
       comment_num: 0,
+      like_num: 0,
       keyword: '',
       org: '',
       venue: '',
@@ -769,7 +774,7 @@ export default {
                     author: res.data.hits[i]._source.authors,
                     abstract: Abstract,
                     liked: false,
-                    likes: '54',
+                    likes: this.like_num,
                     collected: this.user_collected,
                     collections: this.collection_num,
                     comments: this.comment_num,
@@ -895,7 +900,7 @@ export default {
                     author: res.data.hits[i]._source.authors,
                     abstract: Abstract,
                     liked: false,
-                    likes: '54',
+                    likes: this.like_num,
                     collected: this.user_collected,
                     collections: this.collection_num,
                     comments: this.comment_num,
@@ -982,7 +987,7 @@ export default {
                     author: res.data.hits[i]._source.authors,
                     abstract: Abstract,
                     liked: false,
-                    likes: '54',
+                    likes: this.like_num,
                     collected: this.user_collected,
                     collections: this.collection_num,
                     comments: this.comment_num,
@@ -1007,10 +1012,11 @@ export default {
         data: formData
       })
           .then(res => {
+            //console.log('getPaperData')
             //console.log(res.data)
-            this.displayResult[index].collected = res.data.user_collected;
             this.displayResult[index].collections = res.data.collection_num;
             this.displayResult[index].comments = res.data.comment_num;
+            this.displayResult[index].likes = res.data.like_num;
           })
     },
     getOrgList() {
