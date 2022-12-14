@@ -52,21 +52,6 @@
         </div>
       </div>
       </div>
-      <div class="MyCreate">
-        <div class="Mytitle">
-          <i class='bx bxs-folder' style="color: orange"></i>
-          我的收藏与订阅
-        </div>
-        <div class="item" v-for="(item,index) in MyCollection" :key="index">
-          <img src="../assets/Cover1.jpg" class="cover">
-          <div class="name">
-            {{MyCollection[index].title}}
-          </div>
-          <div class="date">
-            更新于{{MyCollection[index].date}}<i class="dotClass" style="background-color: red"></i>
-          </div>
-      </div>
-      </div>
     </div>
   </div>
 </template>
@@ -174,14 +159,14 @@ export default {
         url: this.$store.state.address+'api/relation/newFavorites',
         data: params,
       }).then(res =>{
-        if(res.data.error === 0)
-          this.$message.success('创建成功');
+        if(res.data.msg === '创建成功')
+          this.$message.success(res.data.msg);
         else
           this.$message.error(res.data.msg);
+        this.form.title = '';
+        this.visible = false;
+        this.getCollections();
       })
-      this.form.title = '';
-      this.visible = false;
-      location.reload();
     },
     close(){
       this.visible = false;
@@ -297,7 +282,7 @@ export default {
   box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
   width: 95%;
   min-width: 1050px;
-  height: auto;
+  min-height: 500px;
   margin: 30px auto 30px;
   padding: 20px 10px;
   border-radius: 10px;

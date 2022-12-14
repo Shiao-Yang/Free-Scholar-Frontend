@@ -99,10 +99,10 @@ export default {
   computed: {
     isLogin() {
       if (sessionStorage.getItem('baseInfo') !== null) {
-        console.log('true111')
+        //console.log('true111')
         return true
       }
-      console.log('false111')
+      //console.log('false111')
       return false
     }
   },
@@ -112,16 +112,16 @@ export default {
         paper_id:id,
         paper_name:name
       }
-      console.log('para:')
-      console.log(para)
+      //console.log('para:')
+      //console.log(para)
       this.axios({
         method: 'post',
         url: this.$store.state.address+'api/publication/ReadPaper/',
         data: para,
       })
           .then(res=>{
-            console.log('readPaper:')
-            console.log(res.data)
+            //console.log('readPaper:')
+            //console.log(res.data)
           })
     },
     search() {
@@ -134,7 +134,7 @@ export default {
         url: this.$store.state.address+'api/publication/HotWord/'
       })
           .then(res=>{
-            console.log(res.data)
+            //console.log(res.data)
             let i = 0,len = res.data.word.length;
             for (; i < len; i++) {
               this.hotWord.push(res.data.word[i].word_name)
@@ -150,8 +150,8 @@ export default {
         url: this.$store.state.address+'api/publication/HotPaper/'
       })
           .then(res=>{
-            console.log('hotPaper:')
-            console.log(res.data)
+            //console.log('hotPaper:')
+            //console.log(res.data)
             let i = 0,len = res.data.paper.length
             for (; i < len; i++) {
               this.paper.push(
@@ -186,7 +186,7 @@ export default {
         data: para
       })
           .then(res=> {
-            console.log(res.data)
+            //console.log(res.data)
             let i = 0, j = 0, len1 = this.paper.length, len2 = res.data.data.length;
             for (i = 0; i < len1; i++) {
               for (j = 0; j < len2; j++) {
@@ -209,8 +209,8 @@ export default {
         data: formData,
       })
           .then(res => {
-            console.log('getPaperData'+index+':')
-            console.log(res.data)
+            //console.log('getPaperData'+index+':')
+            //console.log(res.data)
             this.paper[index].comment = res.data.comment_num;
           })
     },

@@ -23,7 +23,7 @@
         </ul>
       </div>
       <div class="social-info">
-        <div class="social-info-item">
+        <div class="social-info-item" @click="toFollowList">
           <div class="title">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i
                 class='bx bxs-user-plus'></i></span>
@@ -35,7 +35,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="identity===2">
+        <div class="social-info-item" v-if="identity===2"  @click="toFollowerList">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart'></i></span>
             <span class="text">粉丝</span>
@@ -59,21 +59,22 @@
         </div>
       </div>
     </div>
-    <div class="content-list">
+    <div class="content-list" id="history-list-width-item" ref="list">
       <div class="title">
         <i class="el-icon-view" style="color: #E1A105;font-size: 50px; margin-right: 10px"></i>
         <span class="title-name">
           历史记录
         </span>
         <div style="margin-left: auto">
-          <el-button @click="toDeleteAllHistory()">清空全部</el-button>
-          <el-button @click="toDeleteSelectedHistory()">清空已选</el-button>
+          <el-button class="history-delete-btn" @click="toDeleteAllHistory()">清空全部</el-button>
+          <el-button class="history-delete-btn" @click="toDeleteSelectedHistory()">清空已选</el-button>
         </div>
       </div>
       <div class="divider"></div>
       <div class="history-list">
-
-        <div class="history-list-divided-by-data" v-if="dayNum>=1">
+        <div class="history-list-divided-by-data" v-if="dayNum<=0" >
+          <span class="history-time">空空如也</span></div>
+        <div class="history-list-divided-by-data" v-if="dayNum>=1" >
           <span class="history-time">{{historyListDay1[0].time.split('T')[0]}}&nbsp</span>
           <el-table
               ref="multipleTable"
@@ -85,17 +86,22 @@
           >
             <el-table-column
                 prop="paper_name"
-                label="标题"
-                width="1100">
+                label="标题">
+              <template slot-scope="scope">
+                <div>
+<!--                  <a  href="javascript:;" @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>-->
+                  <a @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
                 prop="time"
                 label="时间"
-                width="115">
+                >
             </el-table-column>
             <el-table-column
                 type="selection"
-                width="55">
+                >
             </el-table-column>
           </el-table>
         </div>
@@ -112,47 +118,59 @@
           >
             <el-table-column
                 prop="paper_name"
-                label="标题"
-                width="1100">
+                label="标题">
+              <template slot-scope="scope">
+                <div>
+                  <!--                  <a  href="javascript:;" @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>-->
+                  <a @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
                 prop="time"
                 label="时间"
-                width="115">
+            >
             </el-table-column>
             <el-table-column
                 type="selection"
-                width="55">
+            >
             </el-table-column>
           </el-table>
         </div>
 
         <div class="history-list-divided-by-data" v-if="dayNum>=3">
           <span class="history-time">{{historyListDay3[0].time.split('T')[0]}}&nbsp</span>
+          <el-table
+              ref="multipleTable"
+              :data="historyListDay3"
+              tooltip-effect="dark"
+              style="width: 100% ;overflow:auto;font-size: 20px"
+              fit=""
+              @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+                prop="paper_name"
+                label="标题"
+            >
+              <template slot-scope="scope">
+                <div>
+                  <!--                  <a  href="javascript:;" @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>-->
+                  <a @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="time"
+                label="时间"
+            >
+            </el-table-column>
+            <el-table-column
+                type="selection"
+            >
+            </el-table-column>
+          </el-table>
         </div>
-        <el-table
-            ref="multipleTable"
-            :data="historyListDay3"
-            tooltip-effect="dark"
-            style="width: 100% ;overflow:auto;font-size: 20px"
-            fit=""
-            @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-              prop="paper_name"
-              label="标题"
-              width="1100">
-          </el-table-column>
-          <el-table-column
-              prop="time"
-              label="时间"
-              width="115">
-          </el-table-column>
-          <el-table-column
-              type="selection"
-              width="55">
-          </el-table-column>
-        </el-table>
+
       </div>
     </div>
   </div>
@@ -185,6 +203,7 @@ export default {
       historyListDay1:[],
       historyListDay2:[],
       historyListDay3:[],
+      deleteflag:0,
       // historyListDay1info:[],
       // historyListDay2info:[],
       // historyListDay3info:[],
@@ -193,10 +212,20 @@ export default {
       // historyListDay3time:[],
       dayNum:0,
       multipleSelection: [],
+      listToDelete:[],
       avatarUlr:"",
     }
   },
   methods: {
+    toFollowerList() {
+      let that = this;
+      that.$router.push('/followerList');
+    },
+    toFollowList() {
+      let that = this;
+      that.$router.push('/followList');
+    },
+
     changePage(currentPage) {
       this.showList = [];
       for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
@@ -269,27 +298,73 @@ export default {
           .then(res => {
             console.log("deleteHistory:"+historyId)
             console.log(res)
+            tempthis.deleteflag ++;
           })
           .catch(err => {
             console.log(err);
           })
     },
+
     toDeleteAllHistory(){
       const tempthis = this;
-      let listToDelete = tempthis.historyList
-      for(let i=0;i<listToDelete.length;i++){
-        tempthis.toDeleteHistoryById(listToDelete[i]._id)
+      let len = tempthis.historyList.length
+      let tempList = tempthis.historyList
+      tempthis.listToDelete = []
+      for(let i=0;i<len;i++){
+        tempthis.listToDelete[i]=tempList[i]._id
       }
-      location.reload();
+      console.log("tempthis.listToDelete:")
+      console.log(tempthis.listToDelete)
+      let param= {
+        history_id:tempthis.listToDelete
+      }
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/batchDeleteHistory',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        data:param
+      })
+          .then(res => {
+            console.log("all-batch-delete-result:")
+            console.log(res)
+            location.reload()
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     toDeleteSelectedHistory(){
       const tempthis = this;
-      let listToDelete = tempthis.multipleSelection[0]
-        for(let i=0;i<listToDelete.length;i++){
-          tempthis.toDeleteHistoryById(listToDelete[i]._id)
-        }
-      location.reload();
+      let len = tempthis.multipleSelection[tempthis.multipleSelection.length-1].length
+      let tempList = tempthis.multipleSelection[tempthis.multipleSelection.length-1]
+      tempthis.listToDelete = []
+      for(let i=0;i<len;i++){
+        tempthis.listToDelete[i]=tempList[i]._id
+      }
+      console.log("tempthis.listToDelete:")
+      console.log(tempthis.listToDelete)
+      let param= {
+        history_id:tempthis.listToDelete
+      }
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/batchDeleteHistory',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        data:param
+      })
+          .then(res => {
+            console.log("select-batch-delete-result:")
+            console.log(res)
+            location.reload()
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     //根据指定字段 规则排序 这里是获取时间的时间戳然后比较
@@ -386,6 +461,10 @@ export default {
     //       })
     // },
     },
+
+  computed: {
+
+  },
 
   created() {
     this.getUserBaseInfo()
@@ -743,5 +822,8 @@ export default {
   line-height: 5px;
 }
 
-
+.history-delete-btn {
+  line-height: 20px;
+  padding: 10px 15px;
+}
 </style>
