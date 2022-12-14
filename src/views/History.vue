@@ -66,8 +66,8 @@
           历史记录
         </span>
         <div style="margin-left: auto">
-          <el-button @click="toDeleteAllHistory()">清空全部</el-button>
-          <el-button @click="toDeleteSelectedHistory()">清空已选</el-button>
+          <el-button class="history-delete-btn" @click="toDeleteAllHistory()">清空全部</el-button>
+          <el-button class="history-delete-btn" @click="toDeleteSelectedHistory()">清空已选</el-button>
         </div>
       </div>
       <div class="divider"></div>
@@ -747,5 +747,8 @@ export default {
   line-height: 5px;
 }
 
-
+.history-delete-btn {
+  line-height: 20px;
+  padding: 10px 15px;
+}
 </style>
