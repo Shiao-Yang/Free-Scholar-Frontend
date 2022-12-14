@@ -58,7 +58,7 @@
             <span style="font-size: 14px">外部链接</span>
             <span class="url-icon" ><i class='bx bx-caret-left'></i></span>
             <div class="sub-menu">
-              <div class="sub-item" v-if="out_link_str === null || out_link_str === undefined || out_link_str.length === 0">
+              <div class="sub-item" v-if="out_link_str === null || out_link_str === undefined || out_link_str.length === 0 || out_link_str === ''">
                 暂无链接
               </div>
               <div class="sub-item" v-for="url in out_link_str">
@@ -174,7 +174,7 @@ export default {
       number_of_like: 999,
       number_of_collect: 11,
       number_of_comment: 110,
-      out_link_str: "http://www.baidu.com",
+      out_link_str: "",
       number_of_read: 0,
       tags: [],
       abstract: "你说得对，但是对有序数列的查找算法中二分法查找（binarysearch）是最常用的。" +
