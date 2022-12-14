@@ -81,6 +81,9 @@
                 </router-link>
               </span>
             </div>
+            <div style="font-size: 15px;color: #DA1E28;">
+              {{favorites[index].venue}}
+            </div>
             <div class="introductions">
               {{favorites[index].introduction | ellipsis}}
             </div>
@@ -331,16 +334,32 @@ export default {
       }).then(res =>{
         var i = 0;
         for (i = 0; i < res.data.length; i++){
-          this.favorites.push({
-            title: res.data[i].paper._source.title,
-            id: res.data[i].paper._source.id,
-            authors: res.data[i].paper._source.authors,
-            introduction: res.data[i].paper._source.abstract,
-            like: res.data[i].like_count,
-            collect: res.data[i].collect_count,
-            "comment" : 1,
-            times: res.data[i].paper._source.n_citation,
-          })
+          if (res.data[i].paper._source.venue === undefined){
+            this.favorites.push({
+              title: res.data[i].paper._source.title,
+              id: res.data[i].paper._source.id,
+              authors: res.data[i].paper._source.authors,
+              introduction: res.data[i].paper._source.abstract,
+              like: res.data[i].like_count,
+              collect: res.data[i].collect_count,
+              venue : '',
+              "comment" : 1,
+              times: res.data[i].paper._source.n_citation,
+            })
+          }
+          else {
+            this.favorites.push({
+              title: res.data[i].paper._source.title,
+              id: res.data[i].paper._source.id,
+              authors: res.data[i].paper._source.authors,
+              introduction: res.data[i].paper._source.abstract,
+              like: res.data[i].like_count,
+              collect: res.data[i].collect_count,
+              venue : res.data[i].paper._source.venue.raw,
+              "comment" : 1,
+              times: res.data[i].paper._source.n_citation,
+            })
+          }
         }
       }).catch(err => {
         console.log(err);
