@@ -27,6 +27,12 @@
           <span class="text">历史记录</span>
         </router-link>
       </li>
+      <li class="side-navigation-item" v-on:click="activeLink(10)" :class="{'active': activeIndex === 10}">
+        <a style="--clr:#2196f3;" title="返回上级" >
+          <span class="icon"><i class='bx bxs-share'></i></span>
+          <span class="text">返回上级</span>
+        </a>
+      </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
           <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
@@ -111,6 +117,12 @@
           <span class="icon"><i class='bx bx-task' ></i></span>
           <span class="text">事务中心</span>
         </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(10)" :class="{'active': activeIndex === 10}">
+        <a style="--clr:#2196f3;" title="返回上级" >
+          <span class="icon"><i class='bx bxs-share'></i></span>
+          <span class="text">返回上级</span>
+        </a>
       </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" style="--clr: #0fc70f">
@@ -273,6 +285,9 @@ export default {
       that.$router.push('/MessageManage')
     },
     activeLink(index){
+      if(index === 10) {
+        this.$router.back()
+      }
     },
     changeIsActive() {
       this.isActive = !this.isActive;
