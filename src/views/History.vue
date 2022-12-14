@@ -2,7 +2,7 @@
   <div class="home">
     <div class="intro">
       <div class="avatar">
-        <img :src="this.$store.state.url+avatarUrl">
+        <img :src="$store.state.url+avatarUrl">
       </div>
       <div class="profile">
         <ul class="profile-list">
@@ -35,7 +35,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="isScholar===true">
+        <div class="social-info-item" v-if="identity===2">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart'></i></span>
             <span class="text">粉丝</span>
@@ -46,17 +46,17 @@
             </div>
           </div>
         </div>
-<!--        <div class="social-info-item">-->
-<!--          <div class="title">-->
-<!--            <span class="icon" :class="{'active': isLike}"><i class='bx bxs-like'></i></span>-->
-<!--            <span class="text">获赞</span>-->
-<!--          </div>-->
-<!--          <div class="social-info-number">-->
-<!--            <div class="number">-->
-<!--              {{ LikeNumber }}-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+        <div class="social-info-item">
+          <div class="title">
+            <span class="icon" :class="{'active': isLike}"><i class='bx bxs-like'></i></span>
+            <span class="text">获赞</span>
+          </div>
+          <div class="social-info-number">
+            <div class="number">
+              {{ LikeNumber }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="content-list">
@@ -170,7 +170,12 @@ export default {
       profile: '暂无',
       isFollow: false,
       isLike: false,
-      isScholar: true,
+      isScholar: false,
+      identity: 1,
+      state: 0,
+      login_date: '',
+      scholar_id: null,
+      author_id: null,
       FollowNumber: 32,
       LikeNumber: 20,
       FanNumber: 15,
@@ -238,6 +243,11 @@ export default {
         // }
         tempThis.dayNum = 3;
       }
+
+      tempThis.historyListDay1 = this.historyListDay1.sort(this.sortData);
+      tempThis.historyListDay2 = this.historyListDay2.sort(this.sortData);
+      tempThis.historyListDay3 = this.historyListDay3.sort(this.sortData);
+
       console.log("historyListDay")
       console.log(tempThis.historyListDay1)
       console.log(tempThis.historyListDay2)
@@ -282,6 +292,11 @@ export default {
       location.reload();
     },
 
+    //根据指定字段 规则排序 这里是获取时间的时间戳然后比较
+    sortData(a, b){
+      return new Date(b.time).getTime() - new Date(a.time).getTime();
+    },
+
     handleSelectionChange(val) {
       this.multipleSelection.push(val);
       console.log(this.multipleSelection)
@@ -306,6 +321,14 @@ export default {
             tempthis.FanNumber = tempthis.userBaseInfo[0].followers
             tempthis.LikeNumber = tempthis.userBaseInfo[0].likes
             tempthis.avatarUrl = tempthis.userBaseInfo[0].avatar
+            tempthis.identity = tempthis.userBaseInfo[0].identity
+            tempthis.state = tempthis.userBaseInfo[0].state
+            tempthis.gender = tempthis.userBaseInfo[0].gender
+            tempthis.login_date = tempthis.userBaseInfo[0].login_date
+            tempthis.state = tempthis.userBaseInfo[0].state
+            tempthis.scholar_id = tempthis.userBaseInfo[0].scholar_id
+            tempthis.author_id = tempthis.userBaseInfo[0].author_id
+
             console.log('userBaseInfo[0]')
             console.log(tempthis.userBaseInfo[0])
           })
@@ -329,6 +352,9 @@ export default {
             for(let i=0;i<res.data.length;i++){
               tempthis.historyList[i] = res.data[i]
             }
+            // tempthis.historyList = this.historyList.sort(this.sortData);
+            console.log('你好')
+            console.log(tempthis.historyList)
             this.init()
           })
           .catch(err => {
