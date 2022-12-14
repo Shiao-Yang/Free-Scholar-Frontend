@@ -172,7 +172,7 @@ export default {
       number_of_collect: 11,
       number_of_comment: 110,
       out_link_str: "http://www.baidu.com",
-      number_of_read: 27,
+      number_of_read: 0,
       tags: [],
       abstract: "你说得对，但是对有序数列的查找算法中二分法查找（binarysearch）是最常用的。" +
           "利用二分法，在含有n个元素的有...之差的最大值的一个上界，" +
@@ -276,6 +276,7 @@ export default {
         else
           this.$message.error(res.data.msg);
         this.drawer = false;
+        location.reload()
         console.log("collect")
         console.log(res)
       })
@@ -295,9 +296,8 @@ export default {
       })
           .then(res => {
             tempthis.this_paper[0] = res.data.paper
+            console.log("res.data.paper:")
             console.log(tempthis.this_paper[0])
-            console.log('authors')
-            console.log(tempthis.this_paper[0].authors)
             tempthis.toLoadData()
           })
           .catch(err => {
@@ -307,22 +307,28 @@ export default {
     toLoadData:function (){
       const tempthis = this;
       //标题
-      tempthis.literature_title = tempthis.this_paper[0].title
+      if(tempthis.this_paper[0].title!==undefined && tempthis.this_paper[0].title!==null)
+        tempthis.literature_title = tempthis.this_paper[0].title
       tempthis.toReadThisPaper(tempthis.literature_id,tempthis.literature_title)
 
       //作者名字
-      tempthis.authors=tempthis.this_paper[0].authors
+      if(tempthis.this_paper[0].authors!==undefined && tempthis.this_paper[0].authors!==null)
+        tempthis.authors=tempthis.this_paper[0].authors
 
       //机构  存疑  目前逻辑是一作的第一个机构，这显然不符合实际
       //tempthis.institution = tempthis.this_paper[0].authors[0].org.split(",")[0]
 
       //外部链接
-      tempthis.out_link_str = tempthis.this_paper[0].url
+      if(tempthis.this_paper[0].url!==undefined && tempthis.this_paper[0].url!==null)
+        tempthis.out_link_str = tempthis.this_paper[0].url
 
-      //关键词
-      for(let i = 0;i<tempthis.this_paper[0].keywords.length;i++){
-        tempthis.tags[i]= tempthis.this_paper[0].keywords[i]
+      if(tempthis.this_paper[0].keywords!==undefined && tempthis.this_paper[0].keywords!==null){
+        //关键词
+        for(let i = 0;i<tempthis.this_paper[0].keywords.length;i++){
+          tempthis.tags[i]= tempthis.this_paper[0].keywords[i]
+        }
       }
+
 
       //摘要
       tempthis.abstract = tempthis.this_paper[0].abstract
