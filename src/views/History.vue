@@ -44,17 +44,17 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item">
-          <div class="title">
-            <span class="icon" :class="{'active': isLike}"><i class='bx bxs-like'></i></span>
-            <span class="text">获赞</span>
-          </div>
-          <div class="social-info-number">
-            <div class="number">
-              {{ LikeNumber }}
-            </div>
-          </div>
-        </div>
+<!--        <div class="social-info-item">-->
+<!--          <div class="title">-->
+<!--            <span class="icon" :class="{'active': isLike}"><i class='bx bxs-like'></i></span>-->
+<!--            <span class="text">获赞</span>-->
+<!--          </div>-->
+<!--          <div class="social-info-number">-->
+<!--            <div class="number">-->
+<!--              {{ LikeNumber }}-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
     </div>
     <div class="content-list">
@@ -301,7 +301,7 @@ export default {
             // tempthis.institution = tempthis.userBaseInfo[0].institution.name
             tempthis.profile = tempthis.userBaseInfo[0].bio
             tempthis.FollowNumber = tempthis.userBaseInfo[0].follows
-            tempthis.FunNumber = tempthis.userBaseInfo[0].followers
+            tempthis.FanNumber = tempthis.userBaseInfo[0].followers
             tempthis.LikeNumber = tempthis.userBaseInfo[0].likes
             tempthis.avatarUrl = tempthis.userBaseInfo[0].avatar
             console.log('userBaseInfo[0]')
