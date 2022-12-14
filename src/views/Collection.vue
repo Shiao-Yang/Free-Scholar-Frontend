@@ -136,8 +136,6 @@ export default {
   },
   created() {
     this.List = [];
-    this.List1 = [];
-    this.List2 = [];
     this.$axios({
       headers: {
         jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -158,9 +156,8 @@ export default {
             isClick: 1,
             style: ''
           })
-          if (this.List.length >= 0){
-            this.nowCollectionid = this.List[0].id;
-          }
+          this.nowCollectionid = this.List[i].id;
+          this.nowlistid = i;
           this.showFavorites(i);
         }
         else {
@@ -173,10 +170,6 @@ export default {
             isClick: 0,
             style: ''
           })
-          if (this.List.length >= 0){
-            this.nowCollectionid = this.List[0].id;
-          }
-          this.showFavorites(i);
         }
       }
     })
