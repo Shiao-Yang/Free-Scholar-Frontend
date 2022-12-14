@@ -1098,7 +1098,7 @@ export default {
   position: relative;
   margin: 0 auto 20px;
   width: 100%;
-  min-width: 1300px;
+  min-width: 1100px;
   max-width: 1300px;
   border-radius: 10px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
@@ -1500,7 +1500,11 @@ td.active {
   /*overflow: auto;*/
 }
 .content .items-box {
+  display: flex;
   margin: 10px 0 10px 0;
+  padding-right: 20px;
+  text-align: center;
+  justify-content: center;
 }
 .content .items-box .item {
   margin-right: 10px;
@@ -1510,7 +1514,7 @@ td.active {
   transition: 0.5s;
 }
 .content .items-box .item.first {
-  margin-left: 520px;
+  margin-left: auto;
 }
 .content .items-box .item.active{
   border: none;
@@ -1598,7 +1602,9 @@ td.active {
 
 .search-content-container {
   position: relative;
-  width: 1300px;
+  min-width: 1100px;
+  max-width: 1300px;
+  width: 100%;
   margin: auto;
 }
 </style>

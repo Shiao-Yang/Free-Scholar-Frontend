@@ -609,14 +609,14 @@ export default {
 .home {
   height: 790px;
   width: 100%;
-  min-width: 1400px;
+  min-width: 1000px;
 }
 .intro {
   position: absolute;
   top: 0px;
   left: 0px;
   width: 100%;
-  min-width: 1400px;
+  min-width: 1000px;
   height: 200px;
   display: flex;
   justify-content: flex-start;
@@ -730,7 +730,7 @@ export default {
   position: relative;
   top: 220px;
   width: 100%;
-  min-width: 1400px;
+  min-width: 1000px;
   height: 550px;
   border-radius: 5px;
   box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
@@ -790,8 +790,10 @@ export default {
   left: 5px;
   position: relative;
   height: 430px;
-  width: 300px;
+  width: 20%;
+  border-right: 1px solid #d4d4d4;
   overflow: hidden;
+  padding-right: 10px;
   z-index: 1;
 }
 
@@ -803,9 +805,9 @@ export default {
   /*background: rgb(244,244,244);*/
   position: relative;
   height: 70px;
-  width: 250px;
+  width: 80%;
   border-radius: 5px;
-  margin: 10px 25px 10px 25px;
+  margin: 10px auto;
   vertical-align: middle;
   text-align: center;
   align-items: center;
@@ -821,7 +823,7 @@ export default {
   background-color: rgba(244, 244, 244, 0.9);
   /*background-color: #f4f4f4;*/
   height: 70px;
-  width: 250px;
+  width: 80%;
   /*margin: 5px 15px 5px 15px;*/
 }
 
@@ -878,34 +880,34 @@ export default {
   text-overflow: ellipsis;
 }
 
-.divider-y {
-  display: inline-block;
-  position: absolute;
-  top: 93px;
-  margin: 2px 0 0 0;
-  left: 320px;
-  width: 2px;
-  height: 450px;
-  background-color: #d4d4d4;
-  font-size: 16px;
-  color: green;
-  z-index: 2;
-}
+/*.divider-y {*/
+/*  display: inline-block;*/
+/*  position: absolute;*/
+/*  top: 93px;*/
+/*  margin: 2px 0 0 0;*/
+/*  left: 320px;*/
+/*  width: 2px;*/
+/*  height: 450px;*/
+/*  background-color: #d4d4d4;*/
+/*  font-size: 16px;*/
+/*  color: green;*/
+/*  z-index: 2;*/
+/*}*/
 
 .info-box .content-box {
-  display: inline-block;
+  /*display: inline-block;*/
   /*border: solid red;*/
   position: absolute;
-  top: 95px;
-  left: 340px;
-  width: 1050px;
-  margin: auto;
+  /*top: 95px;*/
+  bottom: 0;
+  left: 20%;
+  width: 68%;
   height: 450px;
 }
 
 .info-box .content-box .show-box {
   /*border: solid red;*/
-  width: 900px;
+  width: 100%;
   height: 430px;
   position: relative;
   top: 10px;
@@ -916,7 +918,7 @@ export default {
   /*border: solid red;*/
   display: flex;
   flex-direction: row;
-  width: 850px;
+  width: 95%;
   height: 50px;
   margin: 10px 0px 10px 5px;
 }
@@ -928,7 +930,8 @@ export default {
   left: 0px;
   top: 0px;
   height: 50px;
-  width: 120px;
+  width: 20%;
+  min-width: 120px;
   font-size: 25px;
   font-weight: bold;
   text-align: right;
@@ -943,7 +946,7 @@ export default {
   position: relative;
   left: 50px;
   height: 50px;
-  width: 650px;
+  width: 80%;
   font-size: 20px;
   font-weight: normal;
   flex-direction: row;
