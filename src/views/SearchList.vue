@@ -1132,11 +1132,11 @@ export default {
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
 .first-search :focus{
-  position: relative;
-  display: flex;
-  height: 50px;
-  width: 50%;
-  min-width: 900px;
+  /*position: relative;*/
+  /*display: flex;*/
+  /*height: 50px;*/
+  /*width: 50%;*/
+  /*min-width: 900px;*/
   margin: auto;
   /*border-radius: 10px;*/
   border-top-left-radius: 10px;
