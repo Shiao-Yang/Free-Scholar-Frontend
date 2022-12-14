@@ -888,7 +888,7 @@ export default {
             this.displayResult = [];
             let i = 0,len = res.data.hits.length;
             for (i = 0; i < len; i++) {
-              let Abstract, quotes;
+              let Abstract, quotes,venue;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
               } else {
@@ -898,6 +898,11 @@ export default {
                 quotes = res.data.hits[i]._source.n_citation
               } else {
                 quotes = 0;
+              }
+              if (res.data.hits[i]._source.hasOwnProperty('venue')) {
+                venue = res.data.hits[i]._source.venue.raw
+              } else {
+                venue = ''
               }
               this.displayResult.push(
                   {
@@ -912,6 +917,7 @@ export default {
                     comments: this.comment_num,
                     quotes: quotes,
                     year: res.data.hits[i]._source.year,
+                    venue: venue
                   }
               )
               this.getPaperData(res.data.hits[i]._source.id, i)
@@ -975,7 +981,7 @@ export default {
             this.displayResult = [];
             let i = 0,len = res.data.hits.length;
             for (i = 0; i < len; i++) {
-              let Abstract, quotes;
+              let Abstract, quotes, venue;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
               } else {
@@ -985,6 +991,11 @@ export default {
                 quotes = res.data.hits[i]._source.n_citation
               } else {
                 quotes = 0;
+              }
+              if (res.data.hits[i]._source.hasOwnProperty('venue')) {
+                venue = res.data.hits[i]._source.venue.raw
+              } else {
+                venue = ''
               }
               this.displayResult.push(
                   {
@@ -999,6 +1010,7 @@ export default {
                     comments: this.comment_num,
                     quotes: quotes,
                     year: res.data.hits[i]._source.year,
+                    venue: venue
                   }
               )
               this.getPaperData(res.data.hits[i]._source.id, i)

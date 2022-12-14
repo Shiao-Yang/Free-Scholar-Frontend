@@ -69,13 +69,13 @@
         <span class="data-num" style="font-size: 18px;">{{ paperNum }}</span>
       </div>
       <div class="trending-box">
-        <p><i class='bx bxs-hot'></i>Trending</p>
-        <table class="trending-table">
-          <tr v-for="(item, i) in hotWord" class="trending">
-            <td class="trending-num" :class="{'first':i===0,'second':i===1,'third':i===2}">{{i+1}}</td>
-            <td class="trending-name"><span @click="input=item;search()">{{item}}</span></td>
-          </tr>
-        </table>
+      <p><i class='bx bxs-hot'></i>Trending</p>
+      <table class="trending-table">
+        <tr v-for="(item, i) in hotWord" class="trending">
+          <td class="trending-num" :class="{'first':i===0,'second':i===1,'third':i===2}">{{i+1}}</td>
+          <td class="trending-name"><span @click="input=item;search()">{{item}}</span></td>
+        </tr>
+      </table>
       </div>
     </div>
   </div>
@@ -229,7 +229,6 @@ export default {
         url: this.$store.state.address+'api/author/count/',
       })
           .then(res => {
-            console.log('scholarNum')
             console.log(res)
             this.scholarNum = res.data.paper_count
           })
@@ -238,11 +237,9 @@ export default {
         url: this.$store.state.address+'api/publication/count/',
       })
           .then(res => {
-            console.log('paperNum')
-            console.log(res)
             this.paperNum = res.data.paper_count
           })
-    }
+    },
   }
 }
 </script>
