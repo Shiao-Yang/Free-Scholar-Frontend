@@ -31,7 +31,7 @@
                   :direction="direction"
                   :before-close="handleClose">
                 <div style="text-align: left">
-                  <div style="color: black;position: relative;left: 40px;top: -20px">
+                  <div style="color: black;position: relative;left: 40px;">
                   <h2>选择收藏夹</h2>
                 </div>
                   <el-form ref="form" :model="form" label-width="80px">

@@ -67,21 +67,6 @@
                 </div>
               </ul>
             </li>
-            <li class="menu-item" :class="{'active': activeMenu2}" >
-              <div class="menu-title" @click="activeMenu2 = !activeMenu2">
-                <div class="menu-content">
-                  <span class="menu-icon"><i class='bx bxs-collection' ></i></span>
-                  <span class="menu-text">我收藏的</span>
-                </div>
-                <span class="menu-arrow"><i class='bx bxs-chevron-left' ></i></span>
-              </div>
-<!--              <ul class="sub-menu">-->
-<!--                <li class="sub-item">-->
-<!--                  <span class="sub-text"></span>-->
-<!--                  <span class="sub-edit-icon"></span>-->
-<!--                </li>-->
-<!--              </ul>-->
-            </li>
           </ul>
         </div>
         <div class="CollectionItems">
