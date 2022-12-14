@@ -22,26 +22,18 @@
               </span>
         </div>
         <div>
-          <span class="title">发表于：</span>
+          <span class="title">语言：</span>
           <span class="Informations">
                 {{Literature[this.currentInstitutional].origin}}
               </span>
         </div>
         <div>
           <span class="title">作者：</span>
-          <span>
-            <el-button type="primary" plain>新增作者</el-button>
-          </span>
           <div class="table">
             <el-table
                 :data="tableData"
                 style="width: 100%"
                 max-height="250">
-              <el-table-column
-                  prop="num"
-                  label="序号"
-                  width="50">
-              </el-table-column>
               <el-table-column
                   prop="name"
                   label="姓名"
@@ -51,19 +43,6 @@
                   prop="id"
                   label="id"
                   width="280">
-              </el-table-column>
-              <el-table-column
-                  fixed="right"
-                  label="操作"
-                  width="50">
-                <template slot-scope="scope">
-                  <el-button
-                      @click.native.prevent="deleteRow(scope.$index, tableData)"
-                      type="text"
-                      size="small">
-                    移除
-                  </el-button>
-                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -215,7 +194,7 @@
               </div>
             </div>
             <div>
-              <span class="title">发表于：</span>
+              <span class="title">语言：</span>
               <span class="Information">
                 {{Literature[index].origin | ellipsis}}
               </span>
@@ -462,7 +441,7 @@ export default {
           this.List.push({
             id: res.data.hits[i]._source.id,
             name: res.data.hits[i]._source.title,
-            origin: "123",
+            origin: res.data.hits[i]._source.lang,
             date: res.data.hits[i]._source.year,
             author: res.data.hits[i]._source.authors
           })
