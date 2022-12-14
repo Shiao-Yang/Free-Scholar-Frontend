@@ -420,6 +420,12 @@ export default {
       }).then(res =>{
         console.log('like:')
         console.log(res)
+        if(res.data.message === '点赞成功') {
+          this.$message.success('点赞成功')
+        }
+        else if(res.data.message === '取消点赞成功') {
+          this.$message.success('取消点赞成功')
+        }
         if(tempthis.hasLikedThisPaper===true){
           tempthis.hasLikedThisPaper=false;
           tempthis.number_of_like--;
