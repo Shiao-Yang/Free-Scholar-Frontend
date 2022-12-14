@@ -17,8 +17,24 @@
   left:115px;
   transition: 0.5s;
   margin-top: 20px;
+  font-family: "Poppins", sans-serif;
 }
 
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width:10px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.3);*/
+  border-radius:10px;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius:10px;
+  background:rgba(0,0,0,0.1);
+  /*-webkit-box-shadow:inset006pxrgba(0,0,0,0.5);*/
+}
 .app-container.login {
   margin-top: 0;
 }
@@ -66,7 +82,7 @@ export default {
       let val = 115;
       if(this.sideActive === true)
         val = 220;
-      return this.screenWidth - val
+      return this.screenWidth - val - 20
     },
     isLoginPage() {
       if(this.$route.path === '/login&signup')

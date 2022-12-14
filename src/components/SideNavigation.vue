@@ -27,14 +27,27 @@
           <span class="text">历史记录</span>
         </router-link>
       </li>
+      <li class="side-navigation-item" v-on:click="activeLink(10)" :class="{'active': activeIndex === 10}">
+        <a style="--clr:#2196f3;" title="返回上级" >
+          <span class="icon"><i class='bx bxs-share'></i></span>
+          <span class="text">返回上级</span>
+        </a>
+      </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
           <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
-          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
-          <span class="text">{{ baseInfo.username }}</span>
+          <span class="icon avatar">
+            <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
+                 v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
+            <i title="头像错误" class='bx bxs-user' v-else></i>
+          </span>
+          <span class="text">
+            <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
+            <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
+          </span>
         </router-link>
-        <ul class="user-sub-menu" @click="toHome">
-          <li class="sub-item">
+        <ul class="user-sub-menu">
+          <li class="sub-item" @click="toHome">
             <i class='bx bx-user'></i>
             <span>个人中心</span>
             <i class='bx bx-chevron-right right'></i>
@@ -56,9 +69,8 @@
       </li>
       <li class="side-navigation-item user-box" v-else>
         <router-link to="#" :style="{'--clr':userStateClr}">
-          <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
           <span class="icon avatar"><i class='bx bxs-user'></i></span>
-          <span class="text">{{ baseInfo.username }}</span>
+          <span class="text">游客</span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
           <li class="sub-item log-in" @click="login">
@@ -106,14 +118,27 @@
           <span class="text">事务中心</span>
         </router-link>
       </li>
+      <li class="side-navigation-item" v-on:click="activeLink(10)" :class="{'active': activeIndex === 10}">
+        <a style="--clr:#2196f3;" title="返回上级" >
+          <span class="icon"><i class='bx bxs-share'></i></span>
+          <span class="text">返回上级</span>
+        </a>
+      </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" style="--clr: #0fc70f">
-          <span class="icon avatar"><img alt="头像" :src="this.$store.state.url+baseInfo.avatar"></span>
-          <span class="text">{{baseInfo.username}}</span>
+          <span class="icon avatar">
+            <img alt="头像" :src="this.$store.state.url+baseInfo.avatar"
+                 v-if="baseInfo !== null && baseInfo !== undefined && baseInfo.avatar !== null && baseInfo.avatar !== undefined">
+            <i title="头像错误" class='bx bx-log-in-circle' v-else></i>
+          </span>
+          <span class="text">
+            <span v-if="baseInfo.username !== null && baseInfo.username !== undefined">{{ baseInfo.username }}</span>
+            <span v-else-if="baseInfo.name !== null && baseInfo.name !== undefined">{{ baseInfo.name }}</span>
+          </span>
         </router-link>
         <ul class="user-sub-menu sub-menu-admin">
           <li class="sub-item log-out" @click="logout">
-            <i class='bx bx-log-out-circle'></i>
+            <i class='bx bxs-user'></i>
             <span>退出登录</span>
             <i class='bx bx-chevron-right right'></i>
           </li>
@@ -193,13 +218,16 @@ export default {
   watch: {
     baseInfo : {
       handler(newVal, oldVal) {
+        console.log('baseInfo更新')
+        console.log('newBaseInfo')
+        console.log(newVal)
         if(newVal !== null
             && newVal !== undefined
-            && newVal.uid !== null
-            && newVal.uid !== undefined) {
-          this.getMsgRec(newVal.uid, 0);
+            && newVal.token !== null
+            && newVal.token !== undefined) {
+          this.getMsgRec(1, 0);
+          this.getMsgPlm(1)
         }
-
       },
       deep: true,
     }
@@ -260,6 +288,9 @@ export default {
       that.$router.push('/MessageManage')
     },
     activeLink(index){
+      if(index === 10) {
+        this.$router.back()
+      }
     },
     changeIsActive() {
       this.isActive = !this.isActive;
@@ -268,6 +299,15 @@ export default {
 
     getMsgRec(uid, type) { //type=0,初始化时的调用
       let that = this;
+      if(sessionStorage.getItem('baseInfo') === undefined
+          || sessionStorage.getItem('baseInfo') === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+        this.$store.state.msg_plm_has_new = 0
+        this.$store.state.msg_rec_has_new = 0
+        console.log('未登录')
+        return ;
+      }
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -283,6 +323,7 @@ export default {
               this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
             }
             that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+
             this.dis_msg_list = this.msg_rec_list;
 
             console.log(this.dis_msg_list)
@@ -301,7 +342,14 @@ export default {
 
     getMsgPlm(uid) {
       let that = this;
-
+      if(sessionStorage.getItem('baseInfo') === undefined
+          || sessionStorage.getItem('baseInfo') === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+        this.$store.state.msg_plm_has_new = 0
+        this.$store.state.msg_rec_has_new = 0
+        return ;
+      }
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -353,14 +401,17 @@ export default {
   },
 
   created() {
-    // this.getMsgRec(this.uid, 0);
+    this.getMsgRec(this.uid);
   },
   mounted() {
-    // this.getMsgPlm(this.uid);
-    // console.log(this.msg_plm_has_new)
-    // console.log(this.msg_rec_has_new)
+    this.getMsgPlm(this.uid);
+    console.log(this.msg_plm_has_new)
+    console.log(this.msg_rec_has_new)
     // this.dis_msg_list = this.msg_plm_list; //初始展示msg_plm_list
-    // console.log(this.dis_msg_list)
+    console.log(this.dis_msg_list)
+
+    console.log(this.$store.state.msg_rec_has_new)
+    console.log(this.$store.state.msg_plm_has_new)
   },
 }
 </script>

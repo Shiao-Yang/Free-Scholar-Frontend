@@ -8,27 +8,54 @@
                      font-size: 120%; display: inline-block; left: 85px; right: 0;
                      top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
-                <div class="option-box">
-                  <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(uid)">
-                    <i class="bx bxs-user-plus"></i>
-                    <div class="fo" style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">关注</div>
-                  </div>
-                    <div class="follow" v-else style="color: #2196f3" @click="focus(uid)">
-                        <i class="bx bxs-user-plus"></i>
-                        <div style="position: absolute; margin-top: 13px; left: 50px; font-size: 15px">已关注</div>
+                <div class="option-box" v-if="accreditation===1">
+                    <div>
+                        <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(scholar_id)">
+                            <i class="bx bxs-user-plus"></i>
+                            <div class="fo" style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px">关注</div>
+                        </div>
+                        <a class="follow" v-else style="color: #2196f3" title="取消关注" @click="unFocus(scholar_id)">
+                            <i class="bx bxs-user-plus"></i>
+                            <div style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px">已关注</div>
+                        </a>
                     </div>
-                  <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer" title="立即认领" @click="toAdmitScholar">
-                    <i class="bx bxs-award"></i>
-                    <div class="cl" style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;" >未认领</div>
-                  </a>
-                    <div class="claim" v-else style="color: #ffcb74">
-                        <i class="bx bxs-award"></i>
-                        <div style="position: absolute; margin-top: 13px; left: 135px; font-size: 15px;">已认领</div>
+                    <div>
+                        <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer"
+                           title="立即认领" @click="toAdmitScholar">
+                            <i class="bx bxs-award"></i>
+                            <div class="cl" style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px;" >未认领</div>
+                        </a>
+                        <div class="claim" v-else style="color: #ffcb74">
+                            <i class="bx bxs-award"></i>
+                            <div style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px;">已认领</div>
+                        </div>
                     </div>
-                  <div class="message" @click="replyVisible = true;">
-                    <i class="bx bxs-chat"></i>
-                    <div style="position: absolute; margin-top: 13px; left: 245px; font-size: 15px">私信</div>
-                  </div>
+                    <div>
+                        <div class="message" @click="replyVisible = true">
+                            <i class="bx bxs-chat"></i>
+                            <div style="position: relative; display: inline-block; font-size: 15px; bottom: 5px;">私信</div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="option-box" v-else>
+                    <div>
+                        <a class="claim" v-if="this.accreditation===0" style="color: #333333; cursor: pointer"
+                           title="立即认领" @click="toAdmitScholar">
+                            <i class="bx bxs-award"></i>
+                            <div class="cl" style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px;" >未认领</div>
+                        </a>
+                        <div class="claim" v-else style="color: #ffcb74">
+                            <i class="bx bxs-award"></i>
+                            <div style="position: relative; display: inline-block; bottom: 5px;
+                            font-size: 15px;">已认领</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="introduction">
@@ -71,7 +98,7 @@
                 <div class="contents" v-for="(item) in paperList">
                     <div style="display: flex; width: 98%; height: auto">
                         <i class='bx bxs-bookmark-alt'></i>
-                        <a :href="item.url" class="title">{{item.title}}</a>
+                        <div class="title" @click="$router.push('/searchDetails/'+item.id)">{{item.title}}</div>
                     </div>
                     <div style="position: relative; display: flex; flex-wrap: wrap; list-style: none; line-height: 15px;
                     margin-left: 25px; align-items: center;">
@@ -111,6 +138,9 @@
             </div>
 
         </div>
+
+        <div class="question-btn" @click="dialogVisible = true">
+
         <el-dialog append-to-body title="发送私信" :visible="replyVisible" :center="isCenter" width="30%">
           <el-input
               style="z-index: 2"
@@ -125,10 +155,29 @@
           </div>
         </el-dialog>
         <div class="question-btn">
+
           <div class="question-icon" title="举报冒领"><i class='bx bxs-error-circle' ></i></div>
           <div class="question-sub-item">
           </div>
         </div>
+        <el-dialog
+                title="举报学者"
+                :visible.sync="dialogVisible"
+                width="40%"
+                >
+            <el-input
+                    type="textarea"
+                    :rows="5"
+                    placeholder="请输入内容"
+                    v-model="textarea">
+            </el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="complain(textarea)">确 定</el-button>
+            </span>
+        </el-dialog>
+    </div>
+
     </div>
 
 </template>
@@ -139,8 +188,9 @@
         name: "NS",
         data() {
             return {
+                textarea: '',
+                dialogVisible: false,
                 uid: '540888a2dabfae92b4247e94',
-                scholar_id: null,
                 user_id: null,
                 userName: '',
                 baseInfo: {
@@ -153,37 +203,119 @@
                 follow: 0, //1表示已关注，0表示未关注
                 accreditation: 0, //1表示已认证，0表示未认证
                 introduction:'这个人很懒，什么都没有写……',
-                heat: 38,
-                visitors: 23,
+                heat: 0,
+                visitors: 0,
                 paperList: [],
                 scholarList: [],
+                // paper_id: '',
+                scholar_id: 0,
+
                 replyVisible: false,
                 isCenter: true,
                 msg_send: {
                   owner_id: 1,
                   content: '',
                 },
+
             }
         },
         methods: {
-            focus(uid){
-              console.log("token: "+JSON.parse(sessionStorage.getItem('baseInfo')).token)
-              let formData = new FormData();
-              formData.append('aim_id', uid);
-              this.follow = 1;
-              this.$axios({
-                  method: 'post',
-                  url: this.$store.state.address + 'api/relation/focus',
-                  data: formData,
-                  headers: {
-                      jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-                  }
-              }).then(res =>{
-                  console.log(res)
-              })
-                .catch(err =>{
-                    console.log(err)
+            complain(textarea){
+                this.$axios({
+                    method: 'post',
+                    url: 'http://139.9.134.209:8000/api/user/complainSochlar/',
+                    data: qs.stringify({
+                        scholar_id: this.scholar_id,
+                        reason: textarea,
+                    }),
+                    headers: {
+                        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                    },
+                }).then(res => {
+                    if(res.data.msg==='success'){
+                        this.$message({
+                            type: 'success',
+                            message: '举报成功！请等待审核'
+                        })
+                    }
+                    else {
+                        this.$message({
+                            type: 'error',
+                            message: '举报失败！'
+                        })
+                    }
+                }).catch(err => {
+                    this.$message({
+                        type: 'error',
+                        message: '举报失败！'
+                    })
                 })
+                this.dialogVisible = false;
+            },
+            unFocus(sid){
+                this.open(sid);
+            },
+            open(sid) {
+                this.$confirm('确认取消关注?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let params = {
+                        // user_id: uid,
+                        aim_id: sid,
+                    }
+                    this.$axios({
+                        method: 'post',
+                        url: 'http://139.9.134.209:8000/api/relation/unFocus',
+                        data: params,
+                        headers: {
+                            jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                        },
+                    }).then(res => {
+                        console.log(res)
+                        if(res.data.errno===0){
+                            this.follow = 0;
+                            this.$message({
+                                type: 'success',
+                                message: '操作成功!'
+                            });
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            focus(uid){
+                console.log('scholar_id: '+uid)
+                let params = {
+                    // user_id: uid,
+                    aim_id: uid,
+                }
+                this.$axios({
+                    method: 'post',
+                    url: 'http://139.9.134.209:8000/api/relation/focus',
+                    data: params,
+                    headers: {
+                        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                    },
+                })
+                    .then(res => {
+                        console.log(res.data);
+                        if(res.data.errno===0){
+                            this.follow = 1;
+                        }
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
             temp(id){
                 this.uid = id;
@@ -211,7 +343,7 @@
                         id: uid
                     })
                 }).then(res => {
-                    // console.log(res.data)
+                    console.log(res.data)
                     this.scholarList = res.data.coworkers;
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
@@ -222,25 +354,31 @@
                 })
             },
             getBaseInfo(uid){
+                console.log(JSON.parse(sessionStorage.getItem('baseInfo')).token);
                 this.axios({
                     method: 'get',
                     url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo?author_id=' + uid,
                     // url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + '1',
+                    headers: {
+                        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                    },
                 }).then(res => {
                     console.log(res)
-                    if(res.data.introduction!=null){
-                        this.introduction = res.data.introduction;
-                    }
+                    this.scholar_id = res.data.scholar_id
+                    // console.log(this.scholar_id)
                     if(res.data.errno===1){
                         this.accreditation = 0;
                     }
                     else
                         this.accreditation = 1;
-                    if(res.data.heat==null){
+                    if(res.data.Hotpoint==null){
                         this.heat = 0;
                     }
                     else {
-                        this.heat = res.data.heat
+                        this.heat = res.data.Hotpoint
+                    }
+                    if(res.data.followed===true){
+                        this.follow = 1;
                     }
                     if(res.data.visitors==null){
                         this.visitors = 0
@@ -271,7 +409,56 @@
             })
           },
 
+          getMsgRec(uid, type) { //type=0,初始化时的调用
+            let that = this;
+
+            this.axios({
+              headers: {
+                jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+              },
+              method: 'get',
+              url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec',
+            })
+                .then(res => {
+                  console.log(res.data)
+                  this.msg_rec_list = res.data;
+                  for(let i = 0; i < this.msg_rec_list.length; i++) {
+                    // this.msg_rec_list[i].avatar = 'user.png';
+                    this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
+                  }
+                  that.msg_rec_list = this.msg_rec_list.sort(this.sortData);
+                  this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+                  that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
+                  this.dis_msg_list = this.msg_rec_list;
+
+                  console.log(this.dis_msg_list)
+                  // if(this.showContent) {
+                  //   this.changeShowContent();
+                  // }
+                  console.log(this.showContent)
+
+                  // this.dis_msg_list = this.msg_plm_list;
+
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+          },
+
+          cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
+            let has_new = 0;
+            for(let i = 0; i < msg_list.length; i++) {
+              if(!msg_list[i].is_read) { //有未读消息就+1
+                has_new++;
+              }
+            }
+            console.log(has_new);
+            return has_new;
+          },
+
           sendMsg() {
+            this.msg_send.owner_id = this.baseInfo.user_id
+
             console.log(this.msg_send);
             if(this.msg_send.content === '') {
               this.$message({
@@ -295,15 +482,10 @@
             })
                 .then(res => {
                   this.dis_msg_list = [];
-                  // if(this.isActive1) { //当前处于系统消息列表
-                  //   this.getMsgPlm(this.uid);
-                  // }
-                  // else if(this.isActive2) { //当前处于收到的私信列表
-                  //   this.getMsgRec(this.uid);
-                  // }
-                  // else if(this.isActive3) { //当前处于发送的私信列表
-                  //   this.getMsgSend(this.uid);
-                  // }
+
+                  this.getMsgRec(this.uid);
+
+                  this.getMsgSend(this.uid);
 
                   if(res.data.errno === 0) {
                     this.$message({
@@ -323,11 +505,9 @@
 
         },
         created() {
-            // console.log(this.$route.query.id)
+            console.log(this.$route.query.id)
             this.uid = this.$route.query.id;
-            // this.user_id = this.$route.query.user_id;
-            // this.scholar_id = this.$route.query.scholar_id;
-            console.log(this.uid)
+
             this.getCoworkers(this.uid)
             this.getBaseInfo(this.uid)
         },
@@ -502,6 +682,12 @@
         box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
     }
 
+    .left .option-box {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
     .left .name {
         position: relative;
         background-color: white;
@@ -521,11 +707,11 @@
         margin-bottom: 10px;
     }
     .name .bxs-user-plus {
-        position: absolute;
+        position: relative;
         display: inline-block;
         font-size: 30px;
         margin-top: 7px;
-        margin-left: 15px;
+        /*margin-left: 15px;*/
         /*color: #333333;*/
     }
 
@@ -596,19 +782,19 @@
         font-weight: bold;
     }
     .name .bxs-award {
-        position: absolute;
+        position: relative;
         display: inline-block;
         font-size: 30px;
         margin-top: 7px;
-        left: 105px;
+        /*left: 105px;*/
         /*color: #ffcb74;*/
     }
     .name .bxs-chat {
-        position: absolute;
+        position: relative;
         display: inline-block;
         font-size: 30px;
         margin-top: 7px;
-        left: 210px;
+        /*left: 210px;*/
         color: #333333;
     }
     .blackBox {

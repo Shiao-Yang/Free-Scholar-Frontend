@@ -201,17 +201,16 @@ export default {
           })
     },
     getPaperData(id,index) { // 获得文献收藏数、评论数、是否收藏
-      let params = {
-        p_id: id,
-        u_id: 1, // 暂时为1
-      }
+      let formData = new FormData()
+      formData.append('p_id',id)
       this.axios( {
         method: "post",
         url: this.$store.state.address+'api/searchList/PaperData/',
-        data: params
+        data: formData,
       })
           .then(res => {
-            //console.log(res.data)
+            console.log('getPaperData'+index+':')
+            console.log(res.data)
             this.paper[index].comment = res.data.comment_num;
           })
     },
