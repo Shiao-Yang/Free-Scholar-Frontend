@@ -226,8 +226,8 @@
             switchScholar(author_id){
 
                 console.log(author_id)
-              this.getCoworkers(author_id)
-              this.getBaseInfo(author_id)
+                this.getCoworkers(author_id)
+                this.getBaseInfo(author_id)
             },
             complain(textarea){
                 this.$axios({
@@ -329,6 +329,7 @@
             temp(id){
                 this.uid = id;
                 this.getCoworkers(id);
+                this.getBaseInfo(id);
             },
             sortByTime(n){
                 // console.log('uid: '+this.uid)
@@ -373,7 +374,7 @@
                         id: uid
                     })
                 }).then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.scholarList = res.data.coworkers;
 
                     // for(scholar in this.scholarList){
@@ -406,6 +407,7 @@
                 return Math.round(Math.random() * (max - min)) + min;
             },
             getBaseInfo(uid){
+                this.baseInfo.avatar = this.$store.state.url + 'default.png';
                 console.log(JSON.parse(sessionStorage.getItem('baseInfo')).token);
                 this.axios({
                     method: 'get',
@@ -436,6 +438,7 @@
                     }
                     if(res.data.errno===1){
                         this.accreditation = 0;
+                        this.isMyself = false;
                         this.visitors = this.Random(5,10);
                         this.heat = this.Random(10000,50000);
                     }
@@ -443,6 +446,9 @@
                         this.accreditation = 1;
                         console.log('user_id: '+ res.data.user_id)
                         this.getAvatar(res.data.user_id)
+                        // image.attr('src', data.message+'?'+Math.random());
+                        // this.baseInfo.avatar += Math.random();
+                        // let version = Math.random();
                     }
                     if(res.data.scholar_id !== null){
                       this.baseInfo.scholar_id = res.data.scholar_id
@@ -541,7 +547,7 @@
                     data: formData,
                 }).then(res => {
 
-                    this.baseInfo.avatar = this.$store.state.url + res.data.avatar;
+                    this.baseInfo.avatar = this.$store.state.url + res.data.avatar + '?' + new Date().getTime();
                     console.log("avatar: "+this.baseInfo.avatar)
                     // this.baseInfo.avatar = res.data.avatar;
                     // if(this.baseInfo.avatar === null) {
@@ -553,9 +559,9 @@
             }
         },
         created() {
-            // console.log(this.$route.query.id)
-            this.uid = this.$route.query.id;
 
+            this.uid = this.$route.query.id;
+            console.log('author_id:' + this.$route.query.id);
             this.getCoworkers(this.uid)
             this.getBaseInfo(this.uid)
         },

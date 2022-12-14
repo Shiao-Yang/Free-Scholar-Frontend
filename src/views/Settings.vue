@@ -65,9 +65,9 @@
       </div>
       <div class="trending-box" style="text-align: center">
         <p style="font-size: 24px;margin: auto auto auto 20px"><i class='bx bxs-graduation'></i>学者</p>
-        <span class="data-num" style="font-size: 18px;">{{ scholarNum }}</span>
+        <span class="data-num" style="font-size: 18px;">{{ scholarStr }}</span>
         <p style="font-size: 24px;margin: auto auto auto 20px"><i class='bx bxs-book-alt' ></i>文献</p>
-        <span class="data-num" style="font-size: 18px;">{{ paperNum }}</span>
+        <span class="data-num" style="font-size: 18px;">{{ paperStr }}</span>
       </div>
       <div class="trending-box">
       <p><i class='bx bxs-hot'></i>Trending</p>
@@ -104,6 +104,8 @@ export default {
       ],
       scholarNum: 233,
       paperNum: 233,
+      scholarStr: "",
+      paperStr: "",
     }
   },
   computed: {
@@ -237,6 +239,7 @@ export default {
           .then(res => {
             console.log(res)
             this.scholarNum = res.data.paper_count
+            this.sortScholarNumStr()
           })
       this.axios( {
         method: "get",
@@ -244,8 +247,44 @@ export default {
       })
           .then(res => {
             this.paperNum = res.data.paper_count
+            this.sortPaperNumStr()
           })
+
     },
+    sortScholarNumStr() {
+      let sNum = this.scholarNum
+      let scholarStr = ""
+      while(sNum > 0) {
+        if(sNum < 1000)
+          break;
+        if(scholarStr !== "") {
+          scholarStr = (sNum - Math.floor(sNum/1000)*1000) + ","+ scholarStr
+        }
+        else {
+          scholarStr = (sNum - Math.floor(sNum/1000)*1000) + scholarStr
+        }
+        sNum = Math.floor(sNum/1000)
+      }
+      scholarStr = sNum + ","+scholarStr
+      this.scholarStr = scholarStr
+    },
+    sortPaperNumStr() {
+      let pNum = this.paperNum
+      let paperStr = ""
+      while(pNum > 0) {
+        if(pNum < 1000)
+          break;
+        if(paperStr !== "") {
+          paperStr = (pNum - Math.floor(pNum/1000)*1000) + ","+ paperStr
+        }
+        else {
+          paperStr = (pNum - Math.floor(pNum/1000)*1000) + paperStr
+        }
+        pNum = Math.floor(pNum/1000)
+      }
+      paperStr = pNum + ","+paperStr
+      this.paperStr = paperStr
+    }
   }
 }
 </script>
@@ -536,5 +575,9 @@ table {
 .venue {
   font-size: 15px;
   color: #DA1E28;
+}
+
+.data-num {
+  font-family: "PingFang SC";
 }
 </style>
