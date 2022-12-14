@@ -65,9 +65,9 @@
       </div>
       <div class="trending-box" style="text-align: center">
         <p style="font-size: 24px;margin: auto auto auto 20px"><i class='bx bxs-graduation'></i>学者</p>
-        <span class="data-num" style="font-size: 18px;">{{ scholarStr }}</span>
+        <VueCountUp style="font-family: 'PingFang SC'" :start-value="0" :end-value="scholarNum" :duration="1" />
         <p style="font-size: 24px;margin: auto auto auto 20px"><i class='bx bxs-book-alt' ></i>文献</p>
-        <span class="data-num" style="font-size: 18px;">{{ paperStr }}</span>
+        <VueCountUp style="font-family: 'PingFang SC'" :start-value="0" :end-value="paperNum" :duration="1" />
       </div>
       <div class="trending-box">
       <p><i class='bx bxs-hot'></i>Trending</p>
@@ -83,8 +83,10 @@
 </template>
 
 <script>
+import VueCountUp from 'vue-countupjs'
 export default {
   name: 'Settings',
+  components: { VueCountUp },
   created() {
     window.myData = this;
     this.$store.state.input = ''
@@ -93,6 +95,8 @@ export default {
     this.getDataNum()
   },
   mounted() {
+    this.scholarStr = this.sortScholarNumStr()
+    this.paperStr = this.sortPaperNumStr()
   },
   data() {
     return {
@@ -239,7 +243,7 @@ export default {
           .then(res => {
             console.log(res)
             this.scholarNum = res.data.paper_count
-            this.sortScholarNumStr()
+            this.scholarStr = this.sortScholarNumStr()
           })
       this.axios( {
         method: "get",
@@ -247,7 +251,7 @@ export default {
       })
           .then(res => {
             this.paperNum = res.data.paper_count
-            this.sortPaperNumStr()
+            this.paperStr = this.sortPaperNumStr()
           })
 
     },
@@ -266,7 +270,7 @@ export default {
         sNum = Math.floor(sNum/1000)
       }
       scholarStr = sNum + ","+scholarStr
-      this.scholarStr = scholarStr
+      return scholarStr
     },
     sortPaperNumStr() {
       let pNum = this.paperNum
@@ -283,8 +287,10 @@ export default {
         pNum = Math.floor(pNum/1000)
       }
       paperStr = pNum + ","+paperStr
-      this.paperStr = paperStr
+      return paperStr
     }
+  },
+  watch: {
   }
 }
 </script>
