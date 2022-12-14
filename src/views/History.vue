@@ -12,11 +12,13 @@
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-home'></i></span>
-            <span class="text">{{ institution }}</span>
+            <span class="text" v-if="institution !== null && institution !== undefined && institution !== ''">{{ institution }}</span>
+            <span class="text" v-else>暂无</span>
           </li>
           <li class="profile-list-item">
             <span class="icon"><i class='bx bxs-bookmark'></i></span>
-            <span class="text">{{ profile }}</span>
+            <span class="text" v-if="profile !== null && profile !== undefined && profile !== ''">{{ profile }}</span>
+            <span class="text" v-else>暂无</span>
           </li>
         </ul>
       </div>
@@ -164,8 +166,8 @@ export default {
       userBaseInfo:[],
       avatarUrl: '',
       username: 'Peter',
-      institution: 'Beihang University',
-      profile: 'I am Peter',
+      institution: '暂无',
+      profile: '暂无',
       isFollow: false,
       isLike: false,
       isScholar: true,
