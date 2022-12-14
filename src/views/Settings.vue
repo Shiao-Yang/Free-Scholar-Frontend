@@ -63,6 +63,12 @@
         <p>智慧不设围墙</p>
         <div class="btn" @click="$router.push('/login&signup')"><span>登录/注册</span></div>
       </div>
+      <div class="trending-box" style="text-align: center">
+        <p style="font-size: 24px;margin: auto auto auto 20px"><i class='bx bxs-graduation'></i>学者</p>
+        <span class="data-num" style="font-size: 18px;">{{ scholarNum }}</span>
+        <p style="font-size: 24px;margin: auto auto auto 20px"><i class='bx bxs-book-alt' ></i>文献</p>
+        <span class="data-num" style="font-size: 18px;">{{ paperNum }}</span>
+      </div>
       <div class="trending-box">
       <p><i class='bx bxs-hot'></i>Trending</p>
       <table class="trending-table">
@@ -84,6 +90,7 @@ export default {
     this.$store.state.input = ''
     this.getHotWord()
     this.getHotPaper()
+    this.getDataNum()
   },
   mounted() {
   },
@@ -94,7 +101,9 @@ export default {
       ],
       hotWord_3: [],
       paper: [
-      ]
+      ],
+      scholarNum: 233,
+      paperNum: 233,
     }
   },
   computed: {
@@ -218,6 +227,23 @@ export default {
             //console.log('getPaperData'+index+':')
             //console.log(res.data)
             this.paper[index].comment = res.data.comment_num;
+          })
+    },
+    getDataNum() {
+      this.axios( {
+        method: "get",
+        url: this.$store.state.address+'api/author/count/',
+      })
+          .then(res => {
+            console.log(res)
+            this.scholarNum = res.data.paper_count
+          })
+      this.axios( {
+        method: "get",
+        url: this.$store.state.address+'api/publication/count/',
+      })
+          .then(res => {
+            this.paperNum = res.data.paper_count
           })
     },
   }
