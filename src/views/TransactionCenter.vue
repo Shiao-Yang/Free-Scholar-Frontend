@@ -909,7 +909,7 @@ export default {
       let params = {
         type:type,
         id:id,
-        agreeOrRefuse:true,
+        agreeOrRefuse:"True",
         reply:reply
       }
       this.axios({
@@ -931,7 +931,7 @@ export default {
       let params = {
         type:type,
         id:id,
-        agreeOrRefuse:false,
+        agreeOrRefuse:"False",
         reply:reply
       }
       this.axios({
