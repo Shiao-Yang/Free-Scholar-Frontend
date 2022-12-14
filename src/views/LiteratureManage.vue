@@ -22,7 +22,7 @@
               </span>
         </div>
         <div>
-          <span class="title">语言：</span>
+          <span class="title">发表于：</span>
           <span class="Informations">
                 {{Literature[this.currentInstitutional].origin}}
               </span>
@@ -194,7 +194,7 @@
               </div>
             </div>
             <div>
-              <span class="title">语言：</span>
+              <span class="title">发表于：</span>
               <span class="Information">
                 {{Literature[index].origin | ellipsis}}
               </span>
@@ -440,13 +440,24 @@ export default {
           .then(async res =>{
         var i = 0;
         for (i = 0; i < res.data.hits.length; i++){
-          this.List.push({
-            id: res.data.hits[i]._source.id,
-            name: res.data.hits[i]._source.title,
-            origin: res.data.hits[i]._source.lang,
-            date: res.data.hits[i]._source.year,
-            author: res.data.hits[i]._source.authors
-          })
+          if (res.data.hits[i]._source.venue === undefined){
+            this.List.push({
+              id: res.data.hits[i]._source.id,
+              name: res.data.hits[i]._source.title,
+              origin: '暂无',
+              date: res.data.hits[i]._source.year,
+              author: res.data.hits[i]._source.authors
+            })
+          }
+          else {
+            this.List.push({
+              id: res.data.hits[i]._source.id,
+              name: res.data.hits[i]._source.title,
+              origin: res.data.hits[i]._source.venue.raw,
+              date: res.data.hits[i]._source.year,
+              author: res.data.hits[i]._source.authors
+            })
+          }
         }
         var i = 0;
         i = this.List.length / 6;
