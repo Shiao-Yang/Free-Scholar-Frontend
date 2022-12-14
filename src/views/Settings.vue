@@ -50,7 +50,7 @@
           </li>
           <li class="info">
             <span>浏览次数:&nbsp</span>
-            <span class="nums">{{result.read}}</span>
+            <span class="nums">{{Math.floor(result.read/2)}}</span>
           </li>
         </ul>
         <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin-top: 5px" />
