@@ -97,7 +97,10 @@
               <p>{{ item.username }}</p>
             </div>
             <div style="display:inline-block;margin-left: 20px;cursor: pointer" >
-              <i class="el-icon-service" @click="toReportThisComment()"></i>
+              <i class="el-icon-service" @click="toReportThisComment(item.comment_id,item.user_id)"></i>
+            </div>
+            <div style="display:inline-block;margin-left: 20px;cursor: pointer" >
+              <i class="bx bxs-like" @click="toLikeThisComment(item.comment_id)"></i>
             </div>
             <div style="">
               <p>{{ item.text }}</p>
@@ -117,10 +120,7 @@
       <div class="recommendations">
         <div class="recommendation" v-for="item in relevant_recommended_literature">
           <div class="recommendationTitle" @click="$router.push('../');$router.push('SearchDetails/'+item.recommended_literature_id)">
-            {{ item.recommended_literature_title }}
-          </div>
-          <div class="recommendationAuthor">
-            {{ item.recommended_literature_author }}
+            {{ item.title }}
           </div>
         </div>
       </div>
@@ -184,16 +184,6 @@ export default {
       hasLikedThisPaper:false,
       hasCollectedThisPaper:false,
       relevant_recommended_literature: [
-        {
-          recommended_literature_title: "Invariant scattering convolution networks.",
-          recommended_literature_author: "Joan Bruna, Stephane Mallat",
-          recommended_literature_id: "53e99a8cb7602d9702303c85"
-        },
-        {
-          recommended_literature_title: "Convolution Kernels on Discrete Structures",
-          recommended_literature_author: "David Haussler",
-          recommended_literature_id: "53e9ac3db7602d9703607b7b"
-        }
       ],
     }
   },
@@ -335,7 +325,22 @@ export default {
 
       //摘要
       tempthis.abstract = tempthis.this_paper[0].abstract
+
+      //推荐文献
+      let params1 = new FormData();
+      params1.append("id", tempthis.literature_id);
+      this.$axios({
+        method: 'post',
+        url: this.$store.state.address+'api/publication/recommend/',
+        data: params1,
+      }).then(res =>{
+        console.log('recommend:')
+
+        tempthis.relevant_recommended_literature = res.data.data
+        console.log(tempthis.relevant_recommended_literature)
+      })
     },
+
     toReadThisPaper:function (paperId,paperName){
       const tempthis = this;
      /* let formData = new FormData();
@@ -362,7 +367,7 @@ export default {
               tempthis.number_of_like = tempthis.this_paper[1].like_count;
               tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
               tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
-              tempthis.number_of_read = tempthis.this_paper[1].read_count;
+              tempthis.number_of_read = Math.floor(tempthis.this_paper[1].read_count/2);
               tempthis.hasLikedThisPaper = tempthis.this_paper[1].isLiked;
               tempthis.hasCollectedThisPaper = tempthis.this_paper[1].isCollected;
               tempthis.commentList = tempthis.this_paper[1].comment
@@ -391,12 +396,12 @@ export default {
               tempthis.number_of_like = tempthis.this_paper[1].like_count;
               tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
               tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
-              tempthis.number_of_read = tempthis.this_paper[1].read_count;
+              tempthis.number_of_read = Math.floor(tempthis.this_paper[1].read_count/2);
               tempthis.hasLikedThisPaper = tempthis.this_paper[1].isLiked;
               tempthis.hasCollectedThisPaper = tempthis.this_paper[1].isCollected;
               tempthis.commentList = tempthis.this_paper[1].comment
               console.log("commentList")
-              console.log(tempthis.commentList.length)
+              console.log(tempthis.commentList)
             })
             .catch(err => {
               console.log(err);
@@ -417,6 +422,12 @@ export default {
       }).then(res =>{
         console.log('like:')
         console.log(res)
+        if(res.data.message === '点赞成功') {
+          this.$message.success('点赞成功')
+        }
+        else if(res.data.message === '取消点赞成功') {
+          this.$message.success('取消点赞成功')
+        }
         if(tempthis.hasLikedThisPaper===true){
           tempthis.hasLikedThisPaper=false;
           tempthis.number_of_like--;
@@ -461,7 +472,60 @@ export default {
 
       });
   },
-    toReportThisComment(){}
+    toReportThisComment(commentId,reportedId){
+      this.$prompt('请填写举报理由', '举报评论', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        console.log(value)
+        const tempthis = this;
+        let params ={
+          comment_id:commentId,
+          reason:value,
+          reported_id:reportedId
+        }
+        this.axios({
+          method: 'post',
+          url: 'http://139.9.134.209:8000/api/user/complainComment/',
+          headers: {
+            jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+          },
+          data:qs.stringify(params)
+        })
+            .then(res => {
+              console.log("report comment")
+              console.log(res)
+            })
+            .catch(err => {
+              console.log(err);
+            })
+      }).catch(() => {
+
+      });
+    },
+    toLikeThisComment(commentId){
+      let formData = new FormData()
+      formData.append('comment_id',commentId)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/LikeComment/',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        data:formData
+      })
+          .then(res => {
+            console.log("like comment"+commentId)
+            console.log(res)
+            if (res.data.msg ==="点赞成功")
+              this.$message.success(res.data.msg);
+            else if(res.data.msg ==="你已经赞过了")
+              this.$message.warning(res.data.msg);
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    }
   }
 }
 </script>
@@ -650,8 +714,10 @@ export default {
 }
 
 .recommendations {
+  height: 245px;
   margin-top: 90px;
   margin-left: 20px;
+  overflow: auto;
 }
 
 .recommendation {
