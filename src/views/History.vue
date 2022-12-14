@@ -23,7 +23,7 @@
         </ul>
       </div>
       <div class="social-info">
-        <div class="social-info-item">
+        <div class="social-info-item" @click="toFollowList">
           <div class="title">
             <span class="icon" style="font-size: 28px; position: relative; top: 0px;" :class="{'active': isLike}"><i
                 class='bx bxs-user-plus'></i></span>
@@ -35,7 +35,7 @@
             </div>
           </div>
         </div>
-        <div class="social-info-item" v-if="identity===2">
+        <div class="social-info-item" v-if="identity===2"  @click="toFollowerList">
           <div class="title">
             <span class="icon"><i class='bx bxs-heart'></i></span>
             <span class="text">粉丝</span>
@@ -217,6 +217,15 @@ export default {
     }
   },
   methods: {
+    toFollowerList() {
+      let that = this;
+      that.$router.push('/followerList');
+    },
+    toFollowList() {
+      let that = this;
+      that.$router.push('/followList');
+    },
+
     changePage(currentPage) {
       this.showList = [];
       for (let i = (currentPage - 1) * 3, j = 0; i < this.followList.length && j < 3; i++, j++) {
