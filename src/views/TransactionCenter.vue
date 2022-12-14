@@ -9,7 +9,7 @@
     </div>
     <div class="leftdown">
       <el-aside width="200px" style="background-color: rgb(238, 241, 246);height: 625px;width: 200px">
-        <el-menu :default-openeds="['1', '2', '3','5']">
+        <el-menu :default-openeds="['1', '2','5']">
           <el-submenu index="1">
             <template slot="title"><i class="el-icon-message"></i>举报评论</template>
             <el-menu-item-group>
@@ -24,13 +24,13 @@
               <el-menu-item index="2-2" @click="toGetRecords(2,2)">待处理</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="3">
-            <template slot="title"><i class="el-icon-s-promotion"></i>申诉</template>
-            <el-menu-item-group>
-              <el-menu-item index="3-1" @click="toGetRecords(3,1)">全部记录</el-menu-item>
-              <el-menu-item index="3-2" @click="toGetRecords(3,2)">待处理</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
+<!--          <el-submenu index="3">-->
+<!--            <template slot="title"><i class="el-icon-s-promotion"></i>申诉</template>-->
+<!--            <el-menu-item-group>-->
+<!--              <el-menu-item index="3-1" @click="toGetRecords(3,1)">全部记录</el-menu-item>-->
+<!--              <el-menu-item index="3-2" @click="toGetRecords(3,2)">待处理</el-menu-item>-->
+<!--            </el-menu-item-group>-->
+<!--          </el-submenu>-->
 <!--          <el-submenu index="4">-->
 <!--            <template slot="title"><i class="el-icon-menu"></i>机构申请</template>-->
 <!--            <el-menu-item-group>-->
@@ -869,15 +869,15 @@ export default {
         tempthis.getPendingAccusationRecords(2)
         tempthis.selectWhichMenu=4
 
-      }else if(x===3&&y===1){
-        tempthis.getAllAppealRecords()
-        tempthis.selectWhichMenu=5
-
-
-
-      }else if(x===3&&y===2){
-        tempthis.getPendingAppealRecords()
-        tempthis.selectWhichMenu=6
+      // }else if(x===3&&y===1){
+      //   tempthis.getAllAppealRecords()
+      //   tempthis.selectWhichMenu=5
+      //
+      //
+      //
+      // }else if(x===3&&y===2){
+      //   tempthis.getPendingAppealRecords()
+      //   tempthis.selectWhichMenu=6
 
       }else if(x===4&&y===1){
         //tempthis.getAllInstitutionApplication()

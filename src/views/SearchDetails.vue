@@ -31,7 +31,7 @@
                   :direction="direction"
                   :before-close="handleClose">
                 <div style="text-align: left">
-                  <div style="color: black;position: relative;left: 40px;top: -20px">
+                  <div style="color: black;position: relative;left: 40px;">
                   <h2>选择收藏夹</h2>
                 </div>
                   <el-form ref="form" :model="form" label-width="80px">
@@ -95,6 +95,12 @@
             </div>
             <div style="display:inline-block;margin-left: 5px">
               <p>{{ item.username }}</p>
+            </div>
+            <div style="display:inline-block;margin-left: 20px;cursor: pointer" >
+              <i class="el-icon-service" @click="toReportThisComment(item.comment_id,item.user_id)"></i>
+            </div>
+            <div style="display:inline-block;margin-left: 20px;cursor: pointer" >
+              <i class="bx bxs-like" @click="toLikeThisComment(item.comment_id)"></i>
             </div>
             <div style="">
               <p>{{ item.text }}</p>
@@ -172,7 +178,7 @@ export default {
       number_of_collect: 11,
       number_of_comment: 110,
       out_link_str: "http://www.baidu.com",
-      number_of_read: 27,
+      number_of_read: 0,
       tags: [],
       abstract: "你说得对，但是对有序数列的查找算法中二分法查找（binarysearch）是最常用的。" +
           "利用二分法，在含有n个元素的有...之差的最大值的一个上界，" +
@@ -276,6 +282,7 @@ export default {
         else
           this.$message.error(res.data.msg);
         this.drawer = false;
+        location.reload()
         console.log("collect")
         console.log(res)
       })
@@ -295,9 +302,8 @@ export default {
       })
           .then(res => {
             tempthis.this_paper[0] = res.data.paper
+            console.log("res.data.paper:")
             console.log(tempthis.this_paper[0])
-            console.log('authors')
-            console.log(tempthis.this_paper[0].authors)
             tempthis.toLoadData()
           })
           .catch(err => {
@@ -307,22 +313,28 @@ export default {
     toLoadData:function (){
       const tempthis = this;
       //标题
-      tempthis.literature_title = tempthis.this_paper[0].title
+      if(tempthis.this_paper[0].title!==undefined && tempthis.this_paper[0].title!==null)
+        tempthis.literature_title = tempthis.this_paper[0].title
       tempthis.toReadThisPaper(tempthis.literature_id,tempthis.literature_title)
 
       //作者名字
-      tempthis.authors=tempthis.this_paper[0].authors
+      if(tempthis.this_paper[0].authors!==undefined && tempthis.this_paper[0].authors!==null)
+        tempthis.authors=tempthis.this_paper[0].authors
 
       //机构  存疑  目前逻辑是一作的第一个机构，这显然不符合实际
       //tempthis.institution = tempthis.this_paper[0].authors[0].org.split(",")[0]
 
       //外部链接
-      tempthis.out_link_str = tempthis.this_paper[0].url
+      if(tempthis.this_paper[0].url!==undefined && tempthis.this_paper[0].url!==null)
+        tempthis.out_link_str = tempthis.this_paper[0].url
 
-      //关键词
-      for(let i = 0;i<tempthis.this_paper[0].keywords.length;i++){
-        tempthis.tags[i]= tempthis.this_paper[0].keywords[i]
+      if(tempthis.this_paper[0].keywords!==undefined && tempthis.this_paper[0].keywords!==null){
+        //关键词
+        for(let i = 0;i<tempthis.this_paper[0].keywords.length;i++){
+          tempthis.tags[i]= tempthis.this_paper[0].keywords[i]
+        }
       }
+
 
       //摘要
       tempthis.abstract = tempthis.this_paper[0].abstract
@@ -387,7 +399,7 @@ export default {
               tempthis.hasCollectedThisPaper = tempthis.this_paper[1].isCollected;
               tempthis.commentList = tempthis.this_paper[1].comment
               console.log("commentList")
-              console.log(tempthis.commentList.length)
+              console.log(tempthis.commentList)
             })
             .catch(err => {
               console.log(err);
@@ -451,7 +463,61 @@ export default {
       }).catch(() => {
 
       });
-  }
+  },
+    toReportThisComment(commentId,reportedId){
+      this.$prompt('请填写举报理由', '举报评论', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        console.log(value)
+        const tempthis = this;
+        let params ={
+          comment_id:commentId,
+          reason:value,
+          reported_id:reportedId
+        }
+        this.axios({
+          method: 'post',
+          url: 'http://139.9.134.209:8000/api/user/complainComment/',
+          headers: {
+            jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+          },
+          data:qs.stringify(params)
+        })
+            .then(res => {
+              console.log("report comment")
+              console.log(res)
+            })
+            .catch(err => {
+              console.log(err);
+            })
+      }).catch(() => {
+
+      });
+    },
+    toLikeThisComment(commentId){
+      let formData = new FormData()
+      formData.append('comment_id',commentId)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/LikeComment/',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        data:formData
+      })
+          .then(res => {
+            console.log("like comment"+commentId)
+            console.log(res)
+            if (res.data.msg ==="点赞成功")
+              this.$message.success(res.data.msg);
+            else if(res.data.msg ==="你已经赞过了")
+              this.$message.warning(res.data.msg);
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    }
   }
 }
 </script>
