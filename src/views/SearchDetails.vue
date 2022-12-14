@@ -365,7 +365,7 @@ export default {
               tempthis.number_of_like = tempthis.this_paper[1].like_count;
               tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
               tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
-              tempthis.number_of_read = tempthis.this_paper[1].read_count;
+              tempthis.number_of_read = Math.floor(tempthis.this_paper[1].read_count/2);
               tempthis.hasLikedThisPaper = tempthis.this_paper[1].isLiked;
               tempthis.hasCollectedThisPaper = tempthis.this_paper[1].isCollected;
               tempthis.commentList = tempthis.this_paper[1].comment
@@ -394,7 +394,7 @@ export default {
               tempthis.number_of_like = tempthis.this_paper[1].like_count;
               tempthis.number_of_collect= tempthis.this_paper[1].collect_count;
               tempthis.number_of_comment = tempthis.this_paper[1].comment.length;
-              tempthis.number_of_read = tempthis.this_paper[1].read_count;
+              tempthis.number_of_read = Math.floor(tempthis.this_paper[1].read_count/2);
               tempthis.hasLikedThisPaper = tempthis.this_paper[1].isLiked;
               tempthis.hasCollectedThisPaper = tempthis.this_paper[1].isCollected;
               tempthis.commentList = tempthis.this_paper[1].comment
@@ -420,6 +420,12 @@ export default {
       }).then(res =>{
         console.log('like:')
         console.log(res)
+        if(res.data.message === '点赞成功') {
+          this.$message.success('点赞成功')
+        }
+        else if(res.data.message === '取消点赞成功') {
+          this.$message.success('取消点赞成功')
+        }
         if(tempthis.hasLikedThisPaper===true){
           tempthis.hasLikedThisPaper=false;
           tempthis.number_of_like--;
