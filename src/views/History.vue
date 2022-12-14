@@ -78,7 +78,7 @@
               :data="historyListDay1"
               tooltip-effect="dark"
               style="width: 100% ;overflow:auto;font-size: 20px"
-              fit="true"
+              fit=""
               @selection-change="handleSelectionChange"
           >
             <el-table-column
@@ -105,7 +105,7 @@
               :data="historyListDay2"
               tooltip-effect="dark"
               style="width: 100% ;overflow:auto;font-size: 20px"
-              fit="true"
+              fit=""
               @selection-change="handleSelectionChange"
           >
             <el-table-column
@@ -133,7 +133,7 @@
             :data="historyListDay3"
             tooltip-effect="dark"
             style="width: 100% ;overflow:auto;font-size: 20px"
-            fit="true"
+            fit=""
             @selection-change="handleSelectionChange"
         >
           <el-table-column
@@ -162,7 +162,7 @@ export default {
   data() {
     return {
       userBaseInfo:[],
-      avatarUrl: 'img/home/avatar1.jpg',
+      avatarUrl: '',
       username: 'Peter',
       institution: 'Beihang University',
       profile: 'I am Peter',
@@ -294,17 +294,18 @@ export default {
         },
       })
           .then(res => {
-            console.log("UserBaseInfo:")
-            console.log(res)
+            console.log(res.data)
             tempthis.getUserHistory()
             tempthis.userBaseInfo[0] = res.data
             tempthis.username = tempthis.userBaseInfo[0].username
-            tempthis.institution = tempthis.userBaseInfo[0].institution.name
+            // tempthis.institution = tempthis.userBaseInfo[0].institution.name
             tempthis.profile = tempthis.userBaseInfo[0].bio
             tempthis.FollowNumber = tempthis.userBaseInfo[0].follows
             tempthis.FunNumber = tempthis.userBaseInfo[0].followers
             tempthis.LikeNumber = tempthis.userBaseInfo[0].likes
             tempthis.avatarUrl = tempthis.userBaseInfo[0].avatar
+            console.log('userBaseInfo[0]')
+            console.log(tempthis.userBaseInfo[0])
           })
           .catch(err => {
             console.log(err);
