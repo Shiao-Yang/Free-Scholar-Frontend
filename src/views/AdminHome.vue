@@ -110,8 +110,7 @@
 
 <script>
 const echarts = require('echarts')
-const format = require('date-fns/format')
-const subDays = require('date-fns/subDays')
+import { subDays, format } from 'date-fns'
 export default {
   name: 'AdminHome',
   created() {
@@ -230,7 +229,7 @@ export default {
             type: 'line',
             label: {
               show: true,
-              position: 'bottom',
+              position: 'top',
               textStyle: {
                 fontSize: 20
               }
@@ -375,6 +374,54 @@ export default {
             this.userNum = res.data.userNum
           })
     },
+    getSolvedTaskNum() {
+      this.axios( {
+        method: 'get',
+        url: this.$store.state.address+'api/relation/getSolvedTaskNum',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+      })
+          .then(res => {
+            let days = []
+            let i = 6
+            for(i=6; i>0; i--) {
+              let day = subDays(new Date(), i)
+              days.push(format(day, 'yyyy/MM/dd'))
+            }
+            days.push(format(new Date(), 'yyyy/MM/dd'))
+            this.taskChartOption.xAxis.data = days
+            let taskNum = []
+            for(i=6; i>=0; i--) {
+              taskNum.push(res.data[i])
+            }
+            this.taskChartOption.series[0].data = taskNum
+            this.taskChart.setOption(this.taskChartOption)
+          })
+    },
+    getHotWordDetails() {
+      this.axios( {
+        method: 'post',
+        url: this.$store.state.address+'api/publication/HotWord/',
+      })
+          .then(res => {
+            console.log('HotWord')
+            console.log(res.data)
+            let hotWordsName = []
+            let hotWordsValue = []
+            for(let i=0; i<res.data.word.length; i++) {
+              hotWordsName.push(res.data.word[i].word_name)
+              hotWordsValue.push(res.data.word[i].value)
+            }
+            console.log('HotWordsName')
+            console.log(hotWordsName)
+            this.hotChartOption.xAxis.data = hotWordsName
+            console.log('HotWordsValue')
+            this.hotChartOption.series[0].data = hotWordsValue
+            this.hotChart.setOption(this.hotChartOption)
+            console.log(hotWordsValue)
+          })
+    },
     changeChartType(index) {
       let self = this
       if(index === this.chartType)
@@ -409,15 +456,9 @@ export default {
     },
     setOptions() {
       let userOption = this.userChartOption;
-      let hotOption = this.hotChartOption;
-      let taskOption = this.taskChartOption
       this.getNum(userOption);
-      hotOption.xAxis.data = ['人工智能', '生物', '数学', '物理', '三体问题', '天体物理', '云计算']
-      hotOption.series[0].data = [99, 63, 55, 44, 32, 28, 25];
-      this.hotChart.setOption(hotOption)
-      this.hotChartOption = hotOption
-      this.taskChart.setOption(taskOption)
-      this.taskChartOption = taskOption
+      this.getSolvedTaskNum();
+      this.getHotWordDetails()
     }
   },
   watch: {
