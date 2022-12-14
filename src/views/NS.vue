@@ -8,7 +8,7 @@
                      font-size: 120%; display: inline-block; left: 85px; right: 0;
                      top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
-                <div class="option-box" v-if="accreditation===1">
+                <div class="option-box" v-if="accreditation===1 && isMyself===false">
                     <div>
                         <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(scholar_id)">
                             <i class="bx bxs-user-plus"></i>
@@ -123,13 +123,19 @@
                 <div class="line" style="margin-top: 10px"></div>
             </div>
             <div style="position: absolute; overflow: auto; width: 100%; height: 690px">
-                <div class="scholar" v-for="(item) in scholarList">
-                    <img src="../assets/img/home/avatar.png" class="image"
-                         style="height: 60px; width: 60px; margin: 5px;
-                padding: 0; border-radius: 8px">
-                    <div class="right-name" style="position: absolute; left: 70px; margin-top: 10px;cursor: pointer;
-                    font-weight: bold" @click="switchScholar(item.id)">{{item.name}}</div>
-                    <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：{{item.count}}</div>
+                <div class="scholar" v-for="(item) in scholarList" v-if="item.count!==0">
+                    <div>
+                        <img src="../assets/img/home/avatar.png" class="image"
+                             style="height: 60px; width: 60px; margin: 5px;
+                             padding: 0; border-radius: 8px">
+                        <div class="right-name" style="position: absolute; left: 70px; margin-top: 10px;cursor: pointer;
+                    font-weight: bold">
+                            <span v-if="item.id" @click="switchScholar(item.id)">{{item.name}}</span>
+                            <span v-else @click="$message('暂无该作者信息')">{{item.name}}</span>
+                        </div>
+                        <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：{{item.count}}</div>
+                    </div>
+
                 </div>
             </div>
 
@@ -206,7 +212,7 @@
                 scholarList: [],
                 // paper_id: '',
                 scholar_id: 0,
-                isMyself: 0,//0表示不是自己，1表示是自己
+                isMyself: false,//0表示不是自己，1表示是自己
                 replyVisible: false,
                 isCenter: true,
                 msg_send: {
@@ -407,8 +413,8 @@
                     },
                 }).then(res => {
                     console.log(res)
-                    this.scholar_id = res.data.scholar_id
-
+                    this.scholar_id = res.data.scholar_id;
+                    this.isMyself  = res.data.is_mine;
                     if(res.data.Hotpoint==null){
                         this.heat = 0;
                     }
