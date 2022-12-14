@@ -30,7 +30,8 @@
             <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
           </li>
         </ul>
-        <p class="abstract" @click="readPaper(result.id,result.title);$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
+        <div class="venue" v-if="result.venue !== ''">{{result.venue}}</div>
+        <p class="abstract" @click="readPaper(result.id,result.title);$router.push('/searchDetails/'+result.id)">摘要:{{result.abstract}}</p>
         <ul class="info-list">
           <li class="info">
             <i class='bx bxs-like' style="font-size: 15px"></i>
@@ -50,7 +51,7 @@
           </li>
           <li class="info">
             <span>浏览次数:&nbsp</span>
-            <span class="nums">{{result.read}}</span>
+            <span class="nums">{{Math.floor(result.read/2)}}</span>
           </li>
         </ul>
         <hr style=" height:2px;border:none;border-top:2px solid #ecf0f1;margin-top: 5px" />
@@ -61,6 +62,12 @@
         <p>知识不分国界</p>
         <p>智慧不设围墙</p>
         <div class="btn" @click="$router.push('/login&signup')"><span>登录/注册</span></div>
+      </div>
+      <div class="trending-box" style="text-align: center">
+        <p style="font-size: 24px;margin: auto auto auto 20px"><i class='bx bxs-graduation'></i>学者</p>
+        <span class="data-num" style="font-size: 18px;">{{ scholarNum }}</span>
+        <p style="font-size: 24px;margin: auto auto auto 20px"><i class='bx bxs-book-alt' ></i>文献</p>
+        <span class="data-num" style="font-size: 18px;">{{ paperNum }}</span>
       </div>
       <div class="trending-box">
       <p><i class='bx bxs-hot'></i>Trending</p>
@@ -83,6 +90,7 @@ export default {
     this.$store.state.input = ''
     this.getHotWord()
     this.getHotPaper()
+    this.getDataNum()
   },
   mounted() {
   },
@@ -93,7 +101,9 @@ export default {
       ],
       hotWord_3: [],
       paper: [
-      ]
+      ],
+      scholarNum: 233,
+      paperNum: 233,
     }
   },
   computed: {
@@ -165,7 +175,8 @@ export default {
                     collection: res.data.paper[i].collect_count,
                     comment: 0,
                     quote: 0,
-                    read: res.data.paper[i].read_count
+                    read: res.data.paper[i].read_count,
+                    venue: ''
                   }
               )
             }
@@ -186,11 +197,15 @@ export default {
         data: para
       })
           .then(res=> {
-            //console.log(res.data)
+            console.log('getPaperByIdList')
+            console.log(res.data)
             let i = 0, j = 0, len1 = this.paper.length, len2 = res.data.data.length;
             for (i = 0; i < len1; i++) {
               for (j = 0; j < len2; j++) {
                 if (this.paper[i].id === res.data.data[j].id) {
+                  if (res.data.data[j].hasOwnProperty('venue')) {
+                    this.paper[i].venue = res.data.data[j].venue.raw
+                  }
                   this.paper[i].author = res.data.data[j].authors
                   this.paper[i].abstract = res.data.data[j].abstract
                   this.paper[i].quote = res.data.data[j].n_citation
@@ -212,6 +227,23 @@ export default {
             //console.log('getPaperData'+index+':')
             //console.log(res.data)
             this.paper[index].comment = res.data.comment_num;
+          })
+    },
+    getDataNum() {
+      this.axios( {
+        method: "get",
+        url: this.$store.state.address+'api/author/count/',
+      })
+          .then(res => {
+            console.log(res)
+            this.scholarNum = res.data.paper_count
+          })
+      this.axios( {
+        method: "get",
+        url: this.$store.state.address+'api/publication/count/',
+      })
+          .then(res => {
+            this.paperNum = res.data.paper_count
           })
     },
   }
@@ -500,5 +532,9 @@ table {
 }
 .trending-name span{
   cursor: pointer;
+}
+.venue {
+  font-size: 15px;
+  color: #DA1E28;
 }
 </style>

@@ -58,7 +58,7 @@
             <span style="font-size: 14px">外部链接</span>
             <span class="url-icon" ><i class='bx bx-caret-left'></i></span>
             <div class="sub-menu">
-              <div class="sub-item" v-if="out_link_str === null || out_link_str === undefined || out_link_str.length === 0">
+              <div class="sub-item" v-if="out_link_str === null || out_link_str === undefined || out_link_str.length === 0 || out_link_str === ''">
                 暂无链接
               </div>
               <div class="sub-item" v-for="url in out_link_str">
@@ -120,10 +120,7 @@
       <div class="recommendations">
         <div class="recommendation" v-for="item in relevant_recommended_literature">
           <div class="recommendationTitle" @click="$router.push('../');$router.push('SearchDetails/'+item.recommended_literature_id)">
-            {{ item.recommended_literature_title }}
-          </div>
-          <div class="recommendationAuthor">
-            {{ item.recommended_literature_author }}
+            {{ item.title }}
           </div>
         </div>
       </div>
@@ -177,7 +174,7 @@ export default {
       number_of_like: 999,
       number_of_collect: 11,
       number_of_comment: 110,
-      out_link_str: "http://www.baidu.com",
+      out_link_str: "",
       number_of_read: 0,
       tags: [],
       abstract: "你说得对，但是对有序数列的查找算法中二分法查找（binarysearch）是最常用的。" +
@@ -187,16 +184,6 @@ export default {
       hasLikedThisPaper:false,
       hasCollectedThisPaper:false,
       relevant_recommended_literature: [
-        {
-          recommended_literature_title: "Invariant scattering convolution networks.",
-          recommended_literature_author: "Joan Bruna, Stephane Mallat",
-          recommended_literature_id: "53e99a8cb7602d9702303c85"
-        },
-        {
-          recommended_literature_title: "Convolution Kernels on Discrete Structures",
-          recommended_literature_author: "David Haussler",
-          recommended_literature_id: "53e9ac3db7602d9703607b7b"
-        }
       ],
     }
   },
@@ -338,7 +325,22 @@ export default {
 
       //摘要
       tempthis.abstract = tempthis.this_paper[0].abstract
+
+      //推荐文献
+      let params1 = new FormData();
+      params1.append("id", tempthis.literature_id);
+      this.$axios({
+        method: 'post',
+        url: this.$store.state.address+'api/publication/recommend/',
+        data: params1,
+      }).then(res =>{
+        console.log('recommend:')
+
+        tempthis.relevant_recommended_literature = res.data.data
+        console.log(tempthis.relevant_recommended_literature)
+      })
     },
+
     toReadThisPaper:function (paperId,paperName){
       const tempthis = this;
      /* let formData = new FormData();
@@ -712,8 +714,10 @@ export default {
 }
 
 .recommendations {
+  height: 245px;
   margin-top: 90px;
   margin-left: 20px;
+  overflow: auto;
 }
 
 .recommendation {

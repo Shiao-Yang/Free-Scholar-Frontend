@@ -239,8 +239,13 @@
               <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
             </li>
           </ul>
-          <p class="abstract" @click="readPaper(result.id,result.articleName);$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
+          <div class="venue" v-if="result.venue !== ''">{{result.venue}}</div>
+          <p class="abstract" @click="readPaper(result.id,result.articleName);$router.push('/searchDetails/'+result.id)">摘要:{{result.abstract}}</p>
           <ul class="info-list">
+            <li class="info">
+              <i class='bx bxs-like'></i>
+              <span class="nums">{{result.likes}}</span>
+            </li>
             <li class="info">
               <i v-if="!result.user_collected" class='bx bxs-star'  :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
               <i v-else class='bx bxs-star' style="color: #2196f3" :class="{'icon-active':result.collected,'icon':!result.collected}"></i>
@@ -329,6 +334,7 @@ export default {
       user_collected: false,
       collection_num: 0,
       comment_num: 0,
+      like_num: 0,
       keyword: '',
       org: '',
       venue: '',
@@ -751,7 +757,7 @@ export default {
             this.displayResult = [];
             let i = 0,len = res.data.hits.length;
             for (i = 0; i < len; i++) {
-              let Abstract, quotes;
+              let Abstract, quotes, venue;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
               } else {
@@ -761,6 +767,10 @@ export default {
                 quotes = res.data.hits[i]._source.n_citation
               } else {
                 quotes = 0;
+              } if (res.data.hits[i]._source.hasOwnProperty('venue')) {
+                venue = res.data.hits[i]._source.venue.raw
+              } else {
+                venue = ''
               }
               this.displayResult.push(
                   {
@@ -769,12 +779,13 @@ export default {
                     author: res.data.hits[i]._source.authors,
                     abstract: Abstract,
                     liked: false,
-                    likes: '54',
+                    likes: this.like_num,
                     collected: this.user_collected,
                     collections: this.collection_num,
                     comments: this.comment_num,
                     quotes: quotes,
                     year: res.data.hits[i]._source.year,
+                    venue: venue
                   }
               )
               if (flag === 0) {
@@ -877,7 +888,7 @@ export default {
             this.displayResult = [];
             let i = 0,len = res.data.hits.length;
             for (i = 0; i < len; i++) {
-              let Abstract, quotes;
+              let Abstract, quotes,venue;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
               } else {
@@ -888,6 +899,11 @@ export default {
               } else {
                 quotes = 0;
               }
+              if (res.data.hits[i]._source.hasOwnProperty('venue')) {
+                venue = res.data.hits[i]._source.venue.raw
+              } else {
+                venue = ''
+              }
               this.displayResult.push(
                   {
                     id: res.data.hits[i]._source.id,
@@ -895,12 +911,13 @@ export default {
                     author: res.data.hits[i]._source.authors,
                     abstract: Abstract,
                     liked: false,
-                    likes: '54',
+                    likes: this.like_num,
                     collected: this.user_collected,
                     collections: this.collection_num,
                     comments: this.comment_num,
                     quotes: quotes,
                     year: res.data.hits[i]._source.year,
+                    venue: venue
                   }
               )
               this.getPaperData(res.data.hits[i]._source.id, i)
@@ -964,7 +981,7 @@ export default {
             this.displayResult = [];
             let i = 0,len = res.data.hits.length;
             for (i = 0; i < len; i++) {
-              let Abstract, quotes;
+              let Abstract, quotes, venue;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
               } else {
@@ -975,6 +992,11 @@ export default {
               } else {
                 quotes = 0;
               }
+              if (res.data.hits[i]._source.hasOwnProperty('venue')) {
+                venue = res.data.hits[i]._source.venue.raw
+              } else {
+                venue = ''
+              }
               this.displayResult.push(
                   {
                     id: res.data.hits[i]._source.id,
@@ -982,12 +1004,13 @@ export default {
                     author: res.data.hits[i]._source.authors,
                     abstract: Abstract,
                     liked: false,
-                    likes: '54',
+                    likes: this.like_num,
                     collected: this.user_collected,
                     collections: this.collection_num,
                     comments: this.comment_num,
                     quotes: quotes,
                     year: res.data.hits[i]._source.year,
+                    venue: venue
                   }
               )
               this.getPaperData(res.data.hits[i]._source.id, i)
@@ -1007,10 +1030,11 @@ export default {
         data: formData
       })
           .then(res => {
+            //console.log('getPaperData')
             //console.log(res.data)
-            this.displayResult[index].collected = res.data.user_collected;
             this.displayResult[index].collections = res.data.collection_num;
             this.displayResult[index].comments = res.data.comment_num;
+            this.displayResult[index].likes = res.data.like_num;
           })
     },
     getOrgList() {
@@ -1566,6 +1590,11 @@ td.active {
 .author:hover {
   color: #248F24;
   font-weight: bold;
+}
+.venue {
+  margin: 5px 0 5px 0;
+  font-size: 15px;
+  color: #DA1E28;
 }
 .abstract {
   margin: 4px 0 8px 0;
