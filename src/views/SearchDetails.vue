@@ -96,6 +96,9 @@
             <div style="display:inline-block;margin-left: 5px">
               <p>{{ item.username }}</p>
             </div>
+            <div style="display:inline-block;margin-left: 20px;cursor: pointer" >
+              <i class="el-icon-service" @click="toReportThisComment()"></i>
+            </div>
             <div style="">
               <p>{{ item.text }}</p>
               <div class="divider"></div>
@@ -457,7 +460,8 @@ export default {
       }).catch(() => {
 
       });
-  }
+  },
+    toReportThisComment(){}
   }
 }
 </script>

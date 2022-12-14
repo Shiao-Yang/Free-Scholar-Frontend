@@ -72,7 +72,8 @@
       </div>
       <div class="divider"></div>
       <div class="history-list">
-
+        <div class="history-list-divided-by-data" v-if="dayNum<=0" >
+          <span class="history-time">空空如也</span></div>
         <div class="history-list-divided-by-data" v-if="dayNum>=1" >
           <span class="history-time">{{historyListDay1[0].time.split('T')[0]}}&nbsp</span>
           <el-table
@@ -85,8 +86,13 @@
           >
             <el-table-column
                 prop="paper_name"
-                label="标题"
-                >
+                label="标题">
+              <template slot-scope="scope">
+                <div>
+<!--                  <a  href="javascript:;" @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>-->
+                  <a @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
                 prop="time"
@@ -112,8 +118,13 @@
           >
             <el-table-column
                 prop="paper_name"
-                label="标题"
-            >
+                label="标题">
+              <template slot-scope="scope">
+                <div>
+                  <!--                  <a  href="javascript:;" @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>-->
+                  <a @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
                 prop="time"
@@ -129,30 +140,37 @@
 
         <div class="history-list-divided-by-data" v-if="dayNum>=3">
           <span class="history-time">{{historyListDay3[0].time.split('T')[0]}}&nbsp</span>
+          <el-table
+              ref="multipleTable"
+              :data="historyListDay3"
+              tooltip-effect="dark"
+              style="width: 100% ;overflow:auto;font-size: 20px"
+              fit=""
+              @selection-change="handleSelectionChange"
+          >
+            <el-table-column
+                prop="paper_name"
+                label="标题"
+            >
+              <template slot-scope="scope">
+                <div>
+                  <!--                  <a  href="javascript:;" @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>-->
+                  <a @click="$router.push('/searchDetails/'+scope.row.paper_id)" style="cursor: pointer">{{scope.row.paper_name}}</a>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="time"
+                label="时间"
+            >
+            </el-table-column>
+            <el-table-column
+                type="selection"
+            >
+            </el-table-column>
+          </el-table>
         </div>
-        <el-table
-            ref="multipleTable"
-            :data="historyListDay3"
-            tooltip-effect="dark"
-            style="width: 100% ;overflow:auto;font-size: 20px"
-            fit=""
-            @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-              prop="paper_name"
-              label="标题"
-          >
-          </el-table-column>
-          <el-table-column
-              prop="time"
-              label="时间"
-          >
-          </el-table-column>
-          <el-table-column
-              type="selection"
-          >
-          </el-table-column>
-        </el-table>
+
       </div>
     </div>
   </div>
@@ -185,6 +203,7 @@ export default {
       historyListDay1:[],
       historyListDay2:[],
       historyListDay3:[],
+      deleteflag:0,
       // historyListDay1info:[],
       // historyListDay2info:[],
       // historyListDay3info:[],
@@ -193,6 +212,7 @@ export default {
       // historyListDay3time:[],
       dayNum:0,
       multipleSelection: [],
+      listToDelete:[],
       avatarUlr:"",
     }
   },
@@ -269,27 +289,73 @@ export default {
           .then(res => {
             console.log("deleteHistory:"+historyId)
             console.log(res)
+            tempthis.deleteflag ++;
           })
           .catch(err => {
             console.log(err);
           })
     },
+
     toDeleteAllHistory(){
       const tempthis = this;
-      let listToDelete = tempthis.historyList
-      for(let i=0;i<listToDelete.length;i++){
-        tempthis.toDeleteHistoryById(listToDelete[i]._id)
+      let len = tempthis.historyList.length
+      let tempList = tempthis.historyList
+      tempthis.listToDelete = []
+      for(let i=0;i<len;i++){
+        tempthis.listToDelete[i]=tempList[i]._id
       }
-      location.reload();
+      console.log("tempthis.listToDelete:")
+      console.log(tempthis.listToDelete)
+      let param= {
+        history_id:tempthis.listToDelete
+      }
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/batchDeleteHistory',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        data:param
+      })
+          .then(res => {
+            console.log("all-batch-delete-result:")
+            console.log(res)
+            location.reload()
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     toDeleteSelectedHistory(){
       const tempthis = this;
-      let listToDelete = tempthis.multipleSelection[0]
-        for(let i=0;i<listToDelete.length;i++){
-          tempthis.toDeleteHistoryById(listToDelete[i]._id)
-        }
-      location.reload();
+      let len = tempthis.multipleSelection[tempthis.multipleSelection.length-1].length
+      let tempList = tempthis.multipleSelection[tempthis.multipleSelection.length-1]
+      tempthis.listToDelete = []
+      for(let i=0;i<len;i++){
+        tempthis.listToDelete[i]=tempList[i]._id
+      }
+      console.log("tempthis.listToDelete:")
+      console.log(tempthis.listToDelete)
+      let param= {
+        history_id:tempthis.listToDelete
+      }
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/relation/batchDeleteHistory',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        data:param
+      })
+          .then(res => {
+            console.log("select-batch-delete-result:")
+            console.log(res)
+            location.reload()
+          })
+          .catch(err => {
+            console.log(err);
+          })
     },
 
     //根据指定字段 规则排序 这里是获取时间的时间戳然后比较
