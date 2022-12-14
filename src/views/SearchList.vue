@@ -239,7 +239,7 @@
               <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
             </li>
           </ul>
-          <div class="venue" v-if="result.venue !== ''">期刊:&nbsp;{{result.venue}}</div>
+          <div class="venue" v-if="result.venue !== ''">{{result.venue}}</div>
           <p class="abstract" @click="readPaper(result.id,result.articleName);$router.push('/searchDetails/'+result.id)">摘要:{{result.abstract}}</p>
           <ul class="info-list">
             <li class="info">
@@ -1594,6 +1594,7 @@ td.active {
 .venue {
   margin: 5px 0 5px 0;
   font-size: 15px;
+  color: #DA1E28;
 }
 .abstract {
   margin: 4px 0 8px 0;

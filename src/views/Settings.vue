@@ -30,7 +30,8 @@
             <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
           </li>
         </ul>
-        <p class="abstract" @click="readPaper(result.id,result.title);$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
+        <div class="venue" v-if="result.venue !== ''">{{result.venue}}</div>
+        <p class="abstract" @click="readPaper(result.id,result.title);$router.push('/searchDetails/'+result.id)">摘要:{{result.abstract}}</p>
         <ul class="info-list">
           <li class="info">
             <i class='bx bxs-like' style="font-size: 15px"></i>
@@ -165,7 +166,8 @@ export default {
                     collection: res.data.paper[i].collect_count,
                     comment: 0,
                     quote: 0,
-                    read: res.data.paper[i].read_count
+                    read: res.data.paper[i].read_count,
+                    venue: ''
                   }
               )
             }
@@ -186,11 +188,15 @@ export default {
         data: para
       })
           .then(res=> {
-            //console.log(res.data)
+            console.log('getPaperByIdList')
+            console.log(res.data)
             let i = 0, j = 0, len1 = this.paper.length, len2 = res.data.data.length;
             for (i = 0; i < len1; i++) {
               for (j = 0; j < len2; j++) {
                 if (this.paper[i].id === res.data.data[j].id) {
+                  if (res.data.data[j].hasOwnProperty('venue')) {
+                    this.paper[i].venue = res.data.data[j].venue.raw
+                  }
                   this.paper[i].author = res.data.data[j].authors
                   this.paper[i].abstract = res.data.data[j].abstract
                   this.paper[i].quote = res.data.data[j].n_citation
@@ -500,5 +506,9 @@ table {
 }
 .trending-name span{
   cursor: pointer;
+}
+.venue {
+  font-size: 15px;
+  color: #DA1E28;
 }
 </style>
