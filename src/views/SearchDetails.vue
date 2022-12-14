@@ -97,7 +97,10 @@
               <p>{{ item.username }}</p>
             </div>
             <div style="display:inline-block;margin-left: 20px;cursor: pointer" >
-              <i class="el-icon-service" @click="toReportThisComment()"></i>
+              <i class="el-icon-service" @click="toReportThisComment(item.comment_id,item.user_id)"></i>
+            </div>
+            <div style="display:inline-block;margin-left: 20px;cursor: pointer" >
+              <i class="bx bxs-like" @click="toLikeThisComment(item.comment_id)"></i>
             </div>
             <div style="">
               <p>{{ item.text }}</p>
@@ -396,7 +399,7 @@ export default {
               tempthis.hasCollectedThisPaper = tempthis.this_paper[1].isCollected;
               tempthis.commentList = tempthis.this_paper[1].comment
               console.log("commentList")
-              console.log(tempthis.commentList.length)
+              console.log(tempthis.commentList)
             })
             .catch(err => {
               console.log(err);
@@ -461,7 +464,60 @@ export default {
 
       });
   },
-    toReportThisComment(){}
+    toReportThisComment(commentId,reportedId){
+      this.$prompt('请填写举报理由', '举报评论', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        console.log(value)
+        const tempthis = this;
+        let params ={
+          comment_id:commentId,
+          reason:value,
+          reported_id:reportedId
+        }
+        this.axios({
+          method: 'post',
+          url: 'http://139.9.134.209:8000/api/user/complainComment/',
+          headers: {
+            jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+          },
+          data:qs.stringify(params)
+        })
+            .then(res => {
+              console.log("report comment")
+              console.log(res)
+            })
+            .catch(err => {
+              console.log(err);
+            })
+      }).catch(() => {
+
+      });
+    },
+    toLikeThisComment(commentId){
+      let formData = new FormData()
+      formData.append('comment_id',commentId)
+      this.axios({
+        method: 'post',
+        url: 'http://139.9.134.209:8000/api/publication/LikeComment/',
+        headers: {
+          jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+        },
+        data:formData
+      })
+          .then(res => {
+            console.log("like comment"+commentId)
+            console.log(res)
+            if (res.data.msg ==="点赞成功")
+              this.$message.success(res.data.msg);
+            else if(res.data.msg ==="你已经赞过了")
+              this.$message.warning(res.data.msg);
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    }
   }
 }
 </script>
