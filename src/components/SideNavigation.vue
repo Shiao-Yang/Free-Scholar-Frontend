@@ -224,7 +224,6 @@ export default {
             && newVal.uid !== undefined) {
           this.getMsgRec(newVal.uid, 0);
         }
-
       },
       deep: true,
     }
@@ -296,6 +295,14 @@ export default {
 
     getMsgRec(uid, type) { //type=0,初始化时的调用
       let that = this;
+      if(sessionStorage.getItem('baseInfo') === undefined
+          || sessionStorage.getItem('baseInfo') === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+        this.$store.state.msg_plm_has_new = 0
+        this.$store.state.msg_rec_has_new = 0
+        return ;
+      }
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -329,7 +336,14 @@ export default {
 
     getMsgPlm(uid) {
       let that = this;
-
+      if(sessionStorage.getItem('baseInfo') === undefined
+          || sessionStorage.getItem('baseInfo') === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+        this.$store.state.msg_plm_has_new = 0
+        this.$store.state.msg_rec_has_new = 0
+        return ;
+      }
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
