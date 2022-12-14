@@ -402,6 +402,9 @@
                     // console.log(err)
                 })
             },
+            Random(min, max) {
+                return Math.round(Math.random() * (max - min)) + min;
+            },
             getBaseInfo(uid){
                 console.log(JSON.parse(sessionStorage.getItem('baseInfo')).token);
                 this.axios({
@@ -433,7 +436,8 @@
                     }
                     if(res.data.errno===1){
                         this.accreditation = 0;
-                        this.visitors = 1;
+                        this.visitors = this.Random(5,10);
+                        this.heat = this.Random(10000,50000);
                     }
                     else{
                         this.accreditation = 1;
