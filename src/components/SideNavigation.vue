@@ -27,6 +27,12 @@
           <span class="text">历史记录</span>
         </router-link>
       </li>
+      <li class="side-navigation-item" v-on:click="activeLink(10)" :class="{'active': activeIndex === 10}">
+        <a style="--clr:#2196f3;" title="返回上级" >
+          <span class="icon"><i class='bx bxs-share'></i></span>
+          <span class="text">返回上级</span>
+        </a>
+      </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" :style="{'--clr':userStateClr}">
           <i class='bx bxs-circle user-info' style="" v-if="this.$store.state.msg_plm_has_new > 0 || this.$store.state.msg_rec_has_new > 0"></i>
@@ -111,6 +117,12 @@
           <span class="icon"><i class='bx bx-task' ></i></span>
           <span class="text">事务中心</span>
         </router-link>
+      </li>
+      <li class="side-navigation-item" v-on:click="activeLink(10)" :class="{'active': activeIndex === 10}">
+        <a style="--clr:#2196f3;" title="返回上级" >
+          <span class="icon"><i class='bx bxs-share'></i></span>
+          <span class="text">返回上级</span>
+        </a>
       </li>
       <li class="side-navigation-item user-box" v-if="isLogin">
         <router-link to="#" style="--clr: #0fc70f">
@@ -206,13 +218,16 @@ export default {
   watch: {
     baseInfo : {
       handler(newVal, oldVal) {
+        console.log('baseInfo更新')
+        console.log('newBaseInfo')
+        console.log(newVal)
         if(newVal !== null
             && newVal !== undefined
-            && newVal.uid !== null
-            && newVal.uid !== undefined) {
-          this.getMsgRec(newVal.uid, 0);
+            && newVal.token !== null
+            && newVal.token !== undefined) {
+          this.getMsgRec(1, 0);
+          this.getMsgPlm(1)
         }
-
       },
       deep: true,
     }
@@ -273,6 +288,9 @@ export default {
       that.$router.push('/MessageManage')
     },
     activeLink(index){
+      if(index === 10) {
+        this.$router.back()
+      }
     },
     changeIsActive() {
       this.isActive = !this.isActive;
@@ -281,6 +299,15 @@ export default {
 
     getMsgRec(uid, type) { //type=0,初始化时的调用
       let that = this;
+      if(sessionStorage.getItem('baseInfo') === undefined
+          || sessionStorage.getItem('baseInfo') === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+        this.$store.state.msg_plm_has_new = 0
+        this.$store.state.msg_rec_has_new = 0
+        console.log('未登录')
+        return ;
+      }
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
@@ -315,7 +342,14 @@ export default {
 
     getMsgPlm(uid) {
       let that = this;
-
+      if(sessionStorage.getItem('baseInfo') === undefined
+          || sessionStorage.getItem('baseInfo') === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === null
+          || JSON.parse(sessionStorage.getItem('baseInfo')).token === undefined) {
+        this.$store.state.msg_plm_has_new = 0
+        this.$store.state.msg_rec_has_new = 0
+        return ;
+      }
       this.axios({
         headers: {
           jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
