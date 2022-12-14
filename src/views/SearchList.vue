@@ -239,7 +239,8 @@
               <span v-else @click="$message('暂无该作者信息')">{{author.name}}</span>
             </li>
           </ul>
-          <p class="abstract" @click="readPaper(result.id,result.articleName);$router.push('/searchDetails/'+result.id)">{{result.abstract}}</p>
+          <div class="venue" v-if="result.venue !== ''">期刊:&nbsp;{{result.venue}}</div>
+          <p class="abstract" @click="readPaper(result.id,result.articleName);$router.push('/searchDetails/'+result.id)">摘要:{{result.abstract}}</p>
           <ul class="info-list">
             <li class="info">
               <i class='bx bxs-like'></i>
@@ -756,7 +757,7 @@ export default {
             this.displayResult = [];
             let i = 0,len = res.data.hits.length;
             for (i = 0; i < len; i++) {
-              let Abstract, quotes;
+              let Abstract, quotes, venue;
               if (res.data.hits[i]._source.hasOwnProperty('abstract')) {
                 Abstract = res.data.hits[i]._source.abstract
               } else {
@@ -766,6 +767,10 @@ export default {
                 quotes = res.data.hits[i]._source.n_citation
               } else {
                 quotes = 0;
+              } if (res.data.hits[i]._source.hasOwnProperty('venue')) {
+                venue = res.data.hits[i]._source.venue.raw
+              } else {
+                venue = ''
               }
               this.displayResult.push(
                   {
@@ -780,6 +785,7 @@ export default {
                     comments: this.comment_num,
                     quotes: quotes,
                     year: res.data.hits[i]._source.year,
+                    venue: venue
                   }
               )
               if (flag === 0) {
@@ -1572,6 +1578,10 @@ td.active {
 .author:hover {
   color: #248F24;
   font-weight: bold;
+}
+.venue {
+  margin: 5px 0 5px 0;
+  font-size: 15px;
 }
 .abstract {
   margin: 4px 0 8px 0;
