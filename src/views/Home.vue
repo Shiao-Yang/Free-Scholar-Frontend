@@ -219,8 +219,8 @@
               未设置
             </div>
           </div>
-          <el-button type="primary" plain icon="el-icon-edit" style="position: absolute; right: 0px; top: 0px;" @click="editInfoVisible = true;">编辑信息</el-button>
-          <el-button type="primary" plain icon="el-icon-lock" style="position: absolute; right: 150px; top: 0px;" @click="changePwdVisible = true;">修改密码</el-button>
+          <el-button type="primary" class="home-content-btn" plain icon="el-icon-edit" style="position: absolute; right: 0px; top: 0px;" @click="editInfoVisible = true;">编辑信息</el-button>
+          <el-button type="primary" class="home-content-btn" plain icon="el-icon-lock" style="position: absolute; right: 150px; top: 0px;" @click="changePwdVisible = true;">修改密码</el-button>
           <el-dialog title="编辑信息" :visible="editInfoVisible" width="35%" :center="isCenter">
             <el-form :model="infoForm" label-width="80px">
               <el-form-item label="用户名" label-width="80px">
@@ -1006,7 +1006,10 @@ export default {
   border-radius: 5px;
 }
 
-
+.home-content-btn {
+  line-height: 20px;
+  padding: 10px 15px;
+}
 
 
 

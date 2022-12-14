@@ -31,7 +31,7 @@
                   :direction="direction"
                   :before-close="handleClose">
                 <div style="text-align: left">
-                  <div style="color: black;position: relative;left: 40px;top: -20px">
+                  <div style="color: black;position: relative;left: 40px;">
                   <h2>选择收藏夹</h2>
                 </div>
                   <el-form ref="form" :model="form" label-width="80px">
@@ -95,6 +95,9 @@
             </div>
             <div style="display:inline-block;margin-left: 5px">
               <p>{{ item.username }}</p>
+            </div>
+            <div style="display:inline-block;margin-left: 20px;cursor: pointer" >
+              <i class="el-icon-service" @click="toReportThisComment()"></i>
             </div>
             <div style="">
               <p>{{ item.text }}</p>
@@ -457,7 +460,8 @@ export default {
       }).catch(() => {
 
       });
-  }
+  },
+    toReportThisComment(){}
   }
 }
 </script>
