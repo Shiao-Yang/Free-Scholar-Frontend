@@ -13,9 +13,9 @@
           </div>
         </div>
       </div>
-<!--      <div class="fromwhere">-->
-<!--        {{ institution }}-->
-<!--      </div>-->
+      <div class="fromwhere">
+        {{ venue }}
+      </div>
       <div class="theicons">
         <span class="header-icon" style="margin-right: 50px">
               <i class='bx bxs-like' style="margin-right: 7px" @click="toLikeThisPaper" v-if="hasLikedThisPaper===false"></i>
@@ -170,6 +170,7 @@ export default {
       literature_id:"aa11AA",
       authors: [],
       institution: "璃月职业技术学院 母猪产后护理系",
+      venue:"",
       number_of_download: 87,
       number_of_like: 999,
       number_of_collect: 11,
@@ -322,6 +323,9 @@ export default {
         }
       }
 
+      //venue
+      if(tempthis.this_paper[0].venue.raw!==undefined && tempthis.this_paper[0].venue.raw!==null)
+        tempthis.venue = tempthis.this_paper[0].venue.raw
 
       //摘要
       tempthis.abstract = tempthis.this_paper[0].abstract
@@ -667,7 +671,7 @@ export default {
 
 .fromwhere {
   position: absolute;
-  color: #030303;
+  color: #DA1E28;
   font-size: 15px;
   top: 95px;
   left: 20px;
