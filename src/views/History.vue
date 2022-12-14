@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="content-list">
+    <div class="content-list" id="history-list-width-item" ref="list">
       <div class="title">
         <i class="el-icon-view" style="color: #E1A105;font-size: 50px; margin-right: 10px"></i>
         <span class="title-name">
@@ -73,7 +73,7 @@
       <div class="divider"></div>
       <div class="history-list">
 
-        <div class="history-list-divided-by-data" v-if="dayNum>=1">
+        <div class="history-list-divided-by-data" v-if="dayNum>=1" >
           <span class="history-time">{{historyListDay1[0].time.split('T')[0]}}&nbsp</span>
           <el-table
               ref="multipleTable"
@@ -86,16 +86,16 @@
             <el-table-column
                 prop="paper_name"
                 label="标题"
-                width="1100">
+                >
             </el-table-column>
             <el-table-column
                 prop="time"
                 label="时间"
-                width="115">
+                >
             </el-table-column>
             <el-table-column
                 type="selection"
-                width="55">
+                >
             </el-table-column>
           </el-table>
         </div>
@@ -113,16 +113,16 @@
             <el-table-column
                 prop="paper_name"
                 label="标题"
-                width="1100">
+            >
             </el-table-column>
             <el-table-column
                 prop="time"
                 label="时间"
-                width="115">
+            >
             </el-table-column>
             <el-table-column
                 type="selection"
-                width="55">
+            >
             </el-table-column>
           </el-table>
         </div>
@@ -141,16 +141,16 @@
           <el-table-column
               prop="paper_name"
               label="标题"
-              width="1100">
+          >
           </el-table-column>
           <el-table-column
               prop="time"
               label="时间"
-              width="115">
+          >
           </el-table-column>
           <el-table-column
               type="selection"
-              width="55">
+          >
           </el-table-column>
         </el-table>
       </div>
@@ -386,6 +386,10 @@ export default {
     //       })
     // },
     },
+
+  computed: {
+
+  },
 
   created() {
     this.getUserBaseInfo()
