@@ -2,8 +2,8 @@
 
   <div class="background">
     <div class="up">
-      <div class="uptitle">
-        <img src="../assets/logo.png" style="height: 25px">
+      <div class="uptitle" style="margin-left: 10px">
+<!--        <img src="../assets/logo.png" style="height: 25px">-->
         事务中心
       </div>
     </div>
@@ -335,6 +335,7 @@
               :page-size="pageSize"
               :pager-count="pageNum"
               :total="List.length"
+              :current-page="this.currentPage"
               @current-change="changePage">
           </el-pagination>
         </div>
@@ -444,7 +445,7 @@
                          style="height: 40px;width: 40px;border-radius: 5px"
                     >
                   </div>
-                  <p style="display: inline-block;font-size: 25px;margin-left: 25px">{{ userList[index].name }}</p>
+                  <p style="display: inline-block;font-size: 25px;margin-left: 25px">{{ recordList[index].fields.name }}</p>
                   &nbsp发起的关于
                   <p style="color: #0f62fe;display: inline-block;font-size: 20px;">
                     &nbsp{{appealedPaperList[index].title }}</p>
@@ -544,7 +545,7 @@
                          style="height: 40px;width: 40px;border-radius: 5px"
                     >
                   </div>
-                  <p style="display: inline-block;font-size: 25px;margin-left: 25px">{{ userList[index].name }}</p>
+                  <p style="display: inline-block;font-size: 25px;margin-left: 25px">{{ recordList[index].fields.name }}</p>
                   &nbsp发起的关于
                   <p style="color: #0f62fe;display: inline-block;font-size: 20px;">
                     &nbsp{{appealedPaperList[index].title }}</p>
@@ -644,7 +645,7 @@
                          style="height: 40px;width: 40px;border-radius: 5px"
                     >
                   </div>
-                  <p style="display: inline-block;font-size: 25px;margin-left: 25px">{{ userList[index].name}}</p>
+                  <p style="display: inline-block;font-size: 25px;margin-left: 25px">{{ recordList[index].fields.name}}</p>
                   &nbsp发起的
                   <p style="color: #0f62fe;display: inline-block;font-size: 20px;">
                     学者申请</p>
@@ -752,13 +753,8 @@
                       <p style="display:inline-block">{{ recordList[handleWhichOne].fields.name}}</p>
                     </div>
                     <div style="">
-                      <strong>学者所属机构:&nbsp</strong>
-                      <p style="display:inline-block">{{recordList[handleWhichOne].fields.affi.name}}</p>
-                    </div>
-                    <div style="">
-                      <strong>学者研究领域:&nbsp</strong>
-                      <!--                      <p style="display:inline-block;color: #0f62fe;text-decoration: underline;cursor: pointer">{{recordList[handleWhichOne].fields.reported}}</p>-->
-                      <p style="display:inline-block;">{{recordList[handleWhichOne].fields.field}}</p>
+                      <strong>学者邮箱:&nbsp</strong>
+                      <p style="display:inline-block">{{userList[handleWhichOne].mail}}</p>
                     </div>
                     <div style="">
                       <strong>事务状态:&nbsp</strong>
@@ -845,7 +841,7 @@ export default {
       // 当前显示的数据
       dataShow: "",
       // 默认当前显示第一页
-      currentPage: 0
+      currentPage: 1
     }
   },
   created() {
@@ -900,12 +896,12 @@ export default {
         console.log(tempthis.recordList)
       }
     },
-    changePage(val) {
-      let i;
+    changePage(currentPage) {
+      let i,j;
       let length = this.List.length
       this.recordList = [];
-      for (i = (val - 1) * 6; i < length && i < val * 6; i++) {
-        this.recordList.push(this.List[i]);
+      for (i = (currentPage - 1) * 6,j=0; i < length && j <  6; i++,j++) {
+        this.recordList[j]=this.List[i];
       }
       //console.log(this.recordList)
     },
@@ -1179,7 +1175,8 @@ export default {
             console.log(err);
           })
     },
-    getPendingScholarApplication(){const tempthis = this;
+    getPendingScholarApplication(){
+      const tempthis = this;
       this.axios({
         method: 'get',
         url: 'http://139.9.134.209:8000/api/relation/getPendingScholarApplication',

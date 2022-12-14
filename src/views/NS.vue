@@ -3,12 +3,12 @@
         <div class="left">
             <div class="name">
                 <div class="blackBox">
-                    <img :src="require('../assets/'+baseInfo.avatar)" class="image">
+                    <img :src="baseInfo.avatar" class="image">
                     <div class="userName" style="position: absolute; text-align: center;
                      font-size: 120%; display: inline-block; left: 85px; right: 0;
                      top: 40px; color: white; font-weight: bold">{{this.userName}}</div>
                 </div>
-                <div class="option-box" v-if="accreditation===1">
+                <div class="option-box" v-if="accreditation===1 && isMyself===false">
                     <div>
                         <div class="follow" v-if="this.follow===0" style="color: #333333" @click="focus(scholar_id)">
                             <i class="bx bxs-user-plus"></i>
@@ -111,13 +111,9 @@
                             <i class='bx bx-link'></i>
                             <div class="citation">被引用次数: {{item.n_citation}}</div>
                         </div>
-
                     </div>
-
-
                 </div>
             </div>
-
 
         </div>
         <div class="right">
@@ -127,13 +123,19 @@
                 <div class="line" style="margin-top: 10px"></div>
             </div>
             <div style="position: absolute; overflow: auto; width: 100%; height: 690px">
-                <div class="scholar" v-for="(item) in scholarList">
-                    <img :src="require('../assets/'+'YAN.jpg')" class="image"
-                         style="height: 60px; width: 60px; margin: 5px;
-                padding: 0; border-radius: 8px">
-                    <div style="position: absolute; left: 70px;
-                margin-top: 10px; font-weight: bold">{{item.name}}</div>
-                    <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：{{item.count}}</div>
+                <div class="scholar" v-for="(item) in scholarList" v-if="item.count!==0">
+                    <div>
+                        <img src="../assets/img/home/avatar.png" class="image"
+                             style="height: 60px; width: 60px; margin: 5px;
+                             padding: 0; border-radius: 8px">
+                        <div class="right-name" style="position: absolute; left: 70px; margin-top: 10px;cursor: pointer;
+                    font-weight: bold">
+                            <span v-if="item.id" @click="switchScholar(item.id)">{{item.name}}</span>
+                            <span v-else @click="$message('暂无该作者信息')">{{item.name}}</span>
+                        </div>
+                        <div style="position: absolute; left: 70px; font-size: 10px; bottom: 10px">合作论文数：{{item.count}}</div>
+                    </div>
+
                 </div>
             </div>
 
@@ -160,7 +162,7 @@
           <div class="question-sub-item">
           </div>
         </div>
-        <el-dialog
+        <el-dialog append-to-body
                 title="举报学者"
                 :visible.sync="dialogVisible"
                 width="40%"
@@ -195,10 +197,11 @@
                 userName: '',
                 baseInfo: {
                     userName: '王海涛',
-                    avatar: 'YAN.jpg',
+                    avatar: this.$store.state.url + 'default.png',
                     user_id: null,
                     scholar_id: null,
                 },
+                coWorkers: [],//记录学者关系网里的基本信息
                 sort: 0, //0表示按时间排序，1表示按引用量排序
                 follow: 0, //1表示已关注，0表示未关注
                 accreditation: 0, //1表示已认证，0表示未认证
@@ -209,7 +212,7 @@
                 scholarList: [],
                 // paper_id: '',
                 scholar_id: 0,
-
+                isMyself: false,//0表示不是自己，1表示是自己
                 replyVisible: false,
                 isCenter: true,
                 msg_send: {
@@ -220,6 +223,12 @@
             }
         },
         methods: {
+            switchScholar(author_id){
+
+                console.log(author_id)
+              this.getCoworkers(author_id)
+              this.getBaseInfo(author_id)
+            },
             complain(textarea){
                 this.$axios({
                     method: 'post',
@@ -335,6 +344,27 @@
                     })
                 }
             },
+            coWorkerAvatar(aid){
+                this.$axios({
+                    method: 'get',
+                    url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo?author_id=' + aid,
+                    // url: this.$store.state.address + 'api/ScholarPortal/GetBaseInfo/?pid=' + '1',
+                    headers: {
+                        jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
+                    },
+                }).then(res => {
+                    console.log(res)
+                    console.log('success: '+ res.data.user_id)
+                    if(res.data.errno===0){
+                        this.coGetAvatar(res.data.user_id)
+                    }
+                    else {
+                        this.coWorkers.append(this.$store.state.url + 'default.png');
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+            },
             getCoworkers(uid){
                 this.axios({
                     method: 'post',
@@ -345,6 +375,25 @@
                 }).then(res => {
                     console.log(res.data)
                     this.scholarList = res.data.coworkers;
+
+                    // for(scholar in this.scholarList){
+                    //     console.log(scholar)
+                    //     // if(scholar.id!=null){
+                    //     //     console.log('scholar.id: '+scholar.id )
+                    //     //     // this.coWorkerAvatar(scholar.id);
+                    //     // }
+                    // }
+                    // for(let i=0; i<this.scholarList.length; i++){
+                    //     let id = this.scholarList[i].id;
+                    //     if(id != null){
+                    //         // this.coWorkerAvatar(id);
+                    //     }
+                    //     else {
+                    //         this.coWorkers.append(this.$store.state.url + 'default.png');
+                    //     }
+                    // }
+                    // console.log('this is coWorkers\' avatar' );
+                    // console.log(this.coWorkers);
                     this.paperList = res.data.data.pubs;
                     this.userName = res.data.data.name;
                     // this.coID = res.data.
@@ -352,6 +401,9 @@
                 }).catch(err => {
                     // console.log(err)
                 })
+            },
+            Random(min, max) {
+                return Math.round(Math.random() * (max - min)) + min;
             },
             getBaseInfo(uid){
                 console.log(JSON.parse(sessionStorage.getItem('baseInfo')).token);
@@ -364,13 +416,8 @@
                     },
                 }).then(res => {
                     console.log(res)
-                    this.scholar_id = res.data.scholar_id
-                    // console.log(this.scholar_id)
-                    if(res.data.errno===1){
-                        this.accreditation = 0;
-                    }
-                    else
-                        this.accreditation = 1;
+                    this.scholar_id = res.data.scholar_id;
+                    this.isMyself  = res.data.is_mine;
                     if(res.data.Hotpoint==null){
                         this.heat = 0;
                     }
@@ -383,8 +430,19 @@
                     if(res.data.visitors==null){
                         this.visitors = 0
                     }
+
                     else{
                         this.visitors = res.data.visitors
+                    }
+                    if(res.data.errno===1){
+                        this.accreditation = 0;
+                        this.visitors = this.Random(5,10);
+                        this.heat = this.Random(10000,50000);
+                    }
+                    else{
+                        this.accreditation = 1;
+                        console.log('user_id: '+ res.data.user_id)
+                        this.getAvatar(res.data.user_id)
                     }
                     if(res.data.scholar_id !== null){
                       this.baseInfo.scholar_id = res.data.scholar_id
@@ -398,8 +456,7 @@
                 })
 
             },
-
-          toAdmitScholar() {
+            toAdmitScholar() {
             this.$router.push({
               path: '/admitScholar',
               query: {
@@ -408,55 +465,7 @@
               }
             })
           },
-
-          getMsgRec(uid, type) { //type=0,初始化时的调用
-            let that = this;
-
-            this.axios({
-              headers: {
-                jwt: JSON.parse(sessionStorage.getItem('baseInfo')).token,
-              },
-              method: 'get',
-              url: 'http://139.9.134.209:8000/api/MessageCenter/getMsgRec',
-            })
-                .then(res => {
-                  console.log(res.data)
-                  this.msg_rec_list = res.data;
-                  for(let i = 0; i < this.msg_rec_list.length; i++) {
-                    // this.msg_rec_list[i].avatar = 'user.png';
-                    this.msg_rec_list[i].create_time = new Date(this.msg_rec_list[i].create_time).toLocaleString('zh', {hour12: false})
-                  }
-                  that.msg_rec_list = this.msg_rec_list.sort(this.sortData);
-                  this.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
-                  that.$store.state.msg_rec_has_new = this.cal_msg_rec(this.msg_rec_list);
-                  this.dis_msg_list = this.msg_rec_list;
-
-                  console.log(this.dis_msg_list)
-                  // if(this.showContent) {
-                  //   this.changeShowContent();
-                  // }
-                  console.log(this.showContent)
-
-                  // this.dis_msg_list = this.msg_plm_list;
-
-                })
-                .catch(err => {
-                  console.log(err);
-                })
-          },
-
-          cal_msg_rec(msg_list) { //计算收到的私信是否有未读消息
-            let has_new = 0;
-            for(let i = 0; i < msg_list.length; i++) {
-              if(!msg_list[i].is_read) { //有未读消息就+1
-                has_new++;
-              }
-            }
-            console.log(has_new);
-            return has_new;
-          },
-
-          sendMsg() {
+            sendMsg() {
             this.msg_send.owner_id = this.baseInfo.user_id
 
             console.log(this.msg_send);
@@ -482,10 +491,15 @@
             })
                 .then(res => {
                   this.dis_msg_list = [];
-
-                  this.getMsgRec(this.uid);
-
-                  this.getMsgSend(this.uid);
+                  // if(this.isActive1) { //当前处于系统消息列表
+                  //   this.getMsgPlm(this.uid);
+                  // }
+                  // else if(this.isActive2) { //当前处于收到的私信列表
+                  //   this.getMsgRec(this.uid);
+                  // }
+                  // else if(this.isActive3) { //当前处于发送的私信列表
+                  //   this.getMsgSend(this.uid);
+                  // }
 
                   if(res.data.errno === 0) {
                     this.$message({
@@ -502,10 +516,44 @@
             this.replyVisible = false;
             this.msg_send.content = '';
           },
+            coGetAvatar(user_id){
+              //获取学者关系网里的头像
+                let formData = new FormData();
+                formData.append('field_id',user_id)
+                // console.log('user_id: ' + user_id)
+                this.$axios({
+                    method: 'post',
+                    url: this.$store.state.address + 'api/serialization/user/',
+                    data: formData,
+                }).then(res => {
+                    this.coWorkers.append(this.$store.state.url + res.data.avatar);
+                }).catch(err => {
+                    console.log(err)
+                })
+            },
+            getAvatar(user_id){
+                let formData = new FormData();
+                formData.append('field_id',user_id)
+                // console.log('user_id: ' + user_id)
+                this.$axios({
+                    method: 'post',
+                    url: this.$store.state.address + 'api/serialization/user/',
+                    data: formData,
+                }).then(res => {
 
+                    this.baseInfo.avatar = this.$store.state.url + res.data.avatar;
+                    console.log("avatar: "+this.baseInfo.avatar)
+                    // this.baseInfo.avatar = res.data.avatar;
+                    // if(this.baseInfo.avatar === null) {
+                    //     this.baseInfo.avatar = 'img/home/no-avatar.png'
+                    // }
+                }).catch(err => {
+                    console.log(err)
+                })
+            }
         },
         created() {
-            console.log(this.$route.query.id)
+            // console.log(this.$route.query.id)
             this.uid = this.$route.query.id;
 
             this.getCoworkers(this.uid)
@@ -850,6 +898,10 @@
 
     .message:hover .bxs-chat{
       color: #00cc00;
+    }
+
+    .right .right-name:hover {
+        color: #2196f3;
     }
 
     .question-btn {
